@@ -1,11 +1,10 @@
 # phamerator
 phamerator.org meteor application for web and mobile devices
 
-install meteor by following the instructions at https://meteor.com
+* Install meteor by following the instructions at [https://meteor.com](https://meteor.com)
+* Install required Meteor packages by running:
 
-Install required Meteor packages by running:
-
-meteor add
+```meteor add
 accounts-password
 aldeed:collection2
 blaze-html-templates
@@ -28,4 +27,4 @@ tracker
 useraccounts:core
 useraccounts:iron-routing
 useraccounts:materialize
-zimme:active-route
+zimme:active-route```
