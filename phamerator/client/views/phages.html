@@ -1,0 +1,47 @@
+<template name="phages">
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s3"><a class="active" href="#phages-list">Select Phages</a></li>
+                <li class="tab col s3"><a href="#genome-map">View Map</a></li>
+            </ul>
+        </div>
+        <div id="phages-list" class="col s12">
+            <ul class="collapsible" data-collapsible="expandable">
+                {{#each clusters}}
+                    {{> cluster }}
+                {{/each}}
+            </ul>
+        </div>
+        <div id="genome-map" class="col s12">
+            <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+                <button class="downloadGenomeMap waves-effect waves-light btn-floating btn-large"><i class="material-icons left">import_export</i>Export Genome Map</button>
+            </div>
+
+
+        </div>
+    </div>
+</template>
+
+<template name="cluster">
+        <li>
+            <div class="collapsible-header">
+                <input type="checkbox" id="{{name}}" class="clusterCheckbox" checked="{{isChecked name}}" />
+                <label for="{{name}}">
+                    {{name}}
+                </label>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                            <p>
+                                {{#each p in phageNames}}
+                                <div class="col s12 m6 l3">
+                                    <input type="checkbox" id="{{p}}" class="phageCheckbox" checked="{{isChecked p}}"/>
+                                        <label for="{{p}}">{{p}}</label>
+                                </div>
+                                {{/each}}
+                            </p>
+                </div>
+            </div>
+        </li>
+</template>
