@@ -29,3 +29,6 @@ aldeed:collection2
 reactive-dict
 standard-minifier-css
 standard-minifier-js
+meteorhacks:subs-manager
+ground:db
+sacha:spin

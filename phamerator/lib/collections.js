@@ -1,4 +1,4 @@
-Genomes = new Mongo.Collection("genomes");
+Genomes = new Ground.Collection("genomes");
 
 var Schemas = {};
 

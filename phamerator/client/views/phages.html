@@ -1,4 +1,34 @@
 <template name="phages">
+    <div id="mapsettings" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Phamerator Settings</h4>
+            <ul>
+                <li>
+                    <div class="switch">Conserved Domains
+                        <label>
+                            Hide
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                            Show
+                        </label>
+                    </div>
+                </li>
+                <li>
+                    <div class="switch">Nucleotide Conservation
+                        <label>
+                            Hide
+                            <input type="checkbox">
+                            <span class="lever"></span>
+                            Show
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
@@ -14,8 +44,21 @@
             </ul>
         </div>
         <div id="genome-map" class="col s12">
-            <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-                <button class="downloadGenomeMap waves-effect waves-light btn-floating btn-large"><i class="material-icons left">import_export</i>Export Genome Map</button>
+            <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
+                <a class="btn-floating btn-large waves-effect waves-light">
+                    <i class="material-icons">menu</i>
+                </a>                <ul>
+                    <li>
+                        <button class="downloadGenomeMap waves-effect waves-yellow btn-floating purple">
+                            <i class="material-icons left">system_update_alt</i>Export Genome Map
+                        </button>
+                    </li>
+                    <li>
+                        <button data-target="mapsettings" class="btn modal-trigger settings waves-effect waves-purple btn-floating yellow">
+                            <i class="material-icons left">settings</i>Genome Map Settings
+                        </button>
+                    </li>
+                </ul>
             </div>
 
 
@@ -26,7 +69,7 @@
 <template name="cluster">
         <li>
             <div class="collapsible-header">
-                <input type="checkbox" id="{{name}}" class="clusterCheckbox" checked="{{isChecked name}}" />
+                <input type="checkbox" id="{{name}}" class="filled-in clusterCheckbox" checked="{{isChecked name}}" />
                 <label for="{{name}}">
                     {{name}}
                 </label>
@@ -36,7 +79,7 @@
                             <p>
                                 {{#each p in phageNames}}
                                 <div class="col s12 m6 l3">
-                                    <input type="checkbox" id="{{p}}" class="phageCheckbox" checked="{{isChecked p}}"/>
+                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{isChecked p}}"/>
                                         <label for="{{p}}">{{p}}</label>
                                 </div>
                                 {{/each}}
