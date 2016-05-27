@@ -5,9 +5,9 @@ Template.phamilies.helpers({
 Template.phamilies.onRendered(function () {
   console.log('rendered phamilies');
 
-  var diameter = $(document).width() * 0.5,
+  var diameter = $(document).width() * 0.4,
     radius = diameter / 2,
-    innerRadius = radius - 120;
+    innerRadius = radius * 0.95;
 
   var cluster = d3.layout.cluster()
     .size([360, innerRadius])
@@ -26,10 +26,10 @@ Template.phamilies.onRendered(function () {
   var svg = d3.select("#phamCircle")
   //var svg = d3.select(".container").append("svg")
 
-    .attr("width", diameter* 1.2)
-    .attr("height", diameter * 1.2)
+    .attr("width", "100%")
+    .attr("height", diameter * 1.5)
     .append("g")
-    .attr("transform", "translate(" + radius + "," + radius + ")");
+    .attr("transform", "translate(" + radius * 1.5 + "," + radius * 1.5 + ")");
 
   var link = svg.append("g").selectAll(".link"),
     node = svg.append("g").selectAll(".node"),

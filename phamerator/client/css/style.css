@@ -67,6 +67,13 @@ div.tooltip {
     pointer-events: none;
 }
 
+#preloader {
+    position: relative;
+    top: 50%;
+    display: none;
+    transform: translateY(10%);
+}
+
 @media only screen and (min-width: 601px) {
     .container {
         width: 99%;

@@ -1,4 +1,4 @@
-Genomes = new Ground.Collection("genomes");
+Genomes = new Meteor.Collection("genomes");
 
 var Schemas = {};
 
