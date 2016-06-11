@@ -53,6 +53,12 @@ footer {
     width: 100%;
 }
 
+.card-panel {
+    background-color:#3F48CC;
+    color:white;
+    font-weight:bold;
+}
+
 div.tooltip {
     position: absolute;
     text-align: center;

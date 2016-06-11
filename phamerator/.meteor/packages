@@ -33,3 +33,5 @@ meteorhacks:subs-manager
 ground:db
 sacha:spin
 multiply:iron-router-progress
+ostrio:files
+reactive-var

@@ -1,11 +1,10 @@
-/*
- Accounts.emailTemplates.siteName = "MySite";
- Accounts.emailTemplates.from = "MySite <support@mysite.com>";
+ Accounts.emailTemplates.siteName = "Phamerator.org";
+ Accounts.emailTemplates.from = "Phamerator <info@phagesdb.org>";
  Accounts.emailTemplates.resetPassword.subject = function (user) {
- return "Message for " + user.profile.displayName;
+ return "Phamerator password reset for " + user.profile.displayName;
  };
  Accounts.emailTemplates.resetPassword.text = function (user, url) {
- var signature = "MySite Bot";
+ var signature = "Steve Cresawn";
  //var president = President.findOne();
  //if (president)
  //    president = Meteor.users.findOne(president.presidentId);
@@ -13,8 +12,7 @@
  return "Dear " + user.profile.displayName + ",\n\n" +
  "Click the following link to set your new password:\n" +
  url + "\n\n" +
- "Please never forget it again!!!\n\n\n" +
+ "Thanks for using Phamerator!\n\n\n" +
  "Cheers,\n" +
  signature;
  };
- */

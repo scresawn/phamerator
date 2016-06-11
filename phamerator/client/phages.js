@@ -391,6 +391,7 @@ Template.phages.onRendered(function () {
     $("#preloader").fadeOut(300).hide();
 
   });
+  //Materialize.showStaggeredList('#cluster-cards')
 });
 
 var getclusters2 = function () {
@@ -414,7 +415,7 @@ var getclusters = function () {
 
   clusterNames.forEach(function (element, index, array) {
     phageNames = [];
-    Genomes.find({cluster: element}, {fields: {phagename: 1}}).map(function (pn) {
+    Genomes.find({cluster: element}, {fields: {phagename: 1}, sort: {phagename: 1}}).map(function (pn) {
       phageNames.push(pn.phagename);
     });
     //console.log("cluster:", element, "phageNames:", phageNames);

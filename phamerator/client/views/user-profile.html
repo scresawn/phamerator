@@ -1,5 +1,48 @@
 <template name="account">
     {{#if currentUser}}
-        <h4>Welcome, {{email}}</h4>
+        <div class="row">
+            <div class="col s12 m8 l8 offset-m2 offset-l2">
+                <div class="card-panel blue">
+                    {{>file}}
+                    <span class="white-text">
+                        <h4>{{username}}</h4>
+                        <p>{{email}}</p>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {{>uploadForm}}
+        </div>
     {{/if}}
+</template>
+
+<template name="uploadForm">
+    {{#if currentUpload}}
+        {{#with currentUpload}}
+            <!--Uploading <b>file.name</b>:-->
+            <!--<span id="progress">progress%</span>-->
+        {{/with}}
+    {{else}}
+            <div class="col s12 m8 l8 offset-m2 offset-l2">
+                <form action="#">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>upload a picture</span>
+                        <input id="fileInput" type="file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                </form>
+            </div>
+            <!--<span>File</span>
+            <input id="fileInput" type="file" />-->
+
+    {{/if}}
+</template>
+
+<template name='file'>
+    <img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width: 100%" />
 </template>

@@ -1,6 +1,7 @@
 <template name="nav">
     <nav class="purple darken-1">
         <div class="container">
+
             <div class="nav-wrapper">
 
                     <div class="right" id="preloader">
@@ -18,12 +19,19 @@
                             </div>
                         </div>
                     </div>
-
-                <!--<a href="#" class="brand-logo">phamerator
+                <!--<form>
+                    <div class="input-field">
+                        <input id="search" type="search" required>
+                        <label for="search"><i class="material-icons">search</i></label>
+                        <i class="material-icons">close</i>
+                    </div>
+                </form>
+                <a href="#" class="brand-logo">phamerator
                     <img alt="UserAccounts" width="25" height="25" src="/imgs/ua-logo.png">
                 </a>-->
 
                 <ul id="nav-mobile" class="right side-nav fixed">
+                    <img src="phamerator.png" style="width: 100%"/>
                     <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-teal lighten-5"><i class="material-icons left">store</i>Home</a></li>
                     <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">repeat</i>Phages</a></li>
                     <li class="{{isActiveRoute regex='phamilies'}}"><a href="{{pathFor 'phamilies'}}" class="waves-effect waves-teal lighten-5">  <i class="material-icons left">language</i>Phamilies</a></li>
