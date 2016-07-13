@@ -1,52 +1,64 @@
 <template name="phages">
-    <div id="mapsettings" class="modal bottom-sheet">
+    <div id="mapsettings" class="modal">
         <div class="modal-content">
             <h4>Phamerator Settings</h4>
-            <ul>
-                <li>
+            <table>
+                <tr>
+                    <td>
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn' href='#' data-activates='dropdown1'>first sort by</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn' href='#' data-activates='dropdown2'>then sort by</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown2' class='dropdown-content'>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
                     <div class="switch">
-                        <p><label>
-
-                              <input type="checkbox">
-                              <span class="lever"></span>
-
-                        </label>Conserved Domains</p>
+                        <td>
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Conserved Domains</td>
                     </div>
-                </li>
-                <li>
+                </tr>
+                <tr>
                     <div class="switch">
-                        <p><label>
-
-                            <input type="checkbox">
-                            <span class="lever"></span>
-
-                        </label>Nucleotide Conservation</p>
+                        <td>
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Nucleotide Conservation</td>
                     </div>
-                </li>
-            </ul>
+                </tr>
+            </table>
         </div>
         <div class="modal-footer">
             <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
     </div>
     <div class="row">
-        <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
-            <a class="btn-floating btn-large waves-effect waves-light">
-                <i class="material-icons">menu</i>
-            </a>
-            <ul>
-                <li>
-                    <button class="downloadGenomeMap waves-effect waves-yellow btn-floating purple">
-                        <i class="material-icons left">system_update_alt</i>Export Genome Map
-                    </button>
-                </li>
-                <li>
-                    <button data-target="mapsettings" class="btn modal-trigger settings waves-effect waves-purple btn-floating yellow">
-                        <i class="material-icons left">settings</i>Genome Map Settings
-                    </button>
-                </li>
-            </ul>
-        </div>
+
         <div class="col s12">
             <!--<div class="progress">
                 <div class="determinate" style="width: 0%"></div>
@@ -113,7 +125,7 @@
 <template name="cluster">
         <li>
             <div class="collapsible-header">
-                <input type="checkbox" id="{{name}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked name}}" />
+                <input type="checkbox" id="{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
                 <label for="{{name}}">
                     {{name}}
                 </label>

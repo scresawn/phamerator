@@ -2,6 +2,9 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.meteor/dev_bundle/lib/node_modules/cordova-lib/src/platforms" />
+      <excludeFolder url="file://$MODULE_DIR$/.meteor/dev_bundle/lib/node_modules/cordova-lib/src/plugman/platforms" />
+      <excludeFolder url="file://$MODULE_DIR$/.meteor/dev_bundle/lib/node_modules/cordova-lib/templates/platforms" />
       <excludeFolder url="file://$MODULE_DIR$/.meteor/local" />
       <excludeFolder url="file://$MODULE_DIR$/.meteor/platforms" />
     </content>

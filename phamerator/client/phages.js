@@ -33,34 +33,6 @@ drawGenomeMap = function (svg) {
       return d.genomelength/10;
     })
   });
-  /*mappy = svg.append("g")
-    .attr("id", 'mappy');
-
-   d3.select(window).on("click", function() {
-   var zoom = d3.behavior.zoom();
-   if (d3.event.shiftKey) {
-   console.log("turning zoom ON");
-   zoom.on('zoom',  function () {
-   mappy.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
-   }
-   );
-   }
-   else {
-   console.log("turning zoom OFF");
-   d3.select("#genome-map").call(zoom);
-   //.on("mousedown.zoom", null);
-   //.on("touchstart.zoom", null)
-   //.on("touchmove.zoom", null)
-   //.on("touchend.zoom", null);
-   //svg.call(d3.behavior.zoom().on("zoom", function () {
-   //  mappy.attr("transform", "translate(" + d3.event.translate + ")");
-   //}
-   //));
-   }
-   });*/
-
-
-
 
   // Define the div for the tooltip
   var div = d3.select("body").append("div")
@@ -69,11 +41,15 @@ drawGenomeMap = function (svg) {
 
   //d3.select('.determinate').style("width", "0%");
 
+  function x() {
+    console.log(d3.select(this).data());
+  };
 
   var phage = svg.selectAll(".phages")
     .data(function() {
       pnames = selectedGenomes.find({},{phagename:1}).fetch().map(function(obj){ return obj.phagename;});
-      phages = Genomes.find({phagename: {$in: pnames}}, {sort: {phagename:1}});
+      phages = Genomes.find({phagename: {$in: pnames}}, {sort: {cluster:1, phagename:1}});
+      //todo: get selected primary and secondary sort fields and ascending/descending
       return phages.fetch();
     }, key);
 
@@ -87,6 +63,8 @@ drawGenomeMap = function (svg) {
     .attr("transform", function (d, i) {
       return "translate(0," + ((i * 300)+150) + ")";
     });
+
+  //newPhages.each(x);
 
   newPhages.append("text")
     .attr("x", 0)
@@ -370,6 +348,20 @@ drawGenomeMap = function (svg) {
 
 Template.phages.onRendered(function () {
   console.log('phages rendered');
+
+  myURL = "http://localhost:8080/?name=mysequence&seq1=AGCGACACTTCTCTCTCTGGAAATTCAGGCAAGAACATGAGGGGGGTTAG&seq2=AGCGACACTTCTCTCTCTGGAAATTCAGGCAAGAACATGAGGGGGGTTAG"
+
+  $.ajax({
+    url: myURL,
+    dataType: 'jsonp',
+    jsonp: false,
+    jsonpCallback: 'callback',
+    type: 'GET',
+    success: function (data) {
+      console.log(data);
+    }
+  });
+
   $("#preloader").hide();
   $(document).ready(function(){
     $('ul.tabs').tabs();
@@ -381,6 +373,16 @@ Template.phages.onRendered(function () {
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     $('.modal-trigger').leanModal();
   });
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: true, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: false, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
+  );
 
   //Meteor.subscribe('genomes');
   var svg = d3.select("#genome-map")
@@ -394,38 +396,91 @@ Template.phages.onRendered(function () {
   //Materialize.showStaggeredList('#cluster-cards')
 });
 
-var getclusters2 = function () {
-  clusters = [
-    {name: 'A1', phageNames: ['Bxb1', 'U2']},
-    {name: 'A2', phageNames: ['Che12', 'D29', 'L5', 'Pukovnik']},
-    {name: 'A3', phageNames: ['Bxz2', 'HelDan', 'JHC117', 'MarQuart', 'Spike509']}
-  ];
-  return clusters;
-};
-
 var getclusters = function () {
   console.log("tracker autorun has rerun");
   Session.get("selections");
   var clusters = [];
+
+  // get an array of all unique cluster names
   clusterNames = _.uniq(Genomes.find({}, {
     sort: {cluster: 1}, fields: {cluster: true}
   }).fetch().map(function (x) {
     return x.cluster;
   }), true);
+  //console.log("cluster names: ", clusterNames);
 
-  clusterNames.forEach(function (element, index, array) {
-    phageNames = [];
-    Genomes.find({cluster: element}, {fields: {phagename: 1}, sort: {phagename: 1}}).map(function (pn) {
-      phageNames.push(pn.phagename);
+  // for each cluster, get an array of unique subcluster names
+  clusterNames.forEach(function (cluster, index, array) {
+    //console.log(cluster);
+    subClusterNames = _.uniq(Genomes.find({cluster: cluster}, {fields: {subcluster: true}
+    }).fetch().map(function (x) {
+      //return {'cluster': x.cluster, 'subcluster': x.subcluster, 'phagename': x.phagename};
+      return x.subcluster;
+    }), false);
+
+    //console.log(cluster, subClusterNames);
+    subClusterNames.sort(function (a,b) {
+      return a-b;
     });
-    //console.log("cluster:", element, "phageNames:", phageNames);
-    if (element == '') {
-      clusters.push({"name": "Singletons", "phageNames": phageNames});
+    subClusterNames.forEach(function (subcluster, index, array) {
+      phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
+      console.log(phageNames);
+      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});
+    });
 
+    //thisCluster = {"name": cluster, };
+    /* subClusterNames.forEach(function(subcluster, index, array) {
+      var found = false;
+      // if groups.cluster && groups.subcluster
+            // add this phage to groups
+      // else if
+            // if groups.cluster
+               // add subcluster to groups
+               // add this phage to groups
+      // else
+              // add this cluster to groups
+              // add this subcluster to groups
+              // add this phage to groups
+
+
+      for(var i = 0; i < clusters.length; i++) {
+        if (clusters[i].name == subcluster.cluster + subcluster.subcluster) {
+          found = true;
+          console.log('found it!');
+          break;
+        }
+        else {
+          name = subcluster.cluster + subcluster.subcluster;
+          clusters.push({"name": name});
+        }
+      }
+      //console.log(subcluster);
+    }); */
+
+    //groups = [{cluster: "A", subcluster: 1, phageNames = ['phage 1', 'phage 2', 'etc']}, {}];
+
+    /*if (element == '') {
+      clusters.push({"name": "Singletons", "phageNames": phageNames});
     }
     else {
       clusters.push({"name": element, "phageNames": phageNames});
-    }
+    }*/
+
+    // for each subcluster, get an array of phage names
+    /*subClusterNames.forEach(function (element, index, array) {
+      phageNames = [];
+      console.log("getting phages for cluster", element.cluster, "and subcluster", element.subcluster);
+      Genomes.find({"cluster": element.cluster, "subcluster": element.subcluster}, {fields: {phagename: 1}, sort: {phagename: 1}}).map(function (pn) {
+        phageNames.push(pn.phagename);
+      });
+      //console.log("cluster:", element, "phageNames:", phageNames);
+      if (element == '') {
+        clusters.push({"name": "Singletons", "phageNames": phageNames});
+      }
+      else {
+        clusters.push({"name": element, "phageNames": phageNames});
+      }
+    });*/
   });
   return clusters;
 };
@@ -439,20 +494,24 @@ Template.phages.events({
 
   "change .clusterCheckbox": function (event, template) {
     console.log("cluster checkbox checked: ", event.target.id);
+    console.log(event.target["id"]);
+    console.log();
+    console.log(event.target.getAttribute("data-subcluster"));
     $("#preloader").show(function () {
       if (event.target.id !== "Singletons") {
-        clusterGenomes = Genomes.find({cluster: event.target.id}).fetch();
+        clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
       }
       else {
-        clusterGenomes = Genomes.find({cluster: ""}).fetch();
+        clusterGenomes = Genomes.find({cluster: "", subcluster: ""}).fetch();
       }
       clusterGenomes.forEach( function (element, index, array) {
         if (event.target.checked) {
-          //console.log("I should be selecting", element);
+          console.log("I should be selecting", element);
           selectedGenomes.upsert({phagename: element.phagename}, {
             phagename: element.phagename,
             genomelength: element.genomelength,
-            cluster: element.cluster
+            cluster: element.cluster,
+            subcluster: element.subcluster
           });
         }
         else {
@@ -498,9 +557,9 @@ Template.phages.events({
   }
 });
 
-Template.registerHelper('clusterIsChecked',function(input) {
-  if (input === "Singletons") { input = ""; }
-  phagesInCluster = Genomes.find({cluster: input}, {fields: {"phagename": 1}}).fetch();
+Template.registerHelper('clusterIsChecked',function(cluster, subcluster) {
+  //if (input === "Singletons") { input = ""; }
+  phagesInCluster = Genomes.find({cluster: cluster, subcluster: subcluster}, {fields: {"phagename": 1}}).fetch();
   r = true;
   phagesInCluster.forEach(function (phage, phageIndex, myPhageArray) {
     if (selectedGenomes.find({"phagename": phage.phagename}).count() == 0) {
