@@ -10,4 +10,9 @@ Template.nav.rendered = function () {
       }, 1000);
     }
   });
+  Meteor.startup(function() {
+    // Here we can be sure the plugin has been initialized
+    //if (Meteor.isCordova) { alert("start saving your pennies")}
+    if (Meteor.isCordova) {alert(navigator.connection.type)};
+  });
 };

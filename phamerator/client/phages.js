@@ -8,8 +8,10 @@
  return percent;
  });
 */
+var colorsys = require('colorsys');
 
 selectedGenomes = new Meteor.Collection(null);
+
 
 Template.phages.onCreated(function() {
   //Meteor.subscribe('genomes');
@@ -20,6 +22,122 @@ Template.phages.onCreated(function() {
 //in rendered callback
 var key = function(d) {
   return d.phagename;
+};
+
+getBlastAlignments = function(phages) {
+  console.log("getting BLAST alignments for", phages);
+  if (phages.length < 2) return;
+  s1 = phages[0].sequence;
+  s2 = phages[1].sequence;
+  myURL = "http://172.30.0.79:8080/";
+  console.log(myURL);
+  $.ajax({
+    type: "POST",
+    method: "POST",
+    url: myURL,
+    data: {seq1: s1, seq2: s2},
+    //dataType: 'jsonp',
+    dataType: 'json',
+    //processData: false,
+    jsonp: false,
+    //contentType: 'application/json; charset=utf-8',
+    //crossDomain: true,
+    //jsonpCallback: 'callback',
+    success: function (data) {
+      drawBlastAlignments(data);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("ERROR:", textStatus, errorThrown);
+    }
+  });
+};
+
+drawBlastAlignments = function (json) {
+  console.log('drawing BLAST alignments');
+  //d3.json(jsonData, function(error, json) {
+    console.log(json);
+    var data = function(hsps) {
+      var paths = Array();
+      hsps.forEach(function(value, index, myArray) {
+        var dataset = Array();
+        dataset.push({x: value.query_from/10, y: 180, evalue: value.evalue});
+        dataset.push({x: value.query_to/10, y: 180});
+        dataset.push({x: value.hit_to/10, y: 450});
+        dataset.push({x: value.hit_from/10, y: 450});
+        paths.push(dataset);
+      });
+      return paths;
+    };
+
+    var hsps = json.BlastOutput2.report.results.bl2seq[0].hits[0].hsps;
+    pathset = data(hsps);
+    var hsps = svg.selectAll(".hsps")
+      .data(pathset);
+    var d3line2 = d3.svg.line()
+      .x(function(d) { return d.x; })
+      .y(function(d) { return d.y; })
+      .interpolate("linear-closed");
+    hsps.enter()
+      .insert("svg:path", ":first-child")
+      .on("mouseover", function(d){
+        d3.select(this).style("stroke", "gold");
+        //console.log(d);
+        tooltip.html("e-value: " + d[0].evalue);
+        tooltip.style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px")
+          .style("opacity", 1);
+        return tooltip.style("visibility", "visible");
+      })
+      .style("fill-opacity", 0)
+      .style("stroke-width", 0)
+      .attr("d", function(d) { //console.log(d);
+        return d3line2(d);})
+      .transition()
+      .duration(1500)
+      .delay(0)
+      .style("stroke-width", 0)
+      .style("stroke", "black")
+      .style("fill", function (d) {
+        evalue = d[0].evalue.toString();
+        console.log("d:", d);
+        console.log("evalue:", evalue);
+        array1 = evalue.split('e');
+        exp = array1[array1.length - 1];
+        exp = Math.abs(+exp);
+        if (exp == 0.0) { hue = 1.0; }
+        else {
+          hue = exp / 200.0;
+        }
+        console.log("hue", hue);
+        hue = Math.min(hue, 0.75);
+
+        hexcolor = colorsys.hsv_to_hex({ h: hue*360, s: 100, v: 100 });
+        console.log("hexcolor:", hexcolor);
+        return hexcolor;
+      })
+      .style("fill-opacity", 0.3);
+
+    hsps//.on("mouseout", function(){d3.select(this).style("fill", "red");})
+      .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+      .on("mouseout", function(){
+        d3.select(this).style("stroke", "black");
+        return tooltip.style("visibility", "hidden");
+      });
+
+    var tooltip = d3.select("body")
+      .append("div")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .style("background","lightcyan")
+      .style("width","150px")
+      .style("height", "30px")
+      .style("text-align", "center")
+      .style("position", "absolute")
+      .style("padding", "2px")
+      .style("font", "Arial")
+      .style("border-radius","8px");
+  //});
+
 };
 
 drawGenomeMap = function (svg) {
@@ -33,6 +151,9 @@ drawGenomeMap = function (svg) {
       return d.genomelength/10;
     })
   });
+
+
+
 
   // Define the div for the tooltip
   var div = d3.select("body").append("div")
@@ -65,6 +186,7 @@ drawGenomeMap = function (svg) {
     });
 
   //newPhages.each(x);
+  getBlastAlignments(phages.fetch());
 
   newPhages.append("text")
     .attr("x", 0)
@@ -349,18 +471,7 @@ drawGenomeMap = function (svg) {
 Template.phages.onRendered(function () {
   console.log('phages rendered');
 
-  myURL = "http://localhost:8080/?name=mysequence&seq1=AGCGACACTTCTCTCTCTGGAAATTCAGGCAAGAACATGAGGGGGGTTAG&seq2=AGCGACACTTCTCTCTCTGGAAATTCAGGCAAGAACATGAGGGGGGTTAG"
 
-  $.ajax({
-    url: myURL,
-    dataType: 'jsonp',
-    jsonp: false,
-    jsonpCallback: 'callback',
-    type: 'GET',
-    success: function (data) {
-      console.log(data);
-    }
-  });
 
   $("#preloader").hide();
   $(document).ready(function(){
@@ -385,7 +496,7 @@ Template.phages.onRendered(function () {
   );
 
   //Meteor.subscribe('genomes');
-  var svg = d3.select("#genome-map")
+  svg = d3.select("#genome-map")
     .append("svg");
 
   Tracker.autorun(function () {
