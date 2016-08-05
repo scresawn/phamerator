@@ -29,7 +29,7 @@ getBlastAlignments = function(phages) {
   if (phages.length < 2) return;
   s1 = phages[0].sequence;
   s2 = phages[1].sequence;
-  myURL = "http://172.30.0.79:8080/";
+  myURL = "http://phage.csm.jmu.edu:8080/";
   console.log(myURL);
   $.ajax({
     type: "POST",
@@ -523,75 +523,39 @@ var getclusters = function () {
   // for each cluster, get an array of unique subcluster names
   clusterNames.forEach(function (cluster, index, array) {
     //console.log(cluster);
-    subClusterNames = _.uniq(Genomes.find({cluster: cluster}, {fields: {subcluster: true}
+    subClusterNames = _.uniq(Genomes.find({cluster: cluster}, {
+      fields: {subcluster: true}
     }).fetch().map(function (x) {
       //return {'cluster': x.cluster, 'subcluster': x.subcluster, 'phagename': x.phagename};
       return x.subcluster;
     }), false);
 
     //console.log(cluster, subClusterNames);
-    subClusterNames.sort(function (a,b) {
-      return a-b;
+    subClusterNames.sort(function (a, b) {
+      return a - b;
     });
     subClusterNames.forEach(function (subcluster, index, array) {
-      phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
+      phageNames = Genomes.find({
+        cluster: cluster,
+        subcluster: subcluster
+      }, {fields: {phagename: true}}).fetch().map(function (x) {
+        return x.phagename
+      });
       console.log(phageNames);
-      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});
-    });
-
-    //thisCluster = {"name": cluster, };
-    /* subClusterNames.forEach(function(subcluster, index, array) {
-      var found = false;
-      // if groups.cluster && groups.subcluster
-            // add this phage to groups
-      // else if
-            // if groups.cluster
-               // add subcluster to groups
-               // add this phage to groups
-      // else
-              // add this cluster to groups
-              // add this subcluster to groups
-              // add this phage to groups
-
-
-      for(var i = 0; i < clusters.length; i++) {
-        if (clusters[i].name == subcluster.cluster + subcluster.subcluster) {
-          found = true;
-          console.log('found it!');
-          break;
+      var singletonator = function () {
+        if (cluster === "") {
+          return {"name": "Singletons", "cluster": "", "subcluster": "", phageNames: phageNames}
         }
         else {
-          name = subcluster.cluster + subcluster.subcluster;
-          clusters.push({"name": name});
+          return {"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames}
         }
-      }
-      //console.log(subcluster);
-    }); */
+      };
+      singletonator();
+      var singletonated = singletonator(this)
+      clusters.push(singletonated);
+    });
 
-    //groups = [{cluster: "A", subcluster: 1, phageNames = ['phage 1', 'phage 2', 'etc']}, {}];
 
-    /*if (element == '') {
-      clusters.push({"name": "Singletons", "phageNames": phageNames});
-    }
-    else {
-      clusters.push({"name": element, "phageNames": phageNames});
-    }*/
-
-    // for each subcluster, get an array of phage names
-    /*subClusterNames.forEach(function (element, index, array) {
-      phageNames = [];
-      console.log("getting phages for cluster", element.cluster, "and subcluster", element.subcluster);
-      Genomes.find({"cluster": element.cluster, "subcluster": element.subcluster}, {fields: {phagename: 1}, sort: {phagename: 1}}).map(function (pn) {
-        phageNames.push(pn.phagename);
-      });
-      //console.log("cluster:", element, "phageNames:", phageNames);
-      if (element == '') {
-        clusters.push({"name": "Singletons", "phageNames": phageNames});
-      }
-      else {
-        clusters.push({"name": element, "phageNames": phageNames});
-      }
-    });*/
   });
   return clusters;
 };
@@ -658,13 +622,13 @@ Template.phages.events({
   "click .downloadGenomeMap": function (event, template) {
     console.log("downloadGenomeMap clicked");
     svg = d3.select("#genome-map").select("svg");
-      var a = d3.select("#genome-map").append("a").node();
-      a.download = 'phamerator_map.svg'; // file name
-      xml = (new XMLSerializer()).serializeToString(svg.node()); // convert node to xml string
-      a.href = 'data:application/octet-stream;base64,' + btoa(xml); // create data uri
-      ev = document.createEvent("MouseEvents");
-      ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      a.dispatchEvent(ev);
+    var a = d3.select("#genome-map").append("a").node();
+    a.download = 'phamerator_map.svg'; // file name
+    xml = (new XMLSerializer()).serializeToString(svg.node()); // convert node to xml string
+    a.href = 'data:application/octet-stream;base64,' + btoa(xml); // create data uri
+    ev = document.createEvent("MouseEvents");
+    ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    a.dispatchEvent(ev);
   }
 });
 
