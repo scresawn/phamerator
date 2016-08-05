@@ -544,7 +544,7 @@ var getclusters = function () {
       console.log(phageNames);
       var singletonator = function () {
         if (cluster === "") {
-          return {"name": "Singletons", "cluster": "Singletons", "subcluster": "", phageNames: phageNames}
+          return {"name": "Singletons", "cluster": "", "subcluster": "", phageNames: phageNames}
         }
         else {
           return {"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames}
@@ -577,7 +577,7 @@ Template.phages.events({
         clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
       }
       else {
-        clusterGenomes = Genomes.find({cluster: "Singletons", subcluster: ""}).fetch();
+        clusterGenomes = Genomes.find({cluster: "", subcluster: ""}).fetch();
       }
       clusterGenomes.forEach( function (element, index, array) {
         if (event.target.checked) {
