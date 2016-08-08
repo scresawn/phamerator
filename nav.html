@@ -31,11 +31,12 @@
                 </a>-->
 
                 <ul id="nav-mobile" class="right side-nav fixed">
-                    <img src="phamerator.png" style="width: 100%"/>
+                    <img src="loading icon.gif" style="width: 100%"/>
                     <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-teal lighten-5"><i class="material-icons left">store</i>Home</a></li>
                     <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">repeat</i>Phages</a></li>
                     <li class="{{isActiveRoute regex='phamilies'}}"><a href="{{pathFor 'phamilies'}}" class="waves-effect waves-teal lighten-5">  <i class="material-icons left">language</i>Phamilies</a></li>
                     <li class="{{isActiveRoute regex='domains'}}"><a href="{{pathFor 'domains'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">label_outline</i>Domains</a></li>
+                    <li class="{{isActiveRoute regex='repeats'}}"><a href="{{pathFor 'repeats'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">polymer</i>Repeats</a></li>
                     <!--<li class="{{isActiveRoute regex='barChart'}}"><a href="{{pathFor 'barChart'}}" class="waves-effect white waves-yellow">barChart</a></li>-->
                     <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-teal lighten-5">  <i class="material-icons left">perm_identity</i>Account</a></li>
                     <div class="divider"></div>
@@ -43,16 +44,18 @@
                 </ul>
                 <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul id="mobile-menu" class="side-nav">
-                    <img src="phamerator.png" style="width: 100%"/>
+                    <img src="loading icon.gif" style="width: 100%"/>
                     <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-teal lighten-5"><i class="material-icons left">store</i>Home</a></li>
                     <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">repeat</i>Phages</a></li>
                     <li class="{{isActiveRoute regex='phamilies'}}"><a href="{{pathFor 'phamilies'}}" class="waves-effect waves-teal lighten-5">  <i class="material-icons left">language</i>Phamilies</a></li>
                     <li class="{{isActiveRoute regex='domains'}}"><a href="{{pathFor 'domains'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">label_outline</i>Domains</a></li>
+                    <li class="{{isActiveRoute regex='repeats'}}"><a href="{{pathFor 'repeats'}}" class="waves-effect waves-teal lighten-3">  <i class="material-icons left">polymer</i>Repeats</a></li>
                     <!--<li class="{{isActiveRoute regex='barChart'}}"><a href="{{pathFor 'barChart'}}" class="waves-effect white waves-yellow">barChart</a></li>-->
                     <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-teal lighten-5">  <i class="material-icons left">perm_identity</i>Account</a></li>
                     <div class="divider"></div>
                     <li>{{> atNavButton }}</li>
                 </ul>
+                <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
             </div>
         </div>
     </nav>
