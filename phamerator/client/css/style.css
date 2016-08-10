@@ -32,6 +32,23 @@ footer > .content {
     padding-left: 15px;
 }
 
+@font-face {
+    font-family: ParryHotter;
+    src:
+            url("/fonts/ParryHotter.ttf");
+}
+
+@font-face {
+    font-family: HarryPotter;
+    src:
+            url("/fonts/HARRP___.TTF");
+}
+
+label {
+    color:#000;
+    font-family: Arial;
+}
+
 header,
 main,
 footer {
