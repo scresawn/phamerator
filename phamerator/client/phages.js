@@ -117,6 +117,23 @@ drawBlastAlignments = function (json) {
       })
       .style("fill-opacity", 0.3);
 
+  /*
+  //allow for show switch to make nucleotide conservation invisible
+  document.getElementById("nucCon").addEventListener("change", function() {console.log(document.getElementById("nucCon").checked);
+    if (document.getElementById("nucCon").checked == true) {
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+      //.transition().duration(1000)
+          .attr("fill-opacity", 1)
+    }
+    else if (document.getElementById("nucCon").checked == false){
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+          .attr("fill-opacity", 0)
+    }
+    else {return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+        .style("fill", "orange")}
+  });
+  */
+
     hsps//.on("mouseout", function(){d3.select(this).style("fill", "red");})
       .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
       .on("mouseout", function(){
@@ -393,6 +410,22 @@ drawGenomeMap = function (svg) {
    .duration(750)
    .delay(3000)
    .attr("fill-opacity", 0.9);*/
+/*
+  //allow for show switch to make conserved domains invisible
+  document.getElementById("conDomain").addEventListener("change", function() {console.log(document.getElementById("conDomain").checked);
+    if (document.getElementById("conDomain").checked == true) {
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+      //.transition().duration(1000)
+          .attr("fill-opacity", 1)
+    }
+    else if (document.getElementById("conDomain").checked == false){
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+          .attr("fill-opacity", 0)
+    }
+    else {return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+        .style("fill", "orange")}
+  });
+*/
 
   gene.append("text") // gene name
     .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
@@ -420,6 +453,7 @@ drawGenomeMap = function (svg) {
 
   gene.append("text") // pham name
     .style({"fill": "black"})
+      .attr("class", "phamName")
     .attr("font-family", "Roboto")
     .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
     .attr("y", function (d) {
@@ -460,9 +494,42 @@ drawGenomeMap = function (svg) {
     })
 
     .text(function(d) {return d.phamName})
-    .attr("fill-opacity", 0)
+    //.attr("fill-opacity", 0)
     //.transition().delay(3500).duration(1500)
-    .attr("fill-opacity", 1);
+    .attr("fill-opacity", 1)
+  ;
+
+  //allow for show switch to make phamily number invisible
+  document.getElementById("phamNum").addEventListener("change", function() {console.log(document.getElementById("phamNum").checked);
+    if (document.getElementById("phamNum").checked == true) {
+      return d3.selectAll(".phamName")
+      //.transition().duration(1000)
+          .attr("fill-opacity", 1)
+    }
+    else if (document.getElementById("phamNum").checked == false){
+      return d3.selectAll(".phamName")
+          .attr("fill-opacity", 0)
+    }
+    else {return d3.selectAll(".phamName")
+        .style("fill", "orange")}
+  });
+
+  /*
+  //allow for show switch to make predicted function invisible
+  document.getElementById("predFun").addEventListener("change", function() {console.log(document.getElementById("predFun").checked);
+    if (document.getElementById("predFun").checked == true) {
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+      //.transition().duration(1000)
+          .attr("fill-opacity", 1)
+    }
+    else if (document.getElementById("predFun").checked == false){
+      return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+          .attr("fill-opacity", 0)
+    }
+    else {return d3.selectAll(".phamName")//MAKE SURE TO ADD A CLASS
+        .style("fill", "orange")}
+  });
+  */
 
   phage.exit().remove();
 

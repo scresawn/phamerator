@@ -18,33 +18,39 @@ Router.map(function() {
     path: '/',
   });
   this.route('phages', {
-    loadingTemplate: 'loading',
-    waitOn: function() {
-      return subscriptions.subscribe('genomes');
-    },
-    //subscriptions: function() {
-      // returning a subscription handle or an array of subscription handles
-      // adds them to the wait list.
-    //  return Meteor.subscribe('genomes');
-    //},
-    //action: function () {
-    //  this.render('phages');
-    //}
-    //action: function () {
-    //  if (this.ready()) {
-    //    this.render();
-    //  }
-    //  else { this.render('loading');}
-    //}
-      //data: function () {
-    //  templateData = { authors: Authors.find() };
-    //  return templateData;
-    }
+        loadingTemplate: 'loading',
+        waitOn: function () {
+          return subscriptions.subscribe('genomes');
+        },
+        //subscriptions: function() {
+        // returning a subscription handle or an array of subscription handles
+        // adds them to the wait list.
+        //  return Meteor.subscribe('genomes');
+        //},
+        //action: function () {
+        //  this.render('phages');
+        //}
+        //action: function () {
+        //  if (this.ready()) {
+        //    this.render();
+        //  }
+        //  else { this.render('loading');}
+        //}
+        //data: function () {
+        //  templateData = { authors: Authors.find() };
+        //  return templateData;
+      }
   );
   this.route('phamilies');
   this.route('domains');
   this.route('barChart');
   this.route('account');
+  this.route('repeats', {
+    loadingTemplate: 'loading',
+    waitOn: function () {
+      return subscriptions.subscribe('genomes');
+    }
+  });
 });
 
 if (Meteor.isClient) {

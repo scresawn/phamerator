@@ -7,7 +7,6 @@
                     <td>
                         <!-- Dropdown Trigger -->
                         <a class='dropdown-button btn' href='#' data-activates='dropdown1'>first sort by</a>
-
                         <!-- Dropdown Structure -->
                         <ul id='dropdown1' class='dropdown-content'>
                             <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
@@ -16,10 +15,9 @@
                             <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
                         </ul>
                     </td>
-                    <td>
+                    <td align = "center">
                         <!-- Dropdown Trigger -->
                         <a class='dropdown-button btn' href='#' data-activates='dropdown2'>then sort by</a>
-
                         <!-- Dropdown Structure -->
                         <ul id='dropdown2' class='dropdown-content'>
                             <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
@@ -29,26 +27,84 @@
                         </ul>
                     </td>
                 </tr>
+            </table>
+
+            <hr>
+            <table>
+                <tr>
+                    <td>
+                        Show:
+                    </td>
+                    <td>
+                        Color by:
+                    </td>
+                </tr>
                 <tr>
                     <div class="switch">
-                        <td>
+                        <td colspan = 1 rowspan = 1>
                             <label>
-                                <input type="checkbox">
+                                <input type="checkbox" id="conDomain" checked>
                                 <span class="lever"></span>
                             </label>
                         </td>
                         <td>Conserved Domains</td>
                     </div>
+                    <td rowspan = 4>
+                        <form action="#">
+                            <p>
+                                <input name="colorBy" type="radio" id="Phamily" checked />
+                                <label for="Phamily">Phamily</label>
+                            </p>
+                            <p>
+                                <input name="colorBy" type="radio" id="Phamily Abundance" />
+                                <label for="Phamily Abundance">Phamily Abundance</label>
+                            </p>
+                            <p>
+                                <input name="colorBy" type="radio" id="Cluster Conservation"  />
+                                <label for="Cluster Conservation">Cluster Conservation</label>
+                            </p>
+                            <p>
+                                <input name="colorBy" type="radio" id="%GC" />
+                                <label for="%GC">%GC</label>
+                            </p>
+                            <p>
+                                <input name="colorBy" type="radio" id="Direction" />
+                                <label for="Direction">Direction</label>
+                            </p>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
                     <div class="switch">
-                        <td>
+                        <td colspan = 1 rowspan = 1>
                             <label>
-                                <input type="checkbox">
+                                <input type="checkbox" id="nucCon" checked>
                                 <span class="lever"></span>
                             </label>
                         </td>
                         <td>Nucleotide Conservation</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="switch">
+                        <td colspan = 1 rowspan = 1>
+                            <label>
+                                <input type="checkbox" id="phamNum" checked>
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Pham Number</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="switch">
+                        <td colspan = 1 rowspan = 1>
+                            <label>
+                                <input type="checkbox" id="predFun">
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Predicted Function</td>
                     </div>
                 </tr>
             </table>
