@@ -26,7 +26,6 @@ var key = function(d) {
   return d.phagename;
 };
 
-<<<<<<< Updated upstream
 getBlastAlignments = function(phages) {
   console.log("getting BLAST alignments for", phages);
   if (phages.length < 2) return;
@@ -55,8 +54,6 @@ getBlastAlignments = function(phages) {
   });
 };
 
-=======
->>>>>>> Stashed changes
 drawBlastAlignments = function (json) {
   //d3.json(jsonData, function(error, json) {
     //console.log(json);
@@ -620,7 +617,6 @@ var getclusters = function () {
       return a - b;
     });
     subClusterNames.forEach(function (subcluster, index, array) {
-<<<<<<< Updated upstream
       phageNames = Genomes.find({
         cluster: cluster,
         subcluster: subcluster
@@ -640,17 +636,14 @@ var getclusters = function () {
         var singletonated = singletonator(this)
         clusters.push(singletonated);
       });
-=======
-      phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
+
+      /*phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
       //console.log(phageNames);
-      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});
+      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});*/
     });
->>>>>>> Stashed changes
-
-
-  });
   return clusters;
-};
+
+  };
 
 Template.phages.helpers({
   clusters: function () { return getclusters(); },
