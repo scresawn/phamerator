@@ -704,7 +704,23 @@ Template.phages.events({
       }
     });
   },
+  
   "click .downloadGenomeMap": function (event, template) {
+    console.log("downloadGenomeMap clicked");
+
+      $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+
+
+      var svgData = $("#genome-map")[0].outerHTML;
+      var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = "phamerator_map.svg";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+  /*"click .downloadGenomeMap": function (event, template) {
     console.log("downloadGenomeMap clicked");
     svg = d3.select("#genome-map").select("svg");
       var a = d3.select("#genome-map").append("a").node();
@@ -713,7 +729,7 @@ Template.phages.events({
       a.href = 'data:application/octet-stream;base64,' + btoa(xml); // create data uri
       ev = document.createEvent("MouseEvents");
       ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      a.dispatchEvent(ev);
+      a.dispatchEvent(ev); */
   }
 });
 
