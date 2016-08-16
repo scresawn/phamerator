@@ -6,14 +6,14 @@
                 <tr>
                     <td>
                         <!-- Dropdown Trigger -->
-                        <a class='dropdown-button btn' href='' data-activates='dropdown1'>first sort by</a>
+                        <a class='dropdown-button btn' href='#' data-activates='dropdown1'>first sort by</a>
 
                         <!-- Dropdown Structure -->
                         <ul id='dropdown1' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="#">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">Name</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
                         </ul>
                     </td>
                     <td>
@@ -22,10 +22,10 @@
 
                         <!-- Dropdown Structure -->
                         <ul id='dropdown2' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="#">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="#">Name</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
                         </ul>
                     </td>
                 </tr>
@@ -54,7 +54,7 @@
             </table>
         </div>
         <div class="modal-footer">
-            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
     </div>
     <div class="row">
@@ -68,36 +68,16 @@
                     <li class="tab col s3"><a href="#genome-map">View Map</a></li>
                 </ul>
         </div>
-        <div id="phages-list" class="col s12">
 
-                <ul class="collapsible" data-collapsible="expandable">
+        <div id="phages-list" class = "col s12">
+            <a id = "clearSelection" class = "waves-effect waves-light btn">Clear Selection</a>
+                <ul class="collapsible" data-collapsible ="expandable">
                     {{#each clusters}}
-                        {{> cluster }}
+                        {{>cluster}}
                     {{/each}}
                 </ul>
-
-        <!--<ul id="cluster-cards">
-                #each clusters
-                    <div class="row">
-                    <li>
-                        <div class="col s12 l12 m12">
-                            <div class="card hoverable">
-                                <div class="card-content">
-                                    <span class="card-title">name</span>
-                                    <ul class="collapsible white" data-collapsible="expandable">
-                                        cluster
-                                    </ul>
-                                </div>
-                                <div class="card-action">
-                                    <a href="http://phagesdb.org/subclusters/name" target="_blank">name on PhagesDB</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    </div>
-                /each
-        </ul>-->
         </div>
+
         <div id="genome-map" class="col s12">
             <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
                 <a class="btn-floating btn-large waves-effect waves-light">
@@ -129,7 +109,7 @@
                 <label for="{{name}}">
                     {{name}}
                 </label>
-                <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
+                <!--<span class="badge">{{selectedCount name}}</span>-->
             </div>
             <div class="collapsible-body">
                 <div class="row">
