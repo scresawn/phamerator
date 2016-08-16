@@ -6,14 +6,14 @@
                 <tr>
                     <td>
                         <!-- Dropdown Trigger -->
-                        <a class='dropdown-button btn' href='#' data-activates='dropdown1'>first sort by</a>
+                        <a class='dropdown-button btn' href='' data-activates='dropdown1'>first sort by</a>
 
                         <!-- Dropdown Structure -->
                         <ul id='dropdown1' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Name</a></li>
                         </ul>
                     </td>
                     <td>
@@ -22,10 +22,10 @@
 
                         <!-- Dropdown Structure -->
                         <ul id='dropdown2' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#">Name</a></li>
                         </ul>
                     </td>
                 </tr>
@@ -54,7 +54,7 @@
             </table>
         </div>
         <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
     </div>
     <div class="row">
@@ -129,7 +129,7 @@
                 <label for="{{name}}">
                     {{name}}
                 </label>
-                <!--<span class="badge">{{selectedCount name}}</span>-->
+                <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
             </div>
             <div class="collapsible-body">
                 <div class="row">
