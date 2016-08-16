@@ -1,30 +1,32 @@
-/*
- d3.select('.determinate').style("width", function() {
- var phageCount = selectedGenomes.find().count();
- p = d3.selectAll(".phages")[0].length;
- console.log("p", p);
- percent = ((100 * p/phageCount).toString() + "%");
- console.log("setting progress bar %", percent);
- return percent;
- });
-*/
 var colorsys = require('colorsys');
+var pathset = [];
 
 selectedGenomes = new Meteor.Collection(null);
-
 
 Template.phages.onCreated(function() {
   //Meteor.subscribe('genomes');
   console.log("phages template created");
-
 });
+
+var tooltip = d3.select("body")
+  .append("div")
+  .style("z-index", "10")
+  .style("visibility", "hidden")
+  .style("background","lightcyan")
+  .style("width","150px")
+  .style("height", "30px")
+  .style("text-align", "center")
+  .style("position", "absolute")
+  .style("padding", "2px")
+  .style("font", "Arial")
+  .style("border-radius","8px");
 
 //in rendered callback
 var key = function(d) {
   return d.phagename;
 };
 
-getBlastAlignments = function(phages) {
+/*getBlastAlignments = function(phages) {
   console.log("getting BLAST alignments for", phages);
   if (phages.length < 2) return;
   s1 = phages[0].sequence;
@@ -50,39 +52,91 @@ getBlastAlignments = function(phages) {
       console.log("ERROR:", textStatus, errorThrown);
     }
   });
-};
+};*/
 
 drawBlastAlignments = function (json) {
-  console.log('drawing BLAST alignments');
   //d3.json(jsonData, function(error, json) {
-    console.log(json);
-    var data = function(hsps) {
-      var paths = Array();
-      hsps.forEach(function(value, index, myArray) {
-        var dataset = Array();
-        dataset.push({x: value.query_from/10, y: 180, evalue: value.evalue});
-        dataset.push({x: value.query_to/10, y: 180});
-        dataset.push({x: value.hit_to/10, y: 450});
-        dataset.push({x: value.hit_from/10, y: 450});
-        paths.push(dataset);
-      });
-      return paths;
-    };
+    //console.log(json);
+  pathset.length = 0;
 
-    var hsps = json.BlastOutput2.report.results.bl2seq[0].hits[0].hsps;
-    pathset = data(hsps);
-    var hsps = svg.selectAll(".hsps")
-      .data(pathset);
+  var data = function(queryName, subjectName, hsps) {
+    if (queryName === "" || subjectName === "") {return; }
+    console.log('drawing BLAST alignments for ', queryName, "and", subjectName);
+
+    var paths = Array();
+    hsps.forEach(function(value, index, myArray) {
+      var dataset = Array();
+      dataset.push({x: value.query_from/10, y: 180, id: queryName+subjectName+value.evalue+value.query_from+value.query_to,  queryName: queryName, subjectName: subjectName, evalue: value.evalue});
+      dataset.push({x: value.query_to/10, y: 180});
+      dataset.push({x: value.hit_to/10, y: 450});
+      dataset.push({x: value.hit_from/10, y: 450});
+
+      pathset.push(dataset);
+
+      /*if (pathset.filter(function(e, index, array) { return e[0] && e[0].id == dataset[0].id; },arg).length === 0) {
+        if (arg[0]) {
+          console.log(arg[0].id, dataset[0].id);
+        }
+        pathset.push(dataset);
+      }
+      else {
+        console.log("not adding " + e + " because already in " + dataset);
+      }*/
+      //path.push(dataset);
+    });
+    return paths;
+  };
+  if (json &&
+      json.BlastOutput2 &&
+      json.BlastOutput2.report &&
+      json.BlastOutput2.report.results &&
+      json.BlastOutput2.report.results.bl2seq[0] &&
+      json.BlastOutput2.report.results.bl2seq[0].hits[0] &&
+      json.BlastOutput2.report.results.bl2seq[0].hits[0].hsps) {
+        var blasthsps = json.BlastOutput2.report.results.bl2seq[0].hits[0].hsps;
+        var queryName = json.BlastOutput2.report.results.bl2seq[0].query_title;
+        var subjectName = json.BlastOutput2.report.results.bl2seq[0].hits[0].description[0].title;
+      }
+  else {
+    console.log("no valid json found");
+    var blasthsps = [];
+    var queryName = "";
+    var subjectName = "";
+    var query = "";
+  }
+  data(queryName, subjectName, blasthsps);
+  //console.log("pathset:", pathset);
+  var hsps = d3.select("svg").select("g#"+queryName).selectAll(".hsps")
+    .data(pathset, function (d) {
+      //console.log(d[0].id);
+      return d[0].id;
+    });
+
+  var hspsEnter = hsps.enter().append("g");
     var d3line2 = d3.svg.line()
-      .x(function(d) { return d.x; })
-      .y(function(d) { return d.y; })
+      .x(function(d) {
+        return d.x;
+      })
+      .y(function(d,i) {
+        return (d.y - 150);
+      })
       .interpolate("linear-closed");
-    hsps.enter()
-      .insert("svg:path", ":first-child")
+    hspsEnter
+      .insert("svg:path", ":first-child");
+      /*.attr("transform", function (d) {
+        var t = d3.transform(d3.select('#'+d[0].queryName).attr("transform")),
+          x = t.translate[0],
+          y = t.translate[1];
+          return "translate(" + x + "," + y + ")";
+      })*/
+      hsps.selectAll("path")
+      .classed("hsps", true)
       .on("mouseover", function(d){
-        d3.select(this).style("stroke", "gold");
+        d3.select(this).style("stroke", "black");
+        //d3.select(this).style("stroke-width", 3);
         //console.log(d);
         tooltip.html("e-value: " + d[0].evalue);
+        //tooltip.html(d[0].queryName + ":" + d[0].subjectName);
         tooltip.style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY - 28) + "px")
           .style("opacity", 1);
@@ -99,8 +153,8 @@ drawBlastAlignments = function (json) {
       .style("stroke", "black")
       .style("fill", function (d) {
         evalue = d[0].evalue.toString();
-        console.log("d:", d);
-        console.log("evalue:", evalue);
+        //console.log("d:", d);
+        //console.log("evalue:", evalue);
         array1 = evalue.split('e');
         exp = array1[array1.length - 1];
         exp = Math.abs(+exp);
@@ -108,11 +162,11 @@ drawBlastAlignments = function (json) {
         else {
           hue = exp / 200.0;
         }
-        console.log("hue", hue);
+        //console.log("hue", hue);
         hue = Math.min(hue, 0.75);
 
         hexcolor = colorsys.hsv_to_hex({ h: hue*360, s: 100, v: 100 });
-        console.log("hexcolor:", hexcolor);
+        //console.log("hexcolor:", hexcolor);
         return hexcolor;
       })
       .style("fill-opacity", 0.3);
@@ -120,353 +174,25 @@ drawBlastAlignments = function (json) {
     hsps//.on("mouseout", function(){d3.select(this).style("fill", "red");})
       .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
       .on("mouseout", function(){
-        d3.select(this).style("stroke", "black");
+        //d3.select(this).style("stroke", "black");
+        d3.select(this).style("stroke", "green");
         return tooltip.style("visibility", "hidden");
       });
 
-    var tooltip = d3.select("body")
-      .append("div")
-      .style("z-index", "10")
-      .style("visibility", "hidden")
-      .style("background","lightcyan")
-      .style("width","150px")
-      .style("height", "30px")
-      .style("text-align", "center")
-      .style("position", "absolute")
-      .style("padding", "2px")
-      .style("font", "Arial")
-      .style("border-radius","8px");
+  oldhsps = hsps.exit();
+  if (oldhsps.length > 0) {
+    tooltip.style("visibility", "hidden");
+    oldhsps.remove();
+  }
+  phage.order();
   //});
 
 };
 
-drawGenomeMap = function (svg) {
-  console.log("tracker autorun has rerun");
-  //d3.selectAll("#mappy").remove();
-
-  svg.attr("height", function(d) {return (selectedGenomes.find().count() * 300) });
-  svg.attr("width", function (d) {
-    return d3.max(selectedGenomes.find().fetch(), function(d) {
-      //console.log(d.genomelength);
-      return d.genomelength/10;
-    })
-  });
+//drawGenomeMap = function (svg) {
 
 
-
-
-  // Define the div for the tooltip
-  var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-  //d3.select('.determinate').style("width", "0%");
-
-  function x() {
-    console.log(d3.select(this).data());
-  };
-
-  var phage = svg.selectAll(".phages")
-    .data(function() {
-      pnames = selectedGenomes.find({},{phagename:1}).fetch().map(function(obj){ return obj.phagename;});
-      phages = Genomes.find({phagename: {$in: pnames}}, {sort: {cluster:1, phagename:1}});
-      //todo: get selected primary and secondary sort fields and ascending/descending
-      return phages.fetch();
-    }, key);
-
-  phage
-    .attr("transform", function (d, i) {
-      return "translate(0," + ((i * 300)+150) + ")";
-    });
-
-  var newPhages = phage.enter().append("g")
-    .classed("phages", true)
-    .attr("transform", function (d, i) {
-      return "translate(0," + ((i * 300)+150) + ")";
-    });
-
-  //newPhages.each(x);
-  getBlastAlignments(phages.fetch());
-
-  newPhages.append("text")
-    .attr("x", 0)
-    .attr("y", -120)
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "24px")
-    .attr("fill", "black")
-    .style("text-anchor", "start")
-    .text(function (d) {
-      return d.phagename;
-    })
-    .attr({"fill-opacity": 0})
-    .transition().delay(1500).duration(2000)
-    .attr({"fill-opacity": 1});
-
-    newPhages.append("rect") // background for ruler
-    .attr({
-      x: 0, y: 0, width: function (d) {
-        //console.log(d);
-        return d.genomelength / 10;
-      }, height: 30
-    })
-    .style({"stroke-width": "2px", "fill": "white", "stroke": "black"})
-    .attr("stroke-opacity", 0)
-    .transition().duration(1000)
-    .attr("stroke-opacity", 1);
-
-  var group = newPhages.selectAll(".thousandticks")
-    .data(function (d, i) {
-
-
-      ticks = [];
-        genome_positions = d3.range(d.genomelength);
-        genome_positions.forEach(function (currentValue, index, myArray) {
-          if (currentValue % 1000 === 0) {
-            ticks.push(currentValue);
-          }
-        });
-        return ticks;
-      }
-    )
-    .enter()
-    .append("g");
-  group.append("rect")
-    .style({"fill": "black"})
-    .attr({
-      x: function (d) {
-        return d / 10;
-      }, y: 0, width: "1px", height: 30
-    })
-    .attr({"fill-opacity": 0})
-    .transition().duration(1500)
-    .attr({"fill-opacity": 1});
-
-  group.append("text") // kbp label
-    .attr("x", function (d) {
-      return (d / 10) + 3;
-    })
-    .attr("y", 12)
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "14px")
-    .attr("fill", "green")
-    .style("text-anchor", "start")
-    .text(function (d) {
-      return d / 1000;
-    })
-    .attr({"fill-opacity": 0})
-    .transition().duration(1500)
-    .attr({"fill-opacity": 1});
-  var group2 = newPhages.selectAll(".fivehundredticks")
-    .data(function (d) {
-      ticks = [];
-      genome_positions = d3.range(d.genomelength);
-      genome_positions.forEach(function (currentValue, index, myArray) {
-        if (currentValue % 500 === 0 & currentValue % 1000 !== 0) {
-          ticks.push(currentValue);
-        }
-      });
-      return ticks;
-    })
-    .enter()
-    .append("g");
-  group2.append("rect")
-    .style({"fill": "black"})
-    .attr({
-      x: function (d) {
-        return d / 10;
-      }, y: 0, width: "1px", height: 15
-    })
-    .attr({"fill-opacity": 0})
-    .transition().duration(1500)
-    .attr({"fill-opacity": 1});
-  var group3 = newPhages.selectAll(".onehundredticks")
-    .data(function (d) {
-      ticks = [];
-      genome_positions = d3.range(d.genomelength);
-      genome_positions.forEach(function (currentValue, index, myArray) {
-        if (currentValue % 100 === 0 & currentValue % 1000 !== 0 & currentValue % 500 !== 0) {
-          ticks.push(currentValue);
-        }
-      });
-      return ticks;
-    })
-    .enter()
-    .append("g");
-  group3.append("rect")
-    .style({"fill": "black"})
-    .attr({
-      x: function (d) {
-        return d / 10;
-      }, y: 15, width: "1px", height: 15
-    })
-    .attr("fill-opacity", 0)
-    .transition().duration(1500)
-    .attr("fill-opacity", 1);
-
-  gene = newPhages.selectAll(".genes")
-    .data(function(d, i) { return d.genes;})
-    .enter()
-    .append("g").on("mouseover", function(d) {
-      nodedata = this.parentNode.__data__;
-      div.transition()
-        .duration(500)
-        .style("opacity", .9);
-      div	.html(nodedata.phagename + " gp" + d.name)
-
-      // the text of the tooltip ...
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-    })
-    .on("mouseout", function(d) {
-      div.transition()
-        .duration(500)
-        .style("opacity", 0);
-    });
-  gene_group_x = function(d) {
-    return (d.start)/10;
-  };
-  gene_group_y = function(d) {
-    //console.log(d);
-    if (d.direction == "forward") {
-      if (d.name % 2 === 0) {
-        return  -70;
-      }
-      else { return -30;}
-    }
-    else if (d.direction == "reverse") {
-      if (d.name % 2 === 0) {
-        return 30;
-      }
-      else { return 60;}
-    }
-  };
-
-  gene
-    .attr("transform", function (d) { return "translate(" + gene_group_x(d) + "," + gene_group_y(d) + ")"});
-  gene.append("rect")
-    .attr("height", function (d) {return 30;})
-    .style({"stroke":"black", "stroke-width": "2px"})
-    .attr("fill", function (d) {
-      return d.phamColor;
-    })
-    .attr("width", 0)
-    .transition()
-    .duration(1600)
-    .attr("width", function (d) { return (d.stop-d.start)/10; })
-
-  ;
-
-
-  /*domain = gene.selectAll(".domains")
-   .data(function(d, i) { return d.domains;})
-   .enter()
-   .append("g")
-   .on('click', function(d,i){
-   d3.select('#domain_header').text(d.description)
-   d3.select('#domain_body').text(d.description + " description could go here")
-
-   $('#modal1').openModal();
-   })
-   ;
-   domain.append("rect")
-   .attr("fill-opacity", 0)
-   .attr("height", function (d) {return 28;})
-   .attr("width", function (d) { return ((d.stop*3)-(d.start*3))/10; })
-   .attr("x", function(d) {return (d.start*3)/10; })
-   .attr("y", function (d) {
-   g = this.parentNode.parentNode.__data__;
-   if (g.direction == "forward") {
-   if (g.name % 2 === 0) {
-   return -78;
-   }
-   else { return -38;}
-   }
-   else if (g.direction == "reverse") {
-   if (g.name % 2 === 0) {
-   return 1;
-   }
-   else { return 1;}
-   }
-   })
-   .attr("fill", "orange")
-   .transition()
-   .duration(750)
-   .delay(3000)
-   .attr("fill-opacity", 0.9);*/
-
-  gene.append("text") // gene name
-    .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
-    .attr("y", function (d) {
-      if (d.direction == "forward") {
-        if (d.name % 2 === 0) { // forward and even
-          return 20;
-        }
-        else { return 20;} // forward and odd
-      }
-      else if (d.direction == "reverse") {
-        if (d.name % 2 === 0) { // reverse and even
-          return 20;
-        }
-        else { return 20;} //reverse and odd
-      }
-    })
-    .style({"text-anchor": "middle", "fill": "black"})
-    .attr("font-family", "Roboto")
-    .text(function(d) {return d.name})
-    .attr("fill-opacity", 0)
-    //.transition().delay(2000).duration(1500)
-    .attr("fill-opacity", 1)
-  ;
-
-  gene.append("text") // pham name
-    .style({"fill": "black"})
-    .attr("font-family", "Roboto")
-    .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
-    .attr("y", function (d) {
-      if (d.direction == "forward") {
-        if (d.name % 2 === 0) { // forward and even
-          return -10;
-        }
-        else { return -10;} // forward and odd
-      }
-      else if (d.direction == "reverse") {
-        if (d.name % 2 === 0) { // reverse and even
-          return 50;
-        }
-        else { return 50;} //reverse and odd
-      }
-    })
-    .attr("text-anchor", function (d) {
-      if ((d.stop - d.start) < 500 && d.direction === "forward") {
-        return "start";
-      }
-      else if ((d.stop - d.start) < 500 && d.direction === "reverse") {
-        return "end";
-      }
-      else {
-        return "middle";
-      }
-    })
-    .attr("transform", function (d) {
-      if (d.stop - d.start < 500 && d.direction === "forward") {
-        return "rotate(-90," + (5+(Math.abs(d.stop-d.start))/2/10) +  ",-10)";
-      }
-      else if (d.stop - d.start < 500 && d.direction === "reverse") {
-        return "rotate(-90," + (d.stop-d.start)/2/10 + ",50)";
-      }
-      else {
-        return "rotate(0)";
-      }
-    })
-
-    .text(function(d) {return d.phamName})
-    .attr("fill-opacity", 0)
-    //.transition().delay(3500).duration(1500)
-    .attr("fill-opacity", 1);
-
-  phage.exit().remove();
-
-};
+//}; END DRAWGENOMEMAP
 
 Template.phages.onRendered(function () {
   console.log('phages rendered');
@@ -491,6 +217,7 @@ Template.phages.onRendered(function () {
       hover: true, // Activate on hover
       gutter: 0, // Spacing from edge
       belowOrigin: false, // Displays dropdown below the button
+      stoppropagation: true,
       alignment: 'left' // Displays dropdown with edge aligned to the left of button
     }
   );
@@ -498,23 +225,388 @@ Template.phages.onRendered(function () {
   //Meteor.subscribe('genomes');
   svg = d3.select("#genome-map")
     .append("svg");
+  svg.attr("id", "svg-genome-map")
 
   Tracker.autorun(function () {
-    setTimeout(drawGenomeMap(svg));
+    console.log("In tracker.autorun block");
+    if (typeof drawMapTimeout !== "undefined") { console.log("clearing timeout"); clearTimeout(drawMapTimeout); }
+    else { console.log("no timeout defined"); }
+    drawMapTimeout = setTimeout(function () {console.log("waiting...");}, 100);
+    //drawMapTimeout = setTimeout(drawGenomeMap(svg),15000);
     $("#preloader").fadeOut(300).hide();
+    console.log("tracker autorun has rerun");
+    console.log("in drawGenomeMap");
+    svg.attr("height", function(d) {return (selectedGenomes.find().count() * 300) });
+    svg.attr("width", function (d) {
+      return d3.max(selectedGenomes.find().fetch(), function(d) {
+        //console.log(d.genomelength);
+        return d.genomelength/10;
+      })
+    });
 
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+    phage = svg.selectAll(".phages")
+      .data(function() {
+        pnames = selectedGenomes.find({}, {sort: {phagename:1}}).fetch().map(function(obj){ return obj.phagename;});
+        phages = Genomes.find({phagename: {$in: pnames}}, {sort: {cluster:1, subcluster:1, phagename:1}});
+        //todo: get selected primary and secondary sort fields and ascending/descending
+        return phages.fetch();
+      }, key);
+
+    phage
+      .attr("transform", function (d, i) {
+        return "translate(0," + ((i * 300)+150) + ")";
+      });
+
+    newPhages = phage.enter().append("g")
+      .attr("id", function(d, i){ return d.phagename; })
+      .classed("phages", true)
+      .attr("transform", function (d, i) {
+        return "translate(0," + ((i * 300)+150) + ")";
+      });
+
+    //newPhages.each(x);
+    //phage.sort();
+    arse = phage.data();
+    console.log("phages:", arse);
+
+    arse.forEach( function(d, count, something2) {
+      if ((count+1) >= arse.length) {
+        //console.log("done alignmenting!");
+        return;
+      }
+      arseface = arse[count+1];
+      //console.log("getting alignment for", d.phagename, phages[i+1].phagename);
+      s1 = d.sequence;
+      s2 = arseface.sequence;
+      if (arse.length < 2) {
+        drawBlastAlignments([]);
+        return;
+      }
+      //s1 = phages[0].sequence;
+      //s2 = phages[1].sequence;
+      //myURL = "http://phage.csm.jmu.edu:8080/";
+      myURL = "http://localhost:8080/";
+      //console.log(myURL);
+      console.log("aligning", d.phagename, arseface.phagename);
+      $.ajax({
+        type: "POST",
+        method: "POST",
+        url: myURL,
+        data: {seq1: s1, seq2: s2, name1: d.phagename, name2: arseface.phagename},
+        dataType: 'json',
+        jsonp: false,
+        success: function (data) {
+          drawBlastAlignments(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log("ERROR:", textStatus, errorThrown);
+        }
+      });
+    });
+    //getBlastAlignments(phages.fetch());
+    //getBlastAlignments(selectedGenomes.find().fetch());
+
+
+    newPhages.append("text")
+      .attr("x", 0)
+      .attr("y", -120)
+      .classed("phagename", true)
+      .attr("font-family", "Arial")
+      .attr("font-size", "24px")
+      .attr("fill", "black")
+      .style("text-anchor", "start")
+      .text(function (d) {
+        if (d.cluster === "") {
+          return d.phagename + " (Singleton)";
+        }
+        return d.phagename + " (" + d.cluster + d.subcluster + ")";
+      })
+      .attr({"fill-opacity": 0})
+      .transition().delay(1500).duration(2000)
+      .attr({"fill-opacity": 1});
+
+    newPhages.append("rect") // background for ruler
+      .attr({
+        x: 0, y: 0, width: function (d) {
+          //console.log(d);
+          return d.genomelength / 10;
+        }, height: 30
+      })
+      .style({"stroke-width": "2px", "fill": "white", "stroke": "black"})
+      .attr("stroke-opacity", 0)
+      .transition().duration(1000)
+      .attr("stroke-opacity", 1);
+
+    var group = newPhages.selectAll(".thousandticks")
+      .data(function (d, i) {
+
+
+          ticks = [];
+          genome_positions = d3.range(d.genomelength);
+          genome_positions.forEach(function (currentValue, index, myArray) {
+            if (currentValue % 1000 === 0) {
+              ticks.push(currentValue);
+            }
+          });
+          return ticks;
+        }
+      )
+      .enter()
+      .append("g");
+    group.append("rect")
+      .style({"fill": "black"})
+      .attr({
+        x: function (d) {
+          return d / 10;
+        }, y: 0, width: "1px", height: 30
+      })
+      .attr({"fill-opacity": 0})
+      .transition().duration(1500)
+      .attr({"fill-opacity": 1});
+
+    group.append("text") // kbp label
+      .attr("x", function (d) {
+        return (d / 10) + 3;
+      })
+      .attr("y", 12)
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "14px")
+      .attr("fill", "green")
+      .style("text-anchor", "start")
+      .text(function (d) {
+        return d / 1000;
+      })
+      .attr({"fill-opacity": 0})
+      .transition().duration(1500)
+      .attr({"fill-opacity": 1});
+    var group2 = newPhages.selectAll(".fivehundredticks")
+      .data(function (d) {
+        ticks = [];
+        genome_positions = d3.range(d.genomelength);
+        genome_positions.forEach(function (currentValue, index, myArray) {
+          if (currentValue % 500 === 0 & currentValue % 1000 !== 0) {
+            ticks.push(currentValue);
+          }
+        });
+        return ticks;
+      })
+      .enter()
+      .append("g");
+    group2.append("rect")
+      .style({"fill": "black"})
+      .attr({
+        x: function (d) {
+          return d / 10;
+        }, y: 0, width: "1px", height: 15
+      })
+      .attr({"fill-opacity": 0})
+      .transition().duration(1500)
+      .attr({"fill-opacity": 1});
+    var group3 = newPhages.selectAll(".onehundredticks")
+      .data(function (d) {
+        ticks = [];
+        genome_positions = d3.range(d.genomelength);
+        genome_positions.forEach(function (currentValue, index, myArray) {
+          if (currentValue % 100 === 0 & currentValue % 1000 !== 0 & currentValue % 500 !== 0) {
+            ticks.push(currentValue);
+          }
+        });
+        return ticks;
+      })
+      .enter()
+      .append("g");
+    group3.append("rect")
+      .style({"fill": "black"})
+      .attr({
+        x: function (d) {
+          return d / 10;
+        }, y: 15, width: "1px", height: 15
+      })
+      .attr("fill-opacity", 0)
+      .transition().duration(1500)
+      .attr("fill-opacity", 1);
+
+    gene = newPhages.selectAll(".genes")
+      .data(function(d, i) { return d.genes;})
+      .enter()
+      .append("g").on("mouseover", function(d) {
+        nodedata = this.parentNode.__data__;
+        div.transition()
+          .duration(500)
+          .style("opacity", .9);
+        div	.html(nodedata.phagename + " gp" + d.name)
+
+        // the text of the tooltip ...
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+    gene_group_x = function(d) {
+      return (d.start)/10;
+    };
+    gene_group_y = function(d) {
+      //console.log(d);
+      if (d.direction == "forward") {
+        if (d.name % 2 === 0) {
+          return  -70;
+        }
+        else { return -30;}
+      }
+      else if (d.direction == "reverse") {
+        if (d.name % 2 === 0) {
+          return 30;
+        }
+        else { return 60;}
+      }
+    };
+
+    gene
+      .attr("transform", function (d) { return "translate(" + gene_group_x(d) + "," + gene_group_y(d) + ")"});
+    gene.append("rect")
+      .attr("height", function (d) {return 30;})
+      .style({"stroke":"black", "stroke-width": "2px"})
+      .attr("fill", function (d) {
+        return d.phamColor;
+      })
+      .attr("width", 0)
+      .transition()
+      .duration(1600)
+      .attr("width", function (d) { return (d.stop-d.start)/10; })
+
+    ;
+
+
+    /*domain = gene.selectAll(".domains")
+     .data(function(d, i) { return d.domains;})
+     .enter()
+     .append("g")
+     .on('click', function(d,i){
+     d3.select('#domain_header').text(d.description)
+     d3.select('#domain_body').text(d.description + " description could go here")
+
+     $('#modal1').openModal();
+     })
+     ;
+     domain.append("rect")
+     .attr("fill-opacity", 0)
+     .attr("height", function (d) {return 28;})
+     .attr("width", function (d) { return ((d.stop*3)-(d.start*3))/10; })
+     .attr("x", function(d) {return (d.start*3)/10; })
+     .attr("y", function (d) {
+     g = this.parentNode.parentNode.__data__;
+     if (g.direction == "forward") {
+     if (g.name % 2 === 0) {
+     return -78;
+     }
+     else { return -38;}
+     }
+     else if (g.direction == "reverse") {
+     if (g.name % 2 === 0) {
+     return 1;
+     }
+     else { return 1;}
+     }
+     })
+     .attr("fill", "orange")
+     .transition()
+     .duration(750)
+     .delay(3000)
+     .attr("fill-opacity", 0.9);*/
+
+    gene.append("text") // gene name
+      .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
+      .attr("y", function (d) {
+        if (d.direction == "forward") {
+          if (d.name % 2 === 0) { // forward and even
+            return 20;
+          }
+          else { return 20;} // forward and odd
+        }
+        else if (d.direction == "reverse") {
+          if (d.name % 2 === 0) { // reverse and even
+            return 20;
+          }
+          else { return 20;} //reverse and odd
+        }
+      })
+      .style({"text-anchor": "middle", "fill": "black"})
+      .attr("font-family", "Roboto")
+      .text(function(d) {return d.name})
+      .attr("fill-opacity", 0)
+      //.transition().delay(2000).duration(1500)
+      .attr("fill-opacity", 1)
+    ;
+
+    gene.append("text") // pham name
+      .style({"fill": "black"})
+      .attr("font-family", "Roboto")
+      .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
+      .attr("y", function (d) {
+        if (d.direction == "forward") {
+          if (d.name % 2 === 0) { // forward and even
+            return -10;
+          }
+          else { return -10;} // forward and odd
+        }
+        else if (d.direction == "reverse") {
+          if (d.name % 2 === 0) { // reverse and even
+            return 50;
+          }
+          else { return 50;} //reverse and odd
+        }
+      })
+      .attr("text-anchor", function (d) {
+        if ((d.stop - d.start) < 500 && d.direction === "forward") {
+          return "start";
+        }
+        else if ((d.stop - d.start) < 500 && d.direction === "reverse") {
+          return "end";
+        }
+        else {
+          return "middle";
+        }
+      })
+      .attr("transform", function (d) {
+        if (d.stop - d.start < 500 && d.direction === "forward") {
+          return "rotate(-90," + (5+(Math.abs(d.stop-d.start))/2/10) +  ",-10)";
+        }
+        else if (d.stop - d.start < 500 && d.direction === "reverse") {
+          return "rotate(-90," + (d.stop-d.start)/2/10 + ",50)";
+        }
+        else {
+          return "rotate(0)";
+        }
+      })
+
+      .text(function(d) {return d.phamName})
+      .attr("fill-opacity", 0)
+      //.transition().delay(3500).duration(1500)
+      .attr("fill-opacity", 1);
+
+    phage.exit().remove();
+    if (selectedGenomes.find().count() !== 0) {setTimeout(Materialize.toast('genome map updated!', 1500), 500)}
   });
   //Materialize.showStaggeredList('#cluster-cards')
 });
 
 var getclusters = function () {
-  console.log("tracker autorun has rerun");
+
+  console.log("getting clusters...");
   Session.get("selections");
   var clusters = [];
 
   // get an array of all unique cluster names
   clusterNames = _.uniq(Genomes.find({}, {
-    sort: {cluster: 1}, fields: {cluster: true}
+    sort: {cluster: 1}, fields: {cluster: true}, reactive: false
   }).fetch().map(function (x) {
     return x.cluster;
   }), true);
@@ -524,7 +616,7 @@ var getclusters = function () {
   clusterNames.forEach(function (cluster, index, array) {
     //console.log(cluster);
     subClusterNames = _.uniq(Genomes.find({cluster: cluster}, {
-      fields: {subcluster: true}
+      fields: {subcluster: true}, reactive: false
     }).fetch().map(function (x) {
       //return {'cluster': x.cluster, 'subcluster': x.subcluster, 'phagename': x.phagename};
       return x.subcluster;
@@ -538,10 +630,10 @@ var getclusters = function () {
       phageNames = Genomes.find({
         cluster: cluster,
         subcluster: subcluster
-      }, {fields: {phagename: true}}).fetch().map(function (x) {
+      }, {fields: {phagename: true}, reactive: false}).fetch().map(function (x) {
         return x.phagename
       });
-      console.log(phageNames);
+      //console.log(phageNames);
       var singletonator = function () {
         if (cluster === "") {
           return {"name": "Singletons", "cluster": "", "subcluster": "", phageNames: phageNames}
@@ -555,10 +647,13 @@ var getclusters = function () {
         clusters.push(singletonated);
       });
 
-
-  });
+      /*phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
+      //console.log(phageNames);
+      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});*/
+    });
   return clusters;
-};
+
+  };
 
 Template.phages.helpers({
   clusters: function () { return getclusters(); },
@@ -568,10 +663,11 @@ Template.phages.helpers({
 Template.phages.events({
 
   "change .clusterCheckbox": function (event, template) {
+    console.log(selectedGenomes.find().count());
+    if (event.target.checked) {Materialize.toast('drawing genome map...', 1000)}
     console.log("cluster checkbox checked: ", event.target.id);
-    console.log(event.target["id"]);
-    console.log();
-    console.log(event.target.getAttribute("data-subcluster"));
+    pathset.length = 0;
+
     $("#preloader").show(function () {
       if (event.target.id !== "Singletons") {
         clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
@@ -579,23 +675,31 @@ Template.phages.events({
       else {
         clusterGenomes = Genomes.find({cluster: "", subcluster: ""}).fetch();
       }
-      clusterGenomes.forEach( function (element, index, array) {
-        if (event.target.checked) {
-          console.log("I should be selecting", element);
-          selectedGenomes.upsert({phagename: element.phagename}, {
-            phagename: element.phagename,
-            genomelength: element.genomelength,
-            cluster: element.cluster,
-            subcluster: element.subcluster
+      clusterPhageNames = clusterGenomes.map(function (obj) {return obj.phagename});
+      Meteor.subscribe("genomesWithSeq", clusterPhageNames, {
+        onReady: function () {
+          clusterGenomes.forEach( function (element, index, array) {
+            if (event.target.checked) {
+
+              //console.log("I should be selecting", element);
+              selectedGenomes.upsert({phagename: element.phagename}, {
+                phagename: element.phagename,
+                genomelength: element.genomelength,
+                cluster: element.cluster,
+                subcluster: element.subcluster
+              });
+            }
+            else {
+              selectedGenomes.remove({phagename: element.phagename});
+            }
           });
         }
-        else {
-          selectedGenomes.remove({phagename: element.phagename});
-        }
       });
+
     });
   },
   "change .phageCheckbox": function (event, template) {
+    pathset.length = 0;
     $("#preloader").show(function () {
       // get a list of all phagenames on the client
       phagename = event.target.id.split("-")[0];
@@ -603,23 +707,44 @@ Template.phages.events({
       //Session.set("selections", selections++);
 
       // if user just selected a phage, it doesn't yet exist on the client but should
-      if (event.target.checked) {
-        console.log(phagename, 'was selected');
-        p = Genomes.findOne({phagename:phagename});
-        selectedGenomes.upsert({phagename:p.phagename}, {
-          phagename:p.phagename,
-          genomelength:p.genomelength});
-
-      }
-      // if user just unselected a phage, it exists on the client but shouldn't
-      else {
-        console.log(phagename, 'was unselected');
-        //Genomes.update({"phagename":phagename},{selected: false});
-        selectedGenomes.remove({"phagename":phagename});
-      }
+      Meteor.subscribe("genomesWithSeq", [phagename], {
+        onReady: function () {
+          if (event.target.checked) {
+            console.log(phagename, 'was selected');
+            p = Genomes.findOne({phagename: phagename});
+            selectedGenomes.upsert({phagename: p.phagename}, {
+              phagename: p.phagename,
+              genomelength: p.genomelength,
+              cluster: p.cluster,
+              subcluster: p.subcluster
+            });
+          }
+          // if user just unselected a phage, it exists on the client but shouldn't
+          else {
+            console.log(phagename, 'was unselected');
+            //Genomes.update({"phagename":phagename},{selected: false});
+            selectedGenomes.remove({"phagename":phagename});
+          }
+        }
+      });
     });
   },
+  
   "click .downloadGenomeMap": function (event, template) {
+    console.log("downloadGenomeMap clicked");
+
+      $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+
+      var svgData = $("#svg-genome-map")[0].outerHTML;
+      var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = "phamerator_map.svg";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+  /*"click .downloadGenomeMap": function (event, template) {
     console.log("downloadGenomeMap clicked");
     svg = d3.select("#genome-map").select("svg");
       var a = d3.select("#genome-map").append("a").node();
@@ -628,7 +753,7 @@ Template.phages.events({
       a.href = 'data:application/octet-stream;base64,' + btoa(xml); // create data uri
       ev = document.createEvent("MouseEvents");
       ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      a.dispatchEvent(ev);
+      a.dispatchEvent(ev); */
   }
 });
 
@@ -646,4 +771,31 @@ Template.registerHelper('clusterIsChecked',function(cluster, subcluster) {
 
 Template.registerHelper('phageIsChecked',function(input){
   return selectedGenomes.find({"phagename": input}).count() > 0;
+});
+
+Template.cluster.helpers({
+  selectedCount: function (cluster, subcluster) {
+    count = selectedGenomes.find({cluster: cluster, subcluster:subcluster}).count();
+    if ( count === 0) {
+      return "";
+    }
+    return count;
+  },
+  selectedClass: function(cluster, subcluster) {
+    count = selectedGenomes.find({cluster: cluster, subcluster:subcluster}).count();
+    if ( count === 0) {
+      return "badge";
+    }
+    return "new badge";
+  },
+  dataBadgeCaption: function(cluster, subcluster) {
+    count = selectedGenomes.find({cluster: cluster, subcluster:subcluster}).count();
+    if ( count === 0) {
+      return "";
+    }
+    else if ( count === 1) {
+      return "selected genome";
+    }
+    return "selected genomes";
+  }
 });

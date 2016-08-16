@@ -1,6 +1,15 @@
-Genomes = new Meteor.Collection("genomes");
+Meteor.startup(function () {
+  // The correct way
 
-var Schemas = {};
+  console.log("grounding genomes collection");
+  //Genomes = new Ground.Collection("genomes");
+
+//Genomes = new Ground.Collection("genomes");
+  Genomes = new Meteor.Collection("genomes");
+
+  if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
+
+  var Schemas = {};
 
 Schemas.Genome = new SimpleSchema({
   name: {
@@ -50,7 +59,8 @@ Schemas.Genome = new SimpleSchema({
   }
 });
 
-Genomes.attachSchema(Schemas.Genome);
+  Genomes.attachSchema(Schemas.Genome);
+});
 
 Images = new FilesCollection({
   collectionName: 'Images',
