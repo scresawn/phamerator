@@ -68,14 +68,15 @@
                     <li class="tab col s3"><a href="#genome-map">View Map</a></li>
                 </ul>
         </div>
+        
         <div id="phages-list" class="col s12">
-
-                <ul class="collapsible" data-collapsible="expandable">
-                    {{#each clusters}}
-                        {{> cluster }}
-                    {{/each}}
-                </ul>
-
+            <a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>
+            <ul class="collapsible" data-collapsible="expandable">
+                {{#each clusters}}
+                    {{> cluster }}
+                {{/each}}
+            </ul>
+        </div>
         <!--<ul id="cluster-cards">
                 #each clusters
                     <div class="row">
@@ -97,7 +98,7 @@
                     </div>
                 /each
         </ul>-->
-        </div>
+        
         <div id="genome-map" class="col s12">
             <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
                 <a class="btn-floating btn-large waves-effect waves-light">
