@@ -754,7 +754,11 @@ Template.phages.events({
       ev = document.createEvent("MouseEvents");
       ev.initMouseEvent("click", true, false, self, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       a.dispatchEvent(ev); */
-  }
+  },
+  "click #clearSelection": function (event, template){
+        console.log("clearSelection clicked");
+        selectedGenomes.remove({});
+    }
 });
 
 Template.registerHelper('clusterIsChecked',function(cluster, subcluster) {
