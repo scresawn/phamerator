@@ -20,7 +20,7 @@ Router.map(function() {
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return subscriptions.subscribe('genomes');
+      return Meteor.subscribe('genomes');
     },
     //subscriptions: function() {
       // returning a subscription handle or an array of subscription handles

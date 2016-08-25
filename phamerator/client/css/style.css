@@ -49,6 +49,10 @@ label {
     font-family: Arial;
 }
 
+.hp {
+    font-family: HarryPotter;
+}
+
 header,
 main,
 footer {

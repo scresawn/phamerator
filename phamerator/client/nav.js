@@ -1,3 +1,5 @@
+//import "/imports/startup/server/mail-url.js";
+
 Template.nav.rendered = function () {
   $(".button-collapse").sideNav({
     menuWidth: 240, // Default is 240
@@ -17,6 +19,24 @@ Template.nav.rendered = function () {
   Meteor.startup(function() {
     // Here we can be sure the plugin has been initialized
     //if (Meteor.isCordova) { alert("start saving your pennies")}
-    if (Meteor.isCordova) {alert(navigator.connection.type)};
+
+    if (Meteor.isCordova) {
+      if (navigator.connection.type !== 'wifi') {
+        $('#connectionWarning').openModal();
+
+      }
+    }
+
+    document.addEventListener("online", onOnline, false);
+
+    function onOnline() {
+      // Handle the online event
+      if (Meteor.isCordova) {
+        if (navigator.connection.type !== 'wifi') {
+          $('#connectionWarning').openModal();
+
+        }
+      }
+    }
   });
 };

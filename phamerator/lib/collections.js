@@ -64,6 +64,7 @@ Schemas.Genome = new SimpleSchema({
 
 Images = new FilesCollection({
   collectionName: 'Images',
+  storagePath: '/data/phamerator/uploads',
   allowClientCode: false, // Disallow remove files from Client
   onBeforeUpload: function (file) {
     console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));

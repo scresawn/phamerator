@@ -18,3 +18,7 @@ Meteor.publish("genomesWithSeq", function (selectedGenomes) {
 Meteor.publish('files.images.all', function () {
   return Images.collection.find({});
 });
+
+Meteor.publish('selectedData', function() {
+  return Meteor.users.find({_id: this.userId}, {fields: {selectedData: 1}});
+});

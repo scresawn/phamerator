@@ -6,6 +6,28 @@ selectedGenomes = new Meteor.Collection(null);
 Template.phages.onCreated(function() {
   //Meteor.subscribe('genomes');
   console.log("phages template created");
+  Meteor.startup(function () {
+    Meteor.subscribe('selectedData', function () {
+      names = Meteor.user().selectedData.genomeMaps;
+      Meteor.subscribe("genomesWithSeq", names);
+      console.log("names:", names);
+      names.forEach(function(value, index, myArray) {
+        console.log("value:", value);
+        xx = Genomes.find({phagename: value}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1}}).fetch();
+        console.log("xx:", xx);
+        xx.forEach(function(p, i, a) {
+          console.log("restoring saved", p);
+          selectedGenomes.upsert({phagename: p.phagename}, {
+            phagename: p.phagename,
+            genomelength: p.genomelength,
+            cluster: p.cluster,
+            subcluster: p.subcluster
+          });
+        });
+      });
+    });
+
+  });
 });
 
 var tooltip = d3.select("body")
@@ -112,7 +134,7 @@ drawBlastAlignments = function (json) {
       return d[0].id;
     });
 
-  var hspsEnter = hsps.enter().append("g");
+  var hspsEnter = hsps.enter().insert("g", ":first-child");
     var d3line2 = d3.svg.line()
       .x(function(d) {
         return d.x;
@@ -184,8 +206,9 @@ drawBlastAlignments = function (json) {
     tooltip.style("visibility", "hidden");
     oldhsps.remove();
   }
-  phage.order();
   //});
+  //phage.order();
+  //d3.select("svg").select("g#"+queryName).selectAll("g").order();
 
 };
 
@@ -271,19 +294,19 @@ Template.phages.onRendered(function () {
 
     //newPhages.each(x);
     //phage.sort();
-    arse = phage.data();
-    console.log("phages:", arse);
+    phagedata = phage.data();
+    console.log("phages:", phagedata);
 
-    arse.forEach( function(d, count, something2) {
-      if ((count+1) >= arse.length) {
+    phagedata.forEach( function(d, count, something2) {
+      if ((count+1) >= phagedata.length) {
         //console.log("done alignmenting!");
         return;
       }
-      arseface = arse[count+1];
+      subject = phagedata[count+1];
       //console.log("getting alignment for", d.phagename, phages[i+1].phagename);
       s1 = d.sequence;
-      s2 = arseface.sequence;
-      if (arse.length < 2) {
+      s2 = subject.sequence;
+      if (phagedata.length < 2) {
         drawBlastAlignments([]);
         return;
       }
@@ -292,12 +315,12 @@ Template.phages.onRendered(function () {
       //myURL = "http://phage.csm.jmu.edu:8080/";
       myURL = "http://localhost:8080/";
       //console.log(myURL);
-      console.log("aligning", d.phagename, arseface.phagename);
+      console.log("aligning", d.phagename, subject.phagename);
       $.ajax({
         type: "POST",
         method: "POST",
         url: myURL,
-        data: {seq1: s1, seq2: s2, name1: d.phagename, name2: arseface.phagename},
+        data: {seq1: s1, seq2: s2, name1: d.phagename, name2: subject.phagename},
         dataType: 'json',
         jsonp: false,
         success: function (data) {
@@ -593,8 +616,11 @@ Template.phages.onRendered(function () {
       .attr("fill-opacity", 1);
 
     phage.exit().remove();
+    phage.order();
+
     if (selectedGenomes.find().count() !== 0) {setTimeout(Materialize.toast('genome map updated!', 1500), 500)}
   });
+
   //Materialize.showStaggeredList('#cluster-cards')
 });
 
@@ -655,14 +681,22 @@ var getclusters = function () {
 
   };
 
+updateSessionStore = function () {
+  console.log('updating selected data');
+  console.log('names:', selectedGenomes.find({}, {fields: {phagename: 1}}).fetch().map(function (p) {return p.phagename;}));
+  Meteor.user().selectedData['genomeMaps'] = selectedGenomes.find({}, {fields: {phagename: 1}}).fetch().map(function (p) {return p.phagename;});
+};
+
 Template.phages.helpers({
   clusters: function () { return getclusters(); },
-  selectedGenomes: selectedGenomes
+  selectedGenomes: selectedGenomes,
+
 });
 
 Template.phages.events({
 
   "change .clusterCheckbox": function (event, template) {
+    console.log("event", event.target.checked);
     console.log(selectedGenomes.find().count());
     if (event.target.checked) {Materialize.toast('drawing genome map...', 1000)}
     console.log("cluster checkbox checked: ", event.target.id);
@@ -687,10 +721,13 @@ Template.phages.events({
                 genomelength: element.genomelength,
                 cluster: element.cluster,
                 subcluster: element.subcluster
-              });
+              }, function () {
+                  Meteor.call('updateSelectedData', element.phagename, true);
+                });
             }
             else {
-              selectedGenomes.remove({phagename: element.phagename});
+              console.log('removing', element.phagename);
+              selectedGenomes.remove({phagename: element.phagename}, function () { Meteor.call('updateSelectedData', element.phagename, false); });
             }
           });
         }
@@ -717,13 +754,13 @@ Template.phages.events({
               genomelength: p.genomelength,
               cluster: p.cluster,
               subcluster: p.subcluster
-            });
+            }, function () { Meteor.call('updateSelectedData', phagename, true); });
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
             console.log(phagename, 'was unselected');
             //Genomes.update({"phagename":phagename},{selected: false});
-            selectedGenomes.remove({"phagename":phagename});
+            selectedGenomes.remove({"phagename":phagename},function () { Meteor.call('updateSelectedData', phagename, false); });
           }
         }
       });

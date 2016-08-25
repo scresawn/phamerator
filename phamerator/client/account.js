@@ -52,7 +52,6 @@ Template.uploadForm.events({
         }
         template.currentUpload.set(false);
       });
-
       upload.start();
     }
   }
