@@ -157,7 +157,8 @@ drawBlastAlignments = function (json) {
         d3.select(this).style("stroke", "black");
         //d3.select(this).style("stroke-width", 3);
         //console.log(d);
-        tooltip.html("e-value: " + d[0].evalue);
+         tooltip.html("e-value:" + d[0].evalue.toExponential(3));
+          console.log(d[0].evalue.toExponential(3));
         //tooltip.html(d[0].queryName + ":" + d[0].subjectName);
         tooltip.style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY - 28) + "px")
