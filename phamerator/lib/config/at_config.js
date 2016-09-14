@@ -1,8 +1,6 @@
 AccountsTemplates.removeField('email');
 AccountsTemplates.removeField('password');
 
-
-
 AccountsTemplates.addField({
   _id: 'name',
   type: 'text',
@@ -27,11 +25,8 @@ AccountsTemplates.addField({
           self.setError(userExists);
         self.setValidating(false);
       });
-      return;
     }
-    // Server
-    return Meteor.call("userExists", value);
-  },
+  }
 });
 
 AccountsTemplates.addField({
@@ -51,7 +46,7 @@ AccountsTemplates.addField({
   minLength: 8,
   //re: /(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
   re: /^(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*$/,
-  errStr: 'Must contain at least 1 digit, 1 lowercase, and 1 uppercase character',
+  errStr: 'Must contain at least 1 digit, 1 symbol, 1 lowercase, and 1 uppercase character'
 });
 
 // Options

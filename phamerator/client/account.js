@@ -2,12 +2,11 @@
  * Created by steve on 3/30/16.
  */
 
-
-
 Template.account.onRendered(function () {
   Meteor.subscribe('files.images.all');
+  Meteor.subscribe('fullname');
   //this.Images = new FilesCollection({collectionName: 'Images'});
-
+  Materialize.fadeInImage('#profilepic')
 });
 
 Template.account.helpers({
@@ -16,6 +15,9 @@ Template.account.helpers({
   },
   username: function() {
     return Meteor.user() ? Meteor.user().username : null;
+  },
+  name: function () {
+    return Meteor.user() ? Meteor.user().name : null;
   }
 });
 
@@ -59,7 +61,15 @@ Template.uploadForm.events({
 
 Template.file.helpers({
   imageFile: function () {
-    return Images.collection.findOne({_id: Meteor.user().profile.profilePic});
+    profilePic = Images.collection.findOne({_id: Meteor.user().profile.profilePic});
+    if ( typeof profilePic !== 'undefined') {
+      console.log(profilePic);
+      return profilePic;
+    }
+    else {
+      console.log("no profilePic found");
+      return "";
+    }
   },
   videoFile: function () {
     return Videos.collection.findOne({});

@@ -4,6 +4,16 @@ var pathset = [];
 selectedGenomes = new Meteor.Collection(null);
 
 Template.phages.onCreated(function() {
+  Meteor.call('getclusters', function(error, result) {
+
+    if (typeof error !== 'undefined') {
+      console.log('error getting clusters:', error);
+    }
+    else {
+      Session.set('myMethodResult', result);
+    }
+  });
+
   //Meteor.subscribe('genomes');
   console.log("phages template created");
   Meteor.startup(function () {
@@ -26,7 +36,6 @@ Template.phages.onCreated(function() {
         });
       });
     });
-
   });
 });
 
@@ -158,7 +167,7 @@ drawBlastAlignments = function (json) {
         //d3.select(this).style("stroke-width", 3);
         //console.log(d);
          tooltip.html("e-value:" + d[0].evalue.toExponential(3));
-          console.log(d[0].evalue.toExponential(3));
+          //console.log(d[0].evalue.toExponential(3));
         //tooltip.html(d[0].queryName + ":" + d[0].subjectName);
         tooltip.style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY - 28) + "px")
@@ -220,9 +229,6 @@ drawBlastAlignments = function (json) {
 
 Template.phages.onRendered(function () {
   console.log('phages rendered');
-
-
-
   $("#preloader").hide();
   $(document).ready(function(){
     $('ul.tabs').tabs();
@@ -253,9 +259,9 @@ Template.phages.onRendered(function () {
 
   Tracker.autorun(function () {
     console.log("In tracker.autorun block");
-    if (typeof drawMapTimeout !== "undefined") { console.log("clearing timeout"); clearTimeout(drawMapTimeout); }
-    else { console.log("no timeout defined"); }
-    drawMapTimeout = setTimeout(function () {console.log("waiting...");}, 100);
+    //if (typeof drawMapTimeout !== "undefined") { console.log("clearing timeout"); clearTimeout(drawMapTimeout); }
+    //else { console.log("no timeout defined"); }
+    //drawMapTimeout = setTimeout(function () {console.log("waiting...");}, 1000);
     //drawMapTimeout = setTimeout(drawGenomeMap(svg),15000);
     $("#preloader").fadeOut(300).hide();
     console.log("tracker autorun has rerun");
@@ -314,7 +320,9 @@ Template.phages.onRendered(function () {
       //s1 = phages[0].sequence;
       //s2 = phages[1].sequence;
       //myURL = "http://phage.csm.jmu.edu:8080/";
-      myURL = "http://localhost:8080/";
+      myURL = "http://phamerator.org:3000/";
+      //myURL = "http://phamerator.org:8080/";
+      //myURL = "http://localhost:8080/";
       //console.log(myURL);
       console.log("aligning", d.phagename, subject.phagename);
       $.ajax({
@@ -489,7 +497,7 @@ Template.phages.onRendered(function () {
         if (d.name % 2 === 0) {
           return 30;
         }
-        else { return 60;}
+        else { return 70;}
       }
     };
 
@@ -563,7 +571,7 @@ Template.phages.onRendered(function () {
         }
       })
       .style({"text-anchor": "middle", "fill": "black"})
-      .attr("font-family", "Roboto")
+      .attr("font-family", "Roboto-Regular")
       .text(function(d) {return d.name})
       .attr("fill-opacity", 0)
       //.transition().delay(2000).duration(1500)
@@ -572,7 +580,7 @@ Template.phages.onRendered(function () {
 
     gene.append("text") // pham name
       .style({"fill": "black"})
-      .attr("font-family", "Roboto")
+      .attr("font-family", "Roboto-Regular")
       .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
       .attr("y", function (d) {
         if (d.direction == "forward") {
@@ -619,13 +627,12 @@ Template.phages.onRendered(function () {
     phage.exit().remove();
     phage.order();
 
-    if (selectedGenomes.find().count() !== 0) {setTimeout(Materialize.toast('genome map updated!', 1500), 500)}
+    //if (selectedGenomes.find().count() !== 0) {setTimeout(Materialize.toast('genome map updated!', 1500), 500)}
   });
-
-  //Materialize.showStaggeredList('#cluster-cards')
 });
 
-var getclusters = function () {
+//clusters = Meteor.call('getclusters');
+/*var getclusters = function () {
 
   console.log("getting clusters...");
   Session.get("selections");
@@ -637,7 +644,7 @@ var getclusters = function () {
   }).fetch().map(function (x) {
     return x.cluster;
   }), true);
-  //console.log("cluster names: ", clusterNames);
+  console.log("got cluster names");
 
   // for each cluster, get an array of unique subcluster names
   clusterNames.forEach(function (cluster, index, array) {
@@ -649,10 +656,11 @@ var getclusters = function () {
       return x.subcluster;
     }), false);
 
-    //console.log(cluster, subClusterNames);
+    console.log("got subclusters");
     subClusterNames.sort(function (a, b) {
       return a - b;
     });
+    console.log("sorted subclusters");
     subClusterNames.forEach(function (subcluster, index, array) {
       phageNames = Genomes.find({
         cluster: cluster,
@@ -660,7 +668,7 @@ var getclusters = function () {
       }, {fields: {phagename: true}, reactive: false}).fetch().map(function (x) {
         return x.phagename
       });
-      //console.log(phageNames);
+      console.log("got phage names");
       var singletonator = function () {
         if (cluster === "") {
           return {"name": "Singletons", "cluster": "", "subcluster": "", phageNames: phageNames}
@@ -670,17 +678,15 @@ var getclusters = function () {
         }
         };
         singletonator();
-        var singletonated = singletonator(this)
+        var singletonated = singletonator(this);
         clusters.push(singletonated);
       });
 
-      /*phageNames = Genomes.find({cluster: cluster, subcluster:subcluster}, {fields: {phagename: true}}).fetch().map(function (x) {return x.phagename});
-      //console.log(phageNames);
-      clusters.push({"name": cluster + subcluster, "cluster": cluster, "subcluster": subcluster, phageNames: phageNames});*/
+
     });
   return clusters;
 
-  };
+  };*/
 
 updateSessionStore = function () {
   console.log('updating selected data');
@@ -689,16 +695,17 @@ updateSessionStore = function () {
 };
 
 Template.phages.helpers({
-  clusters: function () { return getclusters(); },
-  selectedGenomes: selectedGenomes,
-
+  clusters: function() {
+    return Session.get('myMethodResult');
+  },
+  selectedGenomes: selectedGenomes
 });
 
 Template.phages.events({
 
   "change .clusterCheckbox": function (event, template) {
     console.log("event", event.target.checked);
-    console.log(selectedGenomes.find().count());
+    //console.log(selectedGenomes.find().count());
     if (event.target.checked) {Materialize.toast('drawing genome map...', 1000)}
     console.log("cluster checkbox checked: ", event.target.id);
     pathset.length = 0;
@@ -796,6 +803,7 @@ Template.phages.events({
   "click #clearSelection": function (event, template){
         console.log("clearSelection clicked");
         selectedGenomes.remove({});
+        Meteor.call('updateSelectedData', "", true)
     }
 });
 

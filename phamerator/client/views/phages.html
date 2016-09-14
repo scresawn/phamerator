@@ -71,7 +71,7 @@
         
         <div id="phages-list" class="col s12">
             <a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>
-            <ul class="collapsible" data-collapsible="expandable">
+            <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
                 {{#each clusters}}
                     {{> cluster }}
                 {{/each}}
@@ -110,11 +110,12 @@
                             <i class="material-icons left">system_update_alt</i>Export Genome Map
                         </button>
                     </li>
+                    <!--
                     <li>
                         <button data-target="mapsettings" class="btn modal-trigger settings waves-effect waves-purple btn-floating yellow">
                             <i class="material-icons left">settings</i>Genome Map Settings
                         </button>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
 

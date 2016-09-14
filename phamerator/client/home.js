@@ -6,7 +6,10 @@ Template.home.onCreated(function() {
 
 Template.home.onRendered(function () {
    $(document).ready(function(){
-       $('.carousel.carousel-slider').carousel({full_width: true});
+     h = $(document).height() - $('nav').height();
+     //console.log(h);
+     $('.carousel.carousel-slider').carousel({full_width: true});
+     $('.carousel.carousel-slider').height(h);
     });
   });
 

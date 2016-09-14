@@ -44,9 +44,29 @@ footer > .content {
             url("/fonts/HARRP___.TTF");
 }
 
+@font-face {
+    font-family: Roboto-Regular;
+    src:
+            url("/fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+    font-family: Roboto-Light;
+    src:
+            url("/fonts/Roboto-Light.ttf");
+}
+
+a, h1, h2 {
+    font-family: Roboto-Regular;
+}
+
+h3, h4, h5, p {
+    font-family: Roboto-Light;
+}
+
 label {
-    color:#000;
-    font-family: Arial;
+    opacity: 0.87;
+    font-family: Roboto-Regular;
 }
 
 .hp {
@@ -99,6 +119,42 @@ div.tooltip {
     top: 50%;
     display: none;
     transform: translateY(10%);
+}
+
+#profilepic {
+    opacity: 0;
+}
+
+.carousel_position {
+    height: auto;
+    position: relative;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 25px;
+    padding-left: 0px;
+}
+.acknowledgements_position {
+    padding-top: 25px;
+    padding-right: 80px;
+    padding-bottom: 10px;
+    padding-left: 80px;
+}
+.textAlignment {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+h6 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.ack_images {
+    margin: auto;
+    width: 50%;
 }
 
 @media only screen and (min-width: 601px) {

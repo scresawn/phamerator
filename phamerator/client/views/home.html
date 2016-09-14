@@ -1,104 +1,70 @@
 <template name = "home">
-    <head>
-        <style>
-            .carousel_position {
-                position: relative;
-                padding-top: 0px;
-                padding-right: 0px;
-                padding-bottom: 25px;
-                padding-left: 0px;
-            }
-            .acknowledgements_position {
-                padding-top: 25px;
-                padding-right: 80px;
-                padding-bottom: 10px;
-                padding-left: 80px;
-            }
-            .textAlignment {
-                margin-left: 25px;
-                margin-right: 25px;
-            }
-            h6 {
-                display: block;
-                font-size: 1.5em;
-                margin-top: 2.33em;
-                margin-bottom: 2.33em;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            img {
-                width: auto;
-                height: auto;
-                max-height: 75px;
-                max-width: 800px;
-            }
-            .ack_images {
-                margin: auto;
-                width: 50%;
-            }
-        </style>
-    </head>
+
     <body>
         <!--<div class = "container">-->
             <div class="carousel_position">
-                <div class="carousel carousel-slider center bottom" data-indicators="true">
-                    <div class="carousel-item red white-text" href="#one!">
+                <div class="carousel carousel-slider center" data-indicators="true">
+                    <div class="carousel-item indigo white-text" href="#one!">
                         <div class = "textAlignment">
-                            <h1>Welcome to Phamerator!</h1>
-                            <h6>You are using Phamerator, a comparative viral genomics platform developed for HHMI's SEA-PHAGES program. <br> <br> Swipe through the slides to find out more about how to create accounts, construct genome maps, and submit issue reports.</h6>
+                            <h1>Welcome to Phamerator</h1>
+                            <br>
+                                <h5>The comparative viral genomics platform for SEA-PHAGES</h5>
+                                <br>
+                                <h5>Swipe or click below to learn more</h5>
                         </div>
                     </div>
-                    <div class="carousel-item amber white-text" href="#two!">
-                        <div class = "textAlignment">
-                            <h1>Make an Account</h1>
-                            <h6>Please make an account with phamerator.org using your educational email. </h6>
-                            <ul>
-                                <li>Click on 'Sign In' on the left navigation bar.</li>
-                                <li>Create an account by clicking 'Register' and filling out the form.</li>
-                            </ul>
+                    <div class="carousel-item teal white-text" href="#two!">
+                        <div class="textAlignment">
+                            <h1>Accounts</h1>
+                            <i class="large material-icons">perm_identity</i>
+                            <h5>Make an account using your school email</h5>
+                            <br>
+                            <h5>We'll save your work automatically</h5>
                         </div>
                     </div>
                     <div class="carousel-item purple white-text" href="#three!">
                         <div class = "textAlignment">
-                            <h1>Construct a Genome Map</h1>
-                            <h6>Here are the steps to drawing a genome map:</h6>
-                            <ul>
-                                <li>Click on 'Genome Maps' to navigate to the phages page.</li>
-                                <li>Select an entire cluster by clicking on the check box by the cluster name. </li>
-                                <li>Click on a cluster bar to expand and view the phages in that cluster.</li>
-                                <li>Select individual phages by clicking on the check box by that phage's name.</li>
-                                <li>Click on 'View Map' to view an in browser scalable vector graphic (SVG) version of your genome map.</li>
-                            </ul>
+                            <h1>Genome Maps</h1>
+
+                            <i class="large material-icons">save</i>
+
+                            <h5>Select genomes individually or by subcluster</h5>
+                            <br>
+                            <h5>Download your maps for offline use</h5>
                         </div>
                     </div>
-                    <div class="carousel-item green white-text" href="#four!">
+                    <div class="carousel-item blue white-text" href="#four!">
                         <div class = "textAlignment">
-                            <h1>Features Coming Soon</h1>
-                            <h6>Watch out for the addition of these features in future updates: </h6>
-                            <ul>
-                                <li>click and drag map re-ordering</li>
-                                <li>pham table downloads</li>
-                                <li>conserved domains</li>
-                                <li>color by pham abundance</li>
-                                <li>color by GC content</li>
-                            </ul>
+                            <h1>Coming Soon</h1>
+                            <br>
+                            <h5>Mobile apps for Android and iOS</h5>
+                            <br>
+                            <h5>click and drag map re-ordering</h5>
+                            <br>
+                            <h5>pham table download</h5>
+                            <br>
+                            <h5>conserved domains</h5>
+                            <br>
+                            <h5>color by pham abundance</h5>
+                            <br>
+                            <h5>color by GC content</h5>
                         </div>
                     </div>
-                    <div class="carousel-item blue white-text" href="#five!">
+                    <div class="carousel-item green white-text" href="#five!">
                         <div class = "textAlignment">
                             <h1>Problems?</h1>
-                            <h6>We want to know! Please send us an issue report via Github. <br> Here are some known issues that we are already aware of and working to fix: </h6>
-                            <ul>
-                                <li>Downloading large SVG genome maps only works in Chrome and Firefox.</li>
-                                <li>Phages added to the main phage database since May 2016 are not present in this database version.</li>
-                            </ul>
+                            <i class="large material-icons">live_help</i>
+                            <h5>We want to know! Please send us an issue report via Github</h5>
+                            <br>
                             <a class="btn waves-effect white grey-text darken-text-2" href="https://github.com/scresawn/phamerator/issues">Submit a Github Bug Report</a>
                         </div>
                     </div>
                     <div class="carousel-item pink white-text" href="#six!">
                         <div class = "textAlignment">
-                            <h1>Acknowledgements</h1>
-                            <h6>The Cresawn Lab would like to thank the Howard Hughes Medical Institute, Dr. Graham Hatful and lab, the SEA-PHAGES program, and James Madison University.</h6>
+                            <h1>Thanks</h1>
+                            <h5>Howard Hughes Medical Institute SEA-PHAGES program</h5>
+                            <br>
+                            <h5>Dr. Graham Hatfull and colleagues at the University of Pittsburgh</h5>
                         </div>
                     </div>
                 </div>

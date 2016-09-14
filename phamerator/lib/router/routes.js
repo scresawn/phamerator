@@ -1,5 +1,10 @@
 var subscriptions = new SubsManager();
 
+if (Meteor.isClient) {
+  Router.plugin('ensureSignedIn', {
+    only: ['account', 'phages']
+  });
+}
 
 Router.configure({
   layoutTemplate: 'masterLayout',
@@ -9,49 +14,25 @@ Router.configure({
   progress : true,
   yieldTemplates: {
     nav: {to: 'nav'},
-    footer: {to: 'footer'},
+    footer: {to: 'footer'}
   }
 });
 
 Router.map(function() {
   this.route('home', {
-    path: '/',
+    path: '/'
   });
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return Meteor.subscribe('genomes');
-    },
-    //subscriptions: function() {
-      // returning a subscription handle or an array of subscription handles
-      // adds them to the wait list.
-    //  return Meteor.subscribe('genomes');
-    //},
-    //action: function () {
-    //  this.render('phages');
-    //}
-    //action: function () {
-    //  if (this.ready()) {
-    //    this.render();
-    //  }
-    //  else { this.render('loading');}
-    //}
-      //data: function () {
-    //  templateData = { authors: Authors.find() };
-    //  return templateData;
+      return subscriptions.subscribe('genomes');
     }
-  );
+  });
   this.route('phamilies');
   this.route('domains');
   this.route('barChart');
   this.route('account');
 });
-
-if (Meteor.isClient) {
-  Router.plugin('ensureSignedIn', {
-    only: ['account']
-  });
-}
 
 //Routes
 AccountsTemplates.configureRoute('changePwd');

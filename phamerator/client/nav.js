@@ -1,4 +1,3 @@
-//import "/imports/startup/server/mail-url.js";
 
 Template.nav.rendered = function () {
   $(".button-collapse").sideNav({

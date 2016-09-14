@@ -22,3 +22,7 @@ Meteor.publish('files.images.all', function () {
 Meteor.publish('selectedData', function() {
   return Meteor.users.find({_id: this.userId}, {fields: {selectedData: 1}});
 });
+
+Meteor.publish('fullname', function () {
+  return Meteor.users.find({_id: this.userId}, {fields: {name: 1}});
+});
