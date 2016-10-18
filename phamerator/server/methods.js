@@ -72,7 +72,7 @@ Meteor.methods({
         phageNames = Genomes.find({
           cluster: cluster,
           subcluster: subcluster
-        }, {fields: {phagename: true}, reactive: false}).fetch().map(function (x) {
+        }, {fields: {phagename: true}, reactive: false, sort: {phagename: 1}}).fetch().map(function (x) {
           return x.phagename
         });
         //console.log("got phage names");

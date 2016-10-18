@@ -114,9 +114,14 @@ div.tooltip {
     pointer-events: none;
 }
 
+text.phagename {
+    cursor: move;
+}
+
 #preloader {
-    position: relative;
+    position: fixed;
     top: 50%;
+    left: 50%;
     display: none;
     transform: translateY(10%);
 }
