@@ -45,6 +45,7 @@ Router.map(function() {
   this.route('domains');
   this.route('barChart');
   this.route('account');
+  this.route('help');
 });
 
 if (Meteor.isClient) {
