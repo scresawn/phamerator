@@ -3,10 +3,25 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$USER_HOME$/.meteor/packages/mongo-id/1.0.6/web.browser/id.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/babel-runtime/0.1.12/web.browser/babel-runtime.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/base64/1.0.10/web.browser/base64.js" />
         <item url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/min-max-heap.js" />
         <item url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/min-heap.js" />
         <item url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/max-heap.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.8/web.browser/multi-file-caching-compiler.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.8/web.browser/caching-compiler.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/ground_util/0.1.17/web.browser/util.common.js" />
         <item url="file://$USER_HOME$/.meteor/packages/iron_router/1.0.13/web.browser/lib/global_router.js" />
         <item url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/utilities/utility.js" />
@@ -36,6 +51,7 @@
         <item url="file://$USER_HOME$/.meteor/packages/sacha_spin/2.3.1/web.browser/packages/sacha_spin/lib/spinner.css" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation-new.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema.js" />
+<<<<<<< HEAD
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
@@ -48,13 +64,74 @@
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/dombackend.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/view.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/materializer.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/random_stream.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/template.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/method_invocation.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/exceptions.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/namespace.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/utils.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/heartbeat.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/attrs.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/backcompat.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_main.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/events.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_client.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/lookup.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/localstorage_token.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/builtins.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_common.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/preamble.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/domrange.js" />
+=======
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_main.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_client.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/localstorage_token.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_common.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_url_tests.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_client.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_rate_limit.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_server.js" />
         <item url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/tokens.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_tests_setup.js" />
         <item url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/tojs.js" />
+<<<<<<< HEAD
         <item url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_templates.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_tests_setup.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_client.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_server.js" />
+=======
+        <item url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/mongo-object.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-context.js" />
         <item url="file://$USER_HOME$/.meteor/packages/diff-sequence/1.0.7/web.browser/diff.js" />
@@ -97,6 +174,13 @@
         <item url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/datetime/datetime.js" />
         <item url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/password/password.js" />
         <item url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/files.coffee" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/appcache/1.0.12/web.browser/appcache-client.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/worker.min.js" />
         <item url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/textarea/textarea.js" />
         <item url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/event-emitter.jsx" />
@@ -133,6 +217,7 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-validation.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/email_tests_setup.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/utility.js" />
+<<<<<<< HEAD
         <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_client.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_tests.js" />
         <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_server.js" />
@@ -141,6 +226,22 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_schema-index/1.1.1/web.browser/lib/indexing.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
         <item url="file://$USER_HOME$/.meteor/packages/babel-runtime/1.0.0/web.browser/babel-runtime.js" />
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-formdata.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
+=======
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_client.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_tests.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_server.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-formdata.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_schema-index/1.1.1/web.browser/lib/indexing.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/babel-runtime/1.0.0/web.browser/babel-runtime.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/readonly.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/update-pushArray.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/method.js" />
@@ -155,6 +256,7 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/value-converters.js" />
         <item url="file://$USER_HOME$/.meteor/packages/modules-runtime/0.7.7/web.browser/.npm/package/node_modules/install/install.js" />
         <item url="file://$USER_HOME$/.meteor/packages/sha/1.0.9/web.browser/sha256.js" />
+<<<<<<< HEAD
         <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/dombackend.js" />
         <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/view.js" />
         <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/materializer.js" />
@@ -178,6 +280,45 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
         <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/srp.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/bootstrap3.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/biginteger.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain-fieldset/plain-fieldset.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.7/web.browser/packages/materialize_materialize/sass/materialize.scss.css" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.7/web.browser/dist/js/materialize.js" />
+=======
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/dombackend.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/view.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/materializer.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/template.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/srp.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/bootstrap3.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/exceptions.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/biginteger.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/attrs.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/backcompat.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/events.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain-fieldset/plain-fieldset.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/lookup.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/builtins.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/preamble.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/domrange.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.9/web.browser/multi-file-caching-compiler.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.9/web.browser/caching-compiler.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/pre.js" />
         <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/post.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-horizontal/bootstrap3-horizontal.css" />
@@ -185,7 +326,9 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/autoForm/autoForm.js" />
         <item url="file://$USER_HOME$/.meteor/packages/url/1.0.11/web.browser/url_client.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/quickForm/quickForm.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.15.2/web.browser/moment.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afFormGroup/afFormGroup.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.15.2/web.browser/meteor/export.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afArrayField/afArrayField.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afFieldInput/afFieldInput.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afQuickField/afQuickField.js" />
@@ -231,6 +374,14 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/datetime-local/datetime-local.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/contenteditable/contenteditable.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-checkbox/select-checkbox.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-multiple/select-multiple.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/boolean-checkbox/boolean-checkbox.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-radio-inline/select-radio-inline.js" />
+=======
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/dist/js/materialize.js" />
         <item url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/packages/materialize_materialize/sass/ghpages-materialize.scss.css" />
         <item url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/packages/materialize_materialize/sass/materialize.scss.css" />
@@ -239,6 +390,10 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-radio-inline/select-radio-inline.js" />
         <item url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.16.0/web.browser/moment.js" />
         <item url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.16.0/web.browser/export.js" />
+<<<<<<< HEAD
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-checkbox-inline/select-checkbox-inline.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain/components/quickForm/quickForm.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain/components/afObjectField/afObjectField.js" />
@@ -465,10 +620,25 @@
     </properties>
     <CLASSES>
       <root url="file://$USER_HOME$/.meteor/packages/mongo-id/1.0.6/web.browser/id.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/babel-runtime/0.1.12/web.browser/babel-runtime.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/base64/1.0.10/web.browser/base64.js" />
       <root url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/min-max-heap.js" />
       <root url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/min-heap.js" />
       <root url="file://$USER_HOME$/.meteor/packages/binary-heap/1.0.10/web.browser/max-heap.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.8/web.browser/multi-file-caching-compiler.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.8/web.browser/caching-compiler.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/ground_util/0.1.17/web.browser/util.common.js" />
       <root url="file://$USER_HOME$/.meteor/packages/iron_router/1.0.13/web.browser/lib/global_router.js" />
       <root url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/utilities/utility.js" />
@@ -498,6 +668,7 @@
       <root url="file://$USER_HOME$/.meteor/packages/sacha_spin/2.3.1/web.browser/packages/sacha_spin/lib/spinner.css" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation-new.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema.js" />
+<<<<<<< HEAD
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
@@ -510,13 +681,74 @@
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/dombackend.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/view.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/materializer.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/random_stream.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/template.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/method_invocation.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/exceptions.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/namespace.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/utils.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/ddp-common/1.2.7/web.browser/heartbeat.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/attrs.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/backcompat.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_main.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/events.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_client.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/lookup.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/localstorage_token.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/builtins.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_common.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/preamble.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.1.9/web.browser/domrange.js" />
+=======
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-validation.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/string-polyfills.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_main.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_main.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/server_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_client.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/client_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/localstorage_token.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_common.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/url_server.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_reconnect_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_tests.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_url_tests.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_client.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_rate_limit.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-base/1.2.14/web.browser/accounts_server.js" />
       <root url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/tokens.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_tests_setup.js" />
       <root url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/tojs.js" />
+<<<<<<< HEAD
       <root url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_templates.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/email_tests_setup.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_client.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.1/web.browser/password_server.js" />
+=======
+      <root url="file://$USER_HOME$/.meteor/packages/blaze-tools/1.0.10/web.browser/preamble.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/mongo-object.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_simple-schema/1.5.3/web.browser/simple-schema-context.js" />
       <root url="file://$USER_HOME$/.meteor/packages/diff-sequence/1.0.7/web.browser/diff.js" />
@@ -559,6 +791,13 @@
       <root url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/datetime/datetime.js" />
       <root url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/password/password.js" />
       <root url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/files.coffee" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/appcache/1.0.12/web.browser/appcache-client.js" />
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/worker.min.js" />
       <root url="file://$USER_HOME$/.meteor/packages/gildaspk_autoform-materialize/0.0.26/web.browser/inputTypes/textarea/textarea.js" />
       <root url="file://$USER_HOME$/.meteor/packages/ostrio_files/1.7.5/web.browser/event-emitter.jsx" />
@@ -595,6 +834,7 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-validation.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/email_tests_setup.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/utility.js" />
+<<<<<<< HEAD
       <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_client.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_tests.js" />
       <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_server.js" />
@@ -603,6 +843,22 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_schema-index/1.1.1/web.browser/lib/indexing.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
       <root url="file://$USER_HOME$/.meteor/packages/babel-runtime/1.0.0/web.browser/babel-runtime.js" />
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-formdata.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
+=======
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_client.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_tests.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/accounts-password/1.3.2/web.browser/password_server.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform-formdata.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/autoform.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_schema-index/1.1.1/web.browser/lib/indexing.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/form-preserve.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/babel-runtime/1.0.0/web.browser/babel-runtime.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/readonly.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/update-pushArray.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/formTypes/method.js" />
@@ -617,6 +873,7 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/value-converters.js" />
       <root url="file://$USER_HOME$/.meteor/packages/modules-runtime/0.7.7/web.browser/.npm/package/node_modules/install/install.js" />
       <root url="file://$USER_HOME$/.meteor/packages/sha/1.0.9/web.browser/sha256.js" />
+<<<<<<< HEAD
       <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/dombackend.js" />
       <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/view.js" />
       <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/materializer.js" />
@@ -640,6 +897,45 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
       <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/srp.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/bootstrap3.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/biginteger.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain-fieldset/plain-fieldset.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.7/web.browser/packages/materialize_materialize/sass/materialize.scss.css" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.7/web.browser/dist/js/materialize.js" />
+=======
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/dombackend.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/view.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/materializer.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/template.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/srp.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/bootstrap3.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/exceptions.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/srp/1.0.10/web.browser/biginteger.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/attrs.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/backcompat.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/events.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain-fieldset/plain-fieldset.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/lookup.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/builtins.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/preamble.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/blaze/2.2.0/web.browser/domrange.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.9/web.browser/multi-file-caching-compiler.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/caching-compiler/1.1.9/web.browser/caching-compiler.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.css" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-inline/bootstrap3-inline.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/pre.js" />
       <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/post.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-horizontal/bootstrap3-horizontal.css" />
@@ -647,7 +943,9 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/autoForm/autoForm.js" />
       <root url="file://$USER_HOME$/.meteor/packages/url/1.0.11/web.browser/url_client.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/quickForm/quickForm.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.15.2/web.browser/moment.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afFormGroup/afFormGroup.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.15.2/web.browser/meteor/export.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afArrayField/afArrayField.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afFieldInput/afFieldInput.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/components/afQuickField/afQuickField.js" />
@@ -693,6 +991,14 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/datetime-local/datetime-local.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/contenteditable/contenteditable.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-checkbox/select-checkbox.js" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-multiple/select-multiple.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/boolean-checkbox/boolean-checkbox.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-radio-inline/select-radio-inline.js" />
+=======
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/dist/js/materialize.js" />
       <root url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/packages/materialize_materialize/sass/ghpages-materialize.scss.css" />
       <root url="file://$USER_HOME$/.meteor/packages/materialize_materialize/0.97.8/web.browser/packages/materialize_materialize/sass/materialize.scss.css" />
@@ -701,6 +1007,10 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-radio-inline/select-radio-inline.js" />
       <root url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.16.0/web.browser/moment.js" />
       <root url="file://$USER_HOME$/.meteor/packages/momentjs_moment/2.16.0/web.browser/export.js" />
+<<<<<<< HEAD
+=======
+>>>>>>> master
+>>>>>>> github-link-open-in-new-tab
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/select-checkbox-inline/select-checkbox-inline.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain/components/quickForm/quickForm.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/plain/components/afObjectField/afObjectField.js" />

@@ -7,6 +7,10 @@ aldeed:schema-deny@1.1.0
 aldeed:schema-index@1.1.1
 aldeed:simple-schema@1.5.3
 allow-deny@1.0.5
+<<<<<<< HEAD
+=======
+appcache@1.0.12
+>>>>>>> github-link-open-in-new-tab
 autoupdate@1.3.12
 babel-compiler@6.13.0
 babel-runtime@1.0.0
