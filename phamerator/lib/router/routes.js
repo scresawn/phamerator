@@ -31,7 +31,12 @@ Router.map(function() {
   this.route('phamilies');
   this.route('domains');
   this.route('barChart');
-  this.route('account');
+  this.route('account', {
+    loadingTemplate: 'loading',
+    waitOn: function() {
+      return [subscriptions.subscribe('files.images.all'), subscriptions.subscribe('fullname')];
+    }
+  });
 });
 
 //Routes
@@ -42,3 +47,4 @@ AccountsTemplates.configureRoute('resetPwd');
 AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('signUp');
 AccountsTemplates.configureRoute('verifyEmail');
+

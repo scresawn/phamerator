@@ -1,14 +1,10 @@
 <template name="phages">
-    <div id="geneData" class="modal">
+    <div id="geneData" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4>{{selectedGene}}</h4>
-            <table>
-                <tr>
-                    <td></td>
-                </tr>
-            </table>
+            <span id="gene_dna_seq" style="width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>
         </div>
         <div class="modal-footer">
+            <button class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
             <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
     </div>
@@ -84,12 +80,19 @@
         </div>
         
         <div id="phages-list" class="col s12">
-            <a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>
+            <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
             <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
                 {{#each clusters}}
                     {{> cluster }}
                 {{/each}}
             </ul>
+            <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
+                {{#if genomes_are_selected}}
+                    <a id="clearSelection" class="waves-effect waves-yellow btn-floating btn-large purple">
+                        <i class="material-icons left">clear</i>Clear Selection
+                    </a>
+                {{/if}}
+            </div>
         </div>
         <!--<ul id="cluster-cards">
                 #each clusters

@@ -15,9 +15,9 @@ body {
 }
 
 @media only screen and (min-width: 993px) {
-    #content {
+    /*#content {
         margin-left: 240px;
-    }
+    }*/
 }
 
 footer {
@@ -70,27 +70,13 @@ label {
 }
 
 .hp {
-    font-family: HarryPotter;
-}
-
-header,
-main,
-footer {
-    padding-left: 240px;
-}
-
-@media only screen and (max-width: 992px) {
-    header,
-    main,
-    footer {
-        padding-left: 0;
-    }
+    font-family: HarryPotter, ParryHotter;
+    font-size: 20pt;
 }
 
 .container {
     padding: 0 1.5rem;
     margin: 0 auto;
-    max-width: 1280px;
     width: 100%;
 }
 
@@ -128,6 +114,14 @@ text.phagename {
 
 #profilepic {
     opacity: 0;
+}
+
+.thumb_profilepic {
+    position: float;
+    max-height: 63px;
+    width: auto;
+    border: 0px;
+    margin: 0px;
 }
 
 .carousel_position {

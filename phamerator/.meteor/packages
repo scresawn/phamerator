@@ -35,9 +35,9 @@ multiply:iron-router-progress
 ostrio:files
 reactive-var@1.0.11
 fourseven:scss
-appcache@1.0.12
 shell-server@0.2.1
 email@1.1.18
 meteorhacks:kadira
 meteorhacks:kadira-profiler
 materialize:materialize@=0.97.7
+zenorocha:clipboard

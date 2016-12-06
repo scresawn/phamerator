@@ -3,10 +3,12 @@
  */
 
 Template.account.onRendered(function () {
-  Meteor.subscribe('files.images.all');
-  Meteor.subscribe('fullname');
+  //Meteor.subscribe('files.images.all');
+  //Meteor.subscribe('fullname');
   //this.Images = new FilesCollection({collectionName: 'Images'});
-  Materialize.fadeInImage('#profilepic')
+  setTimeout(function () {
+    Materialize.fadeInImage('#profilepic')
+  }, 1000);
 });
 
 Template.account.helpers({
@@ -63,7 +65,7 @@ Template.file.helpers({
   imageFile: function () {
     profilePic = Images.collection.findOne({_id: Meteor.user().profile.profilePic});
     if ( typeof profilePic !== 'undefined') {
-      console.log(profilePic);
+      //console.log(profilePic);
       return profilePic;
     }
     else {
