@@ -1,0 +1,162 @@
+<template name="phages">
+    <div id="mapsettings" class="modal">
+        <div class="modal-content">
+            <h4>Phamerator Settings</h4>
+            <table>
+                <tr>
+                    <td>
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn' href='#' data-activates='dropdown1'>first sort by</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-button btn' href='#' data-activates='dropdown2'>then sort by</a>
+
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown2' class='dropdown-content'>
+                            <li><a class="waves-effect waves-dark" href="#!">Cluster</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">GC %</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Length</a></li>
+                            <li><a class="waves-effect waves-dark" href="#!">Name</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <div class="switch">
+                        <td>
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Conserved Domains</td>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="switch">
+                        <td>
+                            <label>
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                            </label>
+                        </td>
+                        <td>Nucleotide Conservation</td>
+                    </div>
+                    <form action="#">
+                        <td ><h5>Color By</h5></td>
+                        <p>
+                            <input class="with-gap" name="group1" type="radio" id="Abundance"  />
+                            <label for="Abundance">Abundance</label>
+                        </p>
+                        <p>
+                            <input class="with-gap" name="group1" type="radio" id="GC"  />
+                            <label for="GC">%GC</label>
+                        </p>
+                        <p>
+                            <input class="with-gap" name="group1" type="radio" id="Phamily"  />
+                            <label for="Phamily">Phamily</label>
+                        </p>
+                    </form>
+                </tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col s12">
+            <!--<div class="progress">
+                <div class="determinate" style="width: 0%"></div>
+            </div>-->
+                <ul class="tabs">
+                    <li class="tab col s3"><a class="active" href="#phages-list">Select Phages</a></li>
+                    <li class="tab col s3"><a href="#genome-map">View Map</a></li>
+                </ul>
+        </div>
+        <div id="phages-list" class="col s12">
+            <a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>
+                <ul class="collapsible" data-collapsible="expandable">
+                    {{#each clusters}}
+                        {{> cluster }}
+                    {{/each}}
+                </ul>
+
+        <!--<ul id="cluster-cards">
+                #each clusters
+                    <div class="row">
+                    <li>
+                        <div class="col s12 l12 m12">
+                            <div class="card hoverable">
+                                <div class="card-content">
+                                    <span class="card-title">name</span>
+                                    <ul class="collapsible white" data-collapsible="expandable">
+                                        cluster
+                                    </ul>
+                                </div>
+                                <div class="card-action">
+                                    <a href="http://phagesdb.org/subclusters/name" target="_blank">name on PhagesDB</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    </div>
+                /each
+        </ul>-->
+        </div>
+        <div id="genome-map" class="col s12">
+            <div class="fixed-action-btn horizontal click-to-toggle" style="bottom: 45px; right: 24px;">
+                <a class="btn-floating btn-large waves-effect waves-light">
+                    <i class="material-icons">menu</i>
+                </a>
+                <ul>
+                    <li>
+                        <button class="downloadGenomeMap waves-effect waves-yellow btn-floating purple">
+                            <i class="material-icons left">system_update_alt</i>Export Genome Map
+                        </button>
+                    </li>
+                    <li>
+                        <button data-target="mapsettings" class="btn modal-trigger settings waves-effect waves-purple btn-floating yellow">
+                            <i class="material-icons left">settings</i>Genome Map Settings
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+</template>
+
+<template name="cluster">
+        <li>
+            <div class="collapsible-header">
+                <input type="checkbox" id="{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
+                <label for="{{name}}">
+                    {{name}}
+                </label>
+                <!--<span class="badge">{{selectedCount name}}</span>-->
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                            <p>
+                                {{#each p in phageNames}}
+                                <div class="col s12 m6 l4">
+                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
+                                        <label for="{{p}}">{{p}}</label>
+                                </div>
+                                {{/each}}
+                            </p>
+                </div>
+            </div>
+        </li>
+</template>
