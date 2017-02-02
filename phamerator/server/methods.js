@@ -6,7 +6,7 @@ Meteor.methods({
     });
   },
   "updateSelectedData": function(phagename, addGenome) {
-    console.log('updateSelectedData called with', phagename, addGenome);
+    //console.log('updateSelectedData called with', phagename, addGenome);
     genomeMaps = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.genomeMaps": 1}}).selectedData.genomeMaps;
     //console.log('genomeMaps:', genomeMaps);
 
@@ -21,13 +21,33 @@ Meteor.methods({
       Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.genomeMaps": genomeMaps}});
     }
     else if (addGenome === false) {
-      console.log("removing", phagename, "from selectedData");
+      //console.log("removing", phagename, "from selectedData");
       var index = genomeMaps.indexOf(phagename);
       if (index > -1) {
         genomeMaps.splice(index, 1);
         Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.genomeMaps": genomeMaps}});
       }
     }
+  },
+  "updateSubclusterFavorites": function(subcluster, addFavorite) {
+    console.log('updateSubclusterFavorites called with', subcluster, addFavorite);
+
+    // initialize selectedData.subclusterFavorites if it doesn't exist
+    Meteor.users.update({_id: Meteor.userId(), 'selectedData.subclusterFavorites': {$exists : false}}, {$set: {'selectedData.subclusterFavorites': []}});
+    favorites = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.subclusterFavorites": 1}}).selectedData.subclusterFavorites;
+
+    if (addFavorite === true && favorites.indexOf(subcluster) === -1) {
+      favorites.push(subcluster);
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.subclusterFavorites": favorites}});
+    }
+    else if (addFavorite === false && favorites.indexOf(subcluster) !== -1) {
+      var index = favorites.indexOf(subcluster);
+      if (index > -1) {
+        favorites.splice(index, 1);
+        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.subclusterFavorites": favorites}});
+      }
+    }
+    console.log('favorites:', favorites);
   },
   sendVerificationLink() {
     console.log('sending verification email to ', Meteor.userId());

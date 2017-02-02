@@ -10,6 +10,15 @@
 
       }
     }
+    else {
+      //var MobileDetect = require('mobile-detect'),
+        import MobileDetect from 'mobile-detect';
+        var md = new MobileDetect(window.navigator.userAgent);
+      console.log( md.os() );
+      if (md.mobile() != null) {
+        $('#mobileWarning').openModal();
+      }
+    }
 
     document.addEventListener("online", onOnline, false);
 
@@ -27,7 +36,13 @@
 
 Template.nav.helpers({
   displayname: function() {
-    return Meteor.user() ? Meteor.user().name : null;
+    if (!Meteor.user()) {
+      return null;
+    }
+    else if (!Meteor.user().name) {
+      return Meteor.user().username;
+    }
+    return Meteor.user().name;
   },
   loggedIn: function () {
     return Meteor.user() != null;

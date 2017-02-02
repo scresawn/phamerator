@@ -56,17 +56,14 @@ footer > .content {
             url("/fonts/Roboto-Light.ttf");
 }
 
-a, h1, h2 {
-    font-family: Roboto-Regular;
-}
-
-h3, h4, h5, p {
+a, h1, h2, h3, h4, h5, p {
     font-family: Roboto-Light;
 }
 
 label {
-    opacity: 0.87;
+    opacity: 1;
     font-family: Roboto-Regular;
+    color: #555;
 }
 
 .hp {
@@ -84,6 +81,13 @@ label {
     background-color:#3F48CC;
     color:white;
     font-weight:bold;
+}
+
+div.row.label {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
 }
 
 div.tooltip {
@@ -166,4 +170,9 @@ h6 {
     .container {
         width: 98%;
     }
+}
+
+#iron-router-progress {
+    background-color : gold;
+    box-shadow       : 0 0 5px purple;
 }

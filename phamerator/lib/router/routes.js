@@ -12,6 +12,7 @@ Router.configure({
   notFoundTemplate: 'pageNotFound',
   //progressDebug : true,
   progress : true,
+  progressSpinner : false,
   yieldTemplates: {
     nav: {to: 'nav'},
     footer: {to: 'footer'}
@@ -25,7 +26,7 @@ Router.map(function() {
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return subscriptions.subscribe('genomes');
+      return Meteor.subscribe('genomes');
     }
   });
   this.route('phamilies');

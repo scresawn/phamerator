@@ -34,8 +34,8 @@ AccountsTemplates.addField({
   type: 'email',
   required: true,
   displayName: "email",
-  //re: /.+@(.+){2,}\.(.+){2,}/,
-  re: /.+@(.+){2,}\.edu/,
+  re: /.+@(.+){2,}\.(.+){2,}/,
+  //re: /.+@(.+){2,}\.edu/, // this forces use of .edu email address
   errStr: 'Please use the email provided by your college/university',
 });
 
