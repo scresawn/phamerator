@@ -41,3 +41,4 @@ meteorhacks:kadira
 meteorhacks:kadira-profiler
 materialize:materialize@=0.97.7
 meteorhacks:cluster
+webtempest:animate

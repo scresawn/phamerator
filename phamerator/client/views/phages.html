@@ -83,9 +83,12 @@
         <div id="phages-list" class="col s12">
             <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
             <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
+            {{#transition in="slideInUp" out="bounceOut"}}
                 {{#each clusters}}
                     {{> cluster }}
                 {{/each}}
+            {{/transition}}
+
             </ul>
             <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
                 <a class="btn-floating btn-large waves-effect waves-light">
@@ -162,27 +165,31 @@
 </template>
 
 <template name="cluster">
-        <li>
-            <div class="collapsible-header">
-                <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
-                <label for="cluster-{{name}}">
-                    {{name}}
-                </label>
-                    <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
-                <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
 
-            </div>
-            <div class="collapsible-body">
-                <div class="row">
-                            <p>
-                                {{#each p in phageNames}}
-                                <div class="col s12 m6 l4">
-                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
-                                        <label for="{{p}}">{{p}}</label>
-                                </div>
-                                {{/each}}
-                            </p>
+            <li>
+
+                <div class="collapsible-header">
+                    <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
+                    <label for="cluster-{{name}}">
+                        {{name}}
+                    </label>
+                    <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
+
+                    <span class="purple {{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
                 </div>
-            </div>
-        </li>
+                <div class="collapsible-body">
+                    <div class="row">
+                    <p>
+                        {{#each p in phageNames}}
+                            <div class="col s12 m6 l4">
+                                <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
+                                <label for="{{p}}">{{p}}</label>
+                            </div>
+                        {{/each}}
+                        </p>
+                    </div>
+                </div>
+            </li>
+
+
 </template>

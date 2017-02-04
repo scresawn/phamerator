@@ -386,6 +386,8 @@
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/radio/radio.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/range/range.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/reset/reset.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/webtempest_animate/0.1.9/web.browser/packages/webtempest_animate.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/webtempest_animate/0.1.9/web.browser/packages/webtempest_animate/animate.css" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/button/button.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/hidden/hidden.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/number/number.js" />
@@ -849,6 +851,8 @@
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/radio/radio.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/range/range.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/reset/reset.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/webtempest_animate/0.1.9/web.browser/packages/webtempest_animate.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/webtempest_animate/0.1.9/web.browser/packages/webtempest_animate/animate.css" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/button/button.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/hidden/hidden.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/inputTypes/number/number.js" />

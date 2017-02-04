@@ -1,0 +1,12 @@
+<template name="progressbar">
+    {{#transition in="slideInUp" out="slideOutUp"}}
+
+    {{#if progressbarVisibility}}
+        <div class="animated out">
+            <div class="progress">
+                <div class="determinate purple" style="width: {{progressbarState}}"></div>
+            </div>
+        </div>
+    {{/if}}
+    {{/transition}}
+</template>

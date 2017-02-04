@@ -176,3 +176,12 @@ h6 {
     background-color : gold;
     box-shadow       : 0 0 5px purple;
 }
+
+.progress {
+    fill: purple;
+    background-color: #607d8b;
+    position: absolute;
+    top: -7px;
+    height: 65px;
+    left: 0px;
+}

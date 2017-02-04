@@ -97,7 +97,18 @@ function update_hsps(hspData) {
   hspGroup.enter().insert("g", ":first-child")
     .classed("hspGroup", true)
     .attr("id", function (d) {
-      //console.log("appending phage group");
+      console.log("appending phage group");
+
+      i = 0;
+      animate();
+      function animate() {
+        i == 0 && requestAnimationFrame(animate);
+        Session.set("progressbarState", ((phagesdata.length - blastAlignmentsOutstanding) / phagesdata.length) * 100 + "%");
+        console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
+        console.log(i);
+        i++;
+      }
+
       return "phage_" + d.queryName + "___phage_" + d.subjectName;
     })
     .each(function (d) {
@@ -200,7 +211,6 @@ var map_order = [];
 
 function update_phages() {
   console.log("update_phages()");
-
   //d3.selectAll(".phages").exit().remove();
   pnames = selectedGenomes.find({}, {sort: {phagename:1}}).fetch().map(function(obj){ return obj.phagename;});
   phages = Genomes.find({phagename: {$in: pnames}}, {sort: {cluster:1, subcluster:1, phagename:1}});
@@ -883,6 +893,7 @@ var tooltip = d3.select("body")
 
 blast = function(q, d) {
   blastAlignmentsOutstanding = blastAlignmentsOutstanding + 1;
+
   var query = q;
   var subject = d;
   alignedGenomes.update({"query": query.phagename, "subject": subject.phagename}, {"query": query.phagename, "subject": subject.phagename}, {upsert: true});
@@ -965,23 +976,27 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
 
   parseBlastResult(queryName, subjectName, blasthsps);
 
-  //hsps = d3.select("svg").select("g#"+queryName).insert("g", ":first-child").classed("hsp", true).selectAll(".hsps")
-
-
-  //Session.set("blastAlignmentsOutstanding", (parseInt(Session.get("blastAlignmentsOutstanding")) - 1));
-  //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-
   if (blastAlignmentsOutstanding === 0) {
     window.requestAnimationFrame(function () {
       //console.log("drawBLASTalignments");
-      update_hsps(hspData);
+      setTimeout(update_hsps(hspData), 0);
+      Session.set("progressbarVisibility", false);
       setTimeout(Materialize.toast("Ready!", 2000), 5000);
     });
   }
   else {
     //console.log("blastAlignmentsOutstanding", Session.get("blastAlignmentsOutstanding"))
-    console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
 
+    i = 0;
+    animate();
+    function animate() {
+      i == 0 && requestAnimationFrame(animate);
+      Session.set("progressbarVisibility", true);
+      Session.set("progressbarState", ((phagesdata.length - blastAlignmentsOutstanding) / phagesdata.length) * 100 + "%");
+      console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
+      console.log(i);
+      i++;
+    }
   }
 };
 
@@ -1089,7 +1104,9 @@ Template.phages.events({
             });
           }
           else {
-              clusterGenomes.forEach( function (element, index, array) {
+            Session.set("progressbarVisibility", false);
+
+            clusterGenomes.forEach( function (element, index, array) {
 
                 /////console.log('removing', element.phagename);
               hspData = hspData.filter(function(e, i, a) {
@@ -1137,6 +1154,7 @@ Template.phages.events({
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
+            Session.set("progressbarVisibility", false);
             console.log(phagename, 'was unselected');
             //console.log("before:", hspData);
             hspData = hspData.filter(function(e, i, a) {
