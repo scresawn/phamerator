@@ -60,7 +60,7 @@ Template.nav.helpers({
   }
 });
 
-Template.nav.rendered = function () {
+Template.nav.onRendered (function () {
   //$(".button-collapse").sideNav({
   //  menuWidth: 240, // Default is 240
   //  edge: 'left' // Choose the horizontal origin
@@ -70,7 +70,7 @@ Template.nav.rendered = function () {
   Meteor.subscribe('files.images.all');
   Meteor.subscribe('fullname');
   //this.Images = new FilesCollection({collectionName: 'Images'});
-  Materialize.fadeInImage('#profilepic');
+  //Materialize.fadeInImage('#profilepic');
 
   $(".button-collapse").sideNav();
 
@@ -79,11 +79,13 @@ Template.nav.rendered = function () {
   // Side Navigation fix
   $('.side-nav li a').on('click', function(e) {
     windowsize = $(window).width();
+    console.log(windowsize);
     if (windowsize < 992) {
       //$('.button-collapse', this).sideNav('hide');
       window.setTimeout(function(){
+        console.log("trying to close sideNav...");
         $('.button-collapse', this).sideNav('hide');
       }, 1000);
     }
   });
-};
+});

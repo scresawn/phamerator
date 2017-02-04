@@ -104,8 +104,8 @@ function update_hsps(hspData) {
       function animate() {
         i == 0 && requestAnimationFrame(animate);
         Session.set("progressbarState", ((phagesdata.length - blastAlignmentsOutstanding) / phagesdata.length) * 100 + "%");
-        console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
-        console.log(i);
+        //console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
+        //console.log(i);
         i++;
       }
 
@@ -823,6 +823,15 @@ function update_phages() {
 }
 
 Template.phages.onCreated(function() {
+  /*if (typeof routeChange === "undefined") {
+    console.log('initial load');
+    Materialize.toast("Restoring your work...", 99999999999999, 'gray restoring-your-work-toast');
+  }
+  else {
+    console.log('route change');
+  }
+  var routeChange = true;*/
+
   Meteor.call('getclusters', function(error, result) {
 
     if (typeof error !== 'undefined') {
@@ -835,11 +844,11 @@ Template.phages.onCreated(function() {
 
   //Meteor.subscribe('genomes');
  /////console.log("phages template created");
-  Meteor.startup(function () {
+  //Meteor.startup(function () {
     Meteor.subscribe('selectedData', function () {
       names = Meteor.user().selectedData.genomeMaps;
       if (names && names.length > 0) {
-        Materialize.toast("Restoring your work...", 2000, '', function () {
+        //Materialize.toast("Restoring your work...", 99999999999999, '', function () {
           Meteor.subscribe("genomesWithSeq", names, {
             onReady: function () {
               names.forEach(function (value, index, myArray) {
@@ -865,14 +874,13 @@ Template.phages.onCreated(function() {
                   });
                 });
               });
+              update_hsps(hspData);
             }
-          })
-          update_hsps(hspData);
-        });
+          });
+        //});
       }
-
     });
-  });
+  //});
 });
 
 var tooltip = d3.select("body")
@@ -930,7 +938,7 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
   //d3.json(jsonData, function(error, json) {
     //console.log(json);
   //pathset.length = 0;
- console.log("drawBlastAlignments called");
+ //console.log("drawBlastAlignments called");
 
   var parseBlastResult = function(queryName, subjectName, hspsArray) {
     if (queryName === "" || subjectName === "") {return; }
@@ -979,9 +987,11 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
   if (blastAlignmentsOutstanding === 0) {
     window.requestAnimationFrame(function () {
       //console.log("drawBLASTalignments");
+      $(".restoring-your-work-toast").fadeOut();
+
       setTimeout(update_hsps(hspData), 0);
       Session.set("progressbarVisibility", false);
-      setTimeout(Materialize.toast("Ready!", 2000), 5000);
+      //setTimeout(Materialize.toast("Ready!", 2000), 5000);
     });
   }
   else {
@@ -993,8 +1003,8 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
       i == 0 && requestAnimationFrame(animate);
       Session.set("progressbarVisibility", true);
       Session.set("progressbarState", ((phagesdata.length - blastAlignmentsOutstanding) / phagesdata.length) * 100 + "%");
-      console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
-      console.log(i);
+      //console.log("blastAlignmentsOutstanding: ", blastAlignmentsOutstanding);
+      //console.log(i);
       i++;
     }
   }
@@ -1085,7 +1095,7 @@ Template.phages.events({
       Meteor.subscribe("genomesWithSeq", clusterPhageNames, {
         onReady: function () {
           clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
-          console.log(clusterGenomes);
+          //console.log(clusterGenomes);
 
           if (event.target.checked) {
             clusterGenomes.forEach(function (element, index, array) {
@@ -1118,7 +1128,7 @@ Template.phages.events({
                       //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                       Meteor.call('updateSelectedData', element.phagename, false);
                       window.requestAnimationFrame(function () {
-                        console.log("update_hsps 1088");
+                        //console.log("update_hsps 1088");
                         update_hsps(hspData);
                       });
                       //update_hsps(hspData);
@@ -1168,7 +1178,7 @@ Template.phages.events({
                 //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                 Meteor.call('updateSelectedData', phagename, false);
                   window.requestAnimationFrame(function () {
-                    console.log("update_hsps 1136");
+                    //console.log("update_hsps 1136");
                     update_hsps(hspData);
                   });
                   //update_hsps(hspData);
