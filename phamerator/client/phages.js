@@ -253,7 +253,7 @@ function update_phages() {
 
   $("#preloader").fadeOut(300).hide();
   //console.log("in drawGenomeMap");
-  svg.attr("height", function(d) {return (selectedGenomes.find().count() * 300) });
+  svg.attr("height", function(d) {return (selectedGenomes.find().count() * 310) });
   svg.attr("width", function (d) {
     return d3.max(selectedGenomes.find().fetch(), function(d) {
       return d.genomelength/10;
@@ -874,9 +874,10 @@ Template.phages.onCreated(function() {
                   });
                 });
               });
-              update_hsps(hspData);
+              //update_hsps(hspData);
             }
           });
+          //update_hsps(hspData);
         //});
       }
     });
@@ -1033,8 +1034,7 @@ Template.phages.onRendered(function () {
       alignment: 'left' // Displays dropdown with edge aligned to the left of button
     });*/
 
-  svg = d3.select("#genome-map")
-    .append("svg");
+  svg = d3.select("svg");
   svg.attr("id", "svg-genome-map")
     .attr("border", "5px");
 
@@ -1114,7 +1114,7 @@ Template.phages.events({
             });
           }
           else {
-            Session.set("progressbarVisibility", false);
+            //Session.set("progressbarVisibility", false);
 
             clusterGenomes.forEach( function (element, index, array) {
 
@@ -1164,7 +1164,7 @@ Template.phages.events({
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
-            Session.set("progressbarVisibility", false);
+            //Session.set("progressbarVisibility", false);
             console.log(phagename, 'was unselected');
             //console.log("before:", hspData);
             hspData = hspData.filter(function(e, i, a) {

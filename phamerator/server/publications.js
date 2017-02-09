@@ -15,6 +15,11 @@ Meteor.publish("genomesWithSeq", function (selectedGenomes) {
   //return Genomes.find({"phagename": {$in: selectedGenomes}});
 });
 
+Meteor.publish("proteinSeq", function (selectedProtein) {
+  console.log(selectedProtein, " selected");
+  return Genomes.find({"phagename": phagename});
+});
+
 Meteor.publish('files.images.all', function () {
   return Images.collection.find({});
 });
