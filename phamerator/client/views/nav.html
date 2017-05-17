@@ -27,20 +27,24 @@
             <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
             {{#if loggedIn}}
                 <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-                    <li style="max-height: 63px"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></li>
+                <li style="max-height: 63px"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></li>
             {{/if}}
             <li>{{> atNavButton }}</li>
         </ul>
         <ul id="mobile-menu" class="side-nav">
-            <img src="phamerator.png" style="width: 100%"/>
+            <!--<img src="phamerator.png" style="width: 100%"/>-->
+            {{#if loggedIn}}
+                <!--<li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>-->
+                <li style="width=100%"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width:100%"></li>
+            {{/if}}
             <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-purple lighten-5">Home</a></li>
-            <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
 
             {{#if loggedIn}}
+                <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
                 <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-                    <img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic" />
+                    <!--<img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic" />-->
             {{else}}
-                ""
+
             {{/if}}
             <li>{{> atNavButton }}</li>
         </ul>

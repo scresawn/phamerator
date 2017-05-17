@@ -8,7 +8,7 @@ Template.home.onRendered(function () {
    $(document).ready(function(){
      h = $(document).height() - $('nav').height();
      //console.log(h);
-     $('.carousel.carousel-slider').carousel({full_width: true});
+     $('.carousel.carousel-slider').carousel({fullWidth: true});
      $('.carousel.carousel-slider').height(h);
     });
   });

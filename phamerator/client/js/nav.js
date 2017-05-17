@@ -3,6 +3,19 @@
     // Here we can be sure the plugin has been initialized
     //if (Meteor.isCordova) { alert("start saving your pennies")}
     Meteor.subscribe('fullname');
+    Meteor.subscribe('featureDiscovery', function () {
+      if (Meteor.user().featureDiscovery == null) {
+        Session.set("geneTranslation", true);
+      }
+      else if (Meteor.user().featureDiscovery.geneTranslation == null) {
+        Session.set("geneTranslation", true);
+      }
+      else {
+        geneTranslation = Meteor.user().featureDiscovery.geneTranslation;
+        Session.set("geneTranslation", geneTranslation);
+      }
+      console.log("geneTranslation:", Session.get('geneTranslation'));
+    });
 
     if (Meteor.isCordova) {
       if (navigator.connection.type !== 'wifi') {
@@ -12,11 +25,11 @@
     }
     else {
       //var MobileDetect = require('mobile-detect'),
-        import MobileDetect from 'mobile-detect';
-        var md = new MobileDetect(window.navigator.userAgent);
+      import MobileDetect from 'mobile-detect';
+      var md = new MobileDetect(window.navigator.userAgent);
       console.log( md.os() );
       if (md.mobile() != null) {
-        $('#mobileWarning').openModal();
+        $('#mobileWarning').modal();
       }
     }
 
@@ -26,7 +39,7 @@
       // Handle the online event
       if (Meteor.isCordova) {
         if (navigator.connection.type !== 'wifi') {
-          $('#connectionWarning').openModal();
+          $('#connectionWarning').modal();
 
         }
       }
@@ -78,6 +91,7 @@ Template.nav.onRendered (function () {
 
   // Side Navigation fix
   $('.side-nav li a').on('click', function(e) {
+    console.log("sideNav item selected");
     windowsize = $(window).width();
     console.log(windowsize);
     if (windowsize < 992) {

@@ -1,6 +1,6 @@
 Meteor.methods({
   "userExists": function(username) {
-    console.log('checking if user exists');
+    //console.log('checking if user exists');
     return !!Meteor.users.findOne({
       username: username
     });
@@ -30,7 +30,7 @@ Meteor.methods({
     }
   },
   "updateSubclusterFavorites": function(subcluster, addFavorite) {
-    console.log('updateSubclusterFavorites called with', subcluster, addFavorite);
+    //console.log('updateSubclusterFavorites called with', subcluster, addFavorite);
 
     // initialize selectedData.subclusterFavorites if it doesn't exist
     Meteor.users.update({_id: Meteor.userId(), 'selectedData.subclusterFavorites': {$exists : false}}, {$set: {'selectedData.subclusterFavorites': []}});
@@ -47,7 +47,28 @@ Meteor.methods({
         Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.subclusterFavorites": favorites}});
       }
     }
-    console.log('favorites:', favorites);
+    //console.log('favorites:', favorites);
+  },
+  "updateFeatureDiscovery": function(featureName) {
+    console.log('updateFeatureDiscovery called with', featureName);
+
+    // initialize selectedData.featureDiscovery if it doesn't exist
+    Meteor.users.update({_id: Meteor.userId(), 'featureDiscovery': {$exists : false}}, {$set: {'featureDiscovery': []}});
+    features = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"featureDiscovery": 1}}).featureDiscovery;
+    console.log("user has not yet dismissed", features);
+    // if featureName not in features
+    if (features.indexOf(featureName) === -1) {
+      console.log("feature has already been dismissed");
+      return;
+      //features.push(featureName);
+      //Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.featureDiscovery": features}});
+    }
+    var index = features.indexOf(featureName);
+    if (index > -1) {
+      console.log("dismissing", featureName, "from", features);
+      features.splice(index, 1);
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"featureDiscovery": features}});
+    }
   },
   sendVerificationLink() {
     console.log('sending verification email to ', Meteor.userId());
@@ -56,12 +77,27 @@ Meteor.methods({
       return Accounts.sendVerificationEmail( userId );
     }
   },
+
+  "getphams": function () {
+    if (typeof phams != "undefined") {
+      //console.log("sending precomputed phams...");
+      return phams;
+    }
+    //console.log("computing phams...");
+    phamsObj = Phams.find().fetch().reduce(function (o, currentArray) {
+      n = currentArray.name, v = currentArray.size;
+      o[n] = v;
+      return o
+    }, {});
+    return phamsObj;
+  },
+
   "getclusters": function () {
     if (typeof clusters !== "undefined") {
-      console.log("sending precomputed clusters...");
+      //console.log("sending precomputed clusters...");
       return clusters;
     }
-    console.log("computing clusters...");
+    //console.log("computing clusters...");
     clusters = [];
 
     // get an array of all unique cluster names

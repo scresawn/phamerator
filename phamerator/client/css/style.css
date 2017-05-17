@@ -146,6 +146,32 @@ text.phagename {
     margin-left: 25px;
     margin-right: 25px;
 }
+
+textarea{
+
+    resize: none;
+    font-family: monospace;
+    font-size:14px;
+    border:0;
+    margin:0;
+    outline:none;
+    height:90%;
+    max-width: 100%;
+    max-height: 90%;
+}
+
+.modal {
+    overflow: hidden;
+
+}
+.modal .modal-content {
+    overflow-y: scroll;
+
+}
+.modal .modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 h6 {
     display: block;
     font-size: 1.5em;

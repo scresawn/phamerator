@@ -6,9 +6,25 @@ Template.account.onRendered(function () {
   //Meteor.subscribe('files.images.all');
   //Meteor.subscribe('fullname');
   //this.Images = new FilesCollection({collectionName: 'Images'});
-  setTimeout(function () {
+
+  /*var slider = document.getElementById('range-input');
+  noUiSlider.create(slider, {
+    start: [20, 80],
+    connect: true,
+    step: 1,
+    range: {
+      'min': 0,
+      'max': 100
+    },
+    format: wNumb({
+      decimals: 0
+    })
+  });*/
+  Materialize.fadeInImage('#profilepic');
+
+  /*setTimeout(function () {
     Materialize.fadeInImage('#profilepic')
-  }, 1000);
+  }, 1500);*/
 });
 
 Template.account.helpers({

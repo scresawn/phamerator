@@ -1,73 +1,40 @@
 <template name="phages">
+
     {{> mapSettingsModal}}
+    {{#if geneTranslation}}
+        {{> featureDiscovery}}
+    {{/if}}
+
     <div id="geneData" class="modal modal-fixed-footer">
-        <div class="modal-content">
-            <span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>
+        <ul class="tabs">
+            <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
+            <li class="tab col s3"><a href="#protein-seq">Protein</a></li>
+        </ul>
+
+        <div id="dna-seq">
+            <div class="modal-content">
+                <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
+                <textarea readonly id="gene_dna_seq">{{selectedGene}}</textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="copy-dna-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
+                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
-            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+
+        <div id="protein-seq">
+            <div class="modal-content">
+                <textarea readonly id="gene_protein_seq">{{selectedProtein}}</textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
+                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
         </div>
+
     </div>
 
-    <div id="mapsettings" class="modal">
-        <div class="modal-content">
-            <h4>Phamerator Settings</h4>
-            <table>
-                <tr>
-                    <td>
-                        <!-- Dropdown Trigger -->
-                        <a class='dropdown-button btn' href='phages' data-activates='dropdown1'>first sort by</a>
 
-                        <!-- Dropdown Structure -->
-                        <ul id='dropdown1' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="phages">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">Name</a></li>
-                        </ul>
-                    </td>
-                    <td>
-                        <!-- Dropdown Trigger -->
-                        <a class='dropdown-button btn' href='phages' data-activates='dropdown2'>then sort by</a>
-
-                        <!-- Dropdown Structure -->
-                        <ul id='dropdown2' class='dropdown-content'>
-                            <li><a class="waves-effect waves-dark" href="phages">Cluster</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">GC %</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">Length</a></li>
-                            <li><a class="waves-effect waves-dark" href="phages">Name</a></li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <div class="switch">
-                        <td>
-                            <label>
-                                <input type="checkbox">
-                                <span class="lever"></span>
-                            </label>
-                        </td>
-                        <td>Conserved Domains</td>
-                    </div>
-                </tr>
-                <tr>
-                    <div class="switch">
-                        <td>
-                            <label>
-                                <input type="checkbox" checked="{{NCisChecked}}">
-                                <span class="lever"></span>
-                            </label>
-                        </td>
-                        <td>Nucleotide Conservation</td>
-                    </div>
-                </tr>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-        </div>
-    </div>
     <div class="row">
 
         <div class="col s12">
@@ -75,8 +42,8 @@
                 <div class="determinate" style="width: 0%"></div>
             </div>-->
                 <ul class="tabs">
-                    <li class="tab col s3"><a class="active" href="#phages-list">Select Phages</a></li>
-                    <li class="tab col s3"><a href="#genome-map">View Map</a></li>
+                    <li class="tab col s6 m6 l6"><a class="active" href="#phages-list">Select Phages</a></li>
+                    <li class="tab col s6 m6 l6"><a id="viewMapTab" href="#genome-map">View Map</a></li>
                 </ul>
         </div>
         
@@ -91,7 +58,7 @@
 
             </ul>
             <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-                <a class="btn-floating btn-large waves-effect waves-light">
+                <a id="menu" class="btn-floating btn-large waves-effect waves-light">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
@@ -133,11 +100,11 @@
                     </div>
                 /each
         </ul>-->
-        
+
         <div id="genome-map" class="col s12">
             <svg></svg>
             <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-                <a class="btn-floating btn-large waves-effect waves-light">
+                <a id="menu2" class="waves-effect waves-light btn-floating btn-large">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
@@ -163,6 +130,8 @@
 
         </div>
     </div>
+
+
 </template>
 
 <template name="cluster">
@@ -176,7 +145,7 @@
                     </label>
                     <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
 
-                    <span class="purple {{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
+                    <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
                 </div>
                 <div class="collapsible-body">
                     <div class="row">

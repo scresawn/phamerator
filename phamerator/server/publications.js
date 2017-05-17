@@ -1,23 +1,20 @@
 // set up Genomes collection
 // publish just genome names and clusters
 
-Meteor.publish("genomes", function (selectedGenomes) {
-  //return Genomes.find({cluster: {$in: ['A1','A2','A3']}});
-  //return Genomes.find({}, {fields: {phagename: 1, genomelength: 1, genes: 1, cluster: 1, subcluster: 1}});
-  return Genomes.find({}, {fields: {phagename: 1, genomelength: 1, genes: 1, cluster: 1, subcluster: 1}});
-  //return Genomes.find({"phagename": {$in: selectedGenomes}});
+Meteor.publish("genomes", function () {
+  return Genomes.find({}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1}});
 });
 
 Meteor.publish("genomesWithSeq", function (selectedGenomes) {
-  console.log(selectedGenomes);
+  //console.log(selectedGenomes);
   return Genomes.find({"phagename": {$in: selectedGenomes}});
   //return Genomes.find({});
   //return Genomes.find({"phagename": {$in: selectedGenomes}});
 });
 
-Meteor.publish("proteinSeq", function (selectedProtein) {
-  console.log(selectedProtein, " selected");
-  return Genomes.find({"phagename": phagename});
+Meteor.publish("proteinSeq", function (phagename) {
+  //console.log(selectedProtein, " selected");
+  return Proteins.find({"phagename": phagename});
 });
 
 Meteor.publish('files.images.all', function () {
@@ -28,6 +25,21 @@ Meteor.publish('selectedData', function() {
   return Meteor.users.find({_id: this.userId}, {fields: {selectedData: 1}});
 });
 
+Meteor.publish('featureDiscovery', function() {
+  return Meteor.users.find({_id: this.userId}, {fields: {featureDiscovery: 1}});
+});
+
 Meteor.publish('fullname', function () {
   return Meteor.users.find({_id: this.userId}, {fields: {name: 1}});
+});
+
+Meteor.users.find({ "status.online": true }).observe({
+  added: function(id) {
+    // id just came online
+    console.log(new Date().toLocaleString(), "[ONLINE]:  ", id.username, "(" + id.name + ")", id.emails[0]);
+  },
+  removed: function(id) {
+    // id just went offline
+    console.log(    new Date().toLocaleString(), "[OFFLINE]: ", id.username, "(" + id.name + ")", id.emails[0]);
+  }
 });

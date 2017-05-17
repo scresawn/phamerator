@@ -1,5 +1,5 @@
-Accounts.emailTemplates.siteName = "phamerator.org";
-Accounts.emailTemplates.from = "Phamerator <info@phamerator.org>";
+Accounts.emailTemplates.siteName = "mail.phamerator.org";
+Accounts.emailTemplates.from = "Phamerator <info@mail.phamerator.org>";
 Accounts.emailTemplates.resetPassword.subject = function (user) {
  return "Phamerator password reset";
 };
