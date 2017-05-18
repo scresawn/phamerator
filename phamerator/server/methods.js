@@ -50,22 +50,22 @@ Meteor.methods({
     //console.log('favorites:', favorites);
   },
   "updateFeatureDiscovery": function(featureName) {
-    console.log('updateFeatureDiscovery called with', featureName);
+    //console.log('updateFeatureDiscovery called with', featureName);
 
     // initialize selectedData.featureDiscovery if it doesn't exist
     Meteor.users.update({_id: Meteor.userId(), 'featureDiscovery': {$exists : false}}, {$set: {'featureDiscovery': []}});
     features = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"featureDiscovery": 1}}).featureDiscovery;
-    console.log("user has not yet dismissed", features);
+    //console.log("user has not yet dismissed", features);
     // if featureName not in features
     if (features.indexOf(featureName) === -1) {
-      console.log("feature has already been dismissed");
+      //console.log("feature has already been dismissed");
       return;
       //features.push(featureName);
       //Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.featureDiscovery": features}});
     }
     var index = features.indexOf(featureName);
     if (index > -1) {
-      console.log("dismissing", featureName, "from", features);
+      //console.log("dismissing", featureName, "from", features);
       features.splice(index, 1);
       Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"featureDiscovery": features}});
     }
