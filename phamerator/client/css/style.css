@@ -5,19 +5,13 @@ html {
 
 body {
     font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
-    background: #fcfcfc url(/imgs/bg.jpg) repeat;
     margin: 0px;
     /* Margin bottom by footer height */
     margin-bottom: 70px;
     padding: 0px;
     color: #555555;
     min-width: 320px;
-}
-
-@media only screen and (min-width: 993px) {
-    /*#content {
-        margin-left: 240px;
-    }*/
+    font-size: 14.5px;
 }
 
 footer {
@@ -56,7 +50,11 @@ footer > .content {
             url("/fonts/Roboto-Light.ttf");
 }
 
-a, h1, h2, h3, h4, h5, p {
+a, h1, h2, h3, h4, h5 {
+    font-family: Roboto-Light;
+}
+
+p {
     font-family: Roboto-Light;
 }
 
@@ -136,18 +134,20 @@ text.phagename {
     padding-bottom: 25px;
     padding-left: 0px;
 }
+
 .acknowledgements_position {
     padding-top: 25px;
     padding-right: 80px;
     padding-bottom: 10px;
     padding-left: 80px;
 }
+
 .textAlignment {
     margin-left: 25px;
     margin-right: 25px;
 }
 
-textarea{
+textarea {
 
     resize: none;
     font-family: monospace;
@@ -164,10 +164,12 @@ textarea{
     overflow: hidden;
 
 }
+
 .modal .modal-content {
     overflow-y: scroll;
 
 }
+
 .modal .modal-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -184,18 +186,6 @@ h6 {
 .ack_images {
     margin: auto;
     width: 50%;
-}
-
-@media only screen and (min-width: 601px) {
-    .container {
-        width: 99%;
-    }
-}
-
-@media only screen and (min-width: 993px) {
-    .container {
-        width: 98%;
-    }
 }
 
 #iron-router-progress {

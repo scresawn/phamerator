@@ -31,7 +31,7 @@ Router.map(function() {
   });
   this.route('phamilies');
   this.route('domains');
-  this.route('barChart');
+  this.route('terms');
   this.route('account', {
     loadingTemplate: 'loading',
     waitOn: function() {

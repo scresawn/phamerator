@@ -1,6 +1,6 @@
 <template name="nav">
 
-<nav class="blue-grey">
+<nav class="purple darken-4">
     <div class="nav-wrapper">
         <div id="preloader">
             <div class="preloader-wrapper big active">
@@ -26,7 +26,7 @@
             <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
             {{#if loggedIn}}
                 <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-                <li style="max-height: 63px"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></li>
+                <li style="max-height: 63px"><a href="{{pathFor 'account'}}"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></a></li>
             {{/if}}
             <li><a class="js-gitter-toggle-chat-button waves-effect waves-light btn"><i class="material-icons left white-text">chat_bubble</i>chat</a></li>
             <li>{{> atNavButton }}</li>
@@ -52,4 +52,13 @@
         <!--<a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>-->
     </div>
     </nav>
+
+    <footer class="page-footer cyan">
+        <div class="footer-copyright cyan">
+            <div class="container">
+                © SEA-PHAGES 2017. All rights reserved. <a class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms of Use</a>
+                <a class="grey-text text-lighten-4 right" href="https://seaphages.org">SEA-PHAGES</a>
+            </div>
+        </div>
+    </footer>
 </template>

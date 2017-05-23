@@ -6,11 +6,13 @@ Template.home.onCreated(function() {
 
 Template.home.onRendered(function () {
    $(document).ready(function(){
-     h = $(document).height() - $('nav').height();
+     //h = $(document).height() - $('nav').height();
      //console.log(h);
-     $('.carousel.carousel-slider').carousel({fullWidth: true});
-     $('.carousel.carousel-slider').height(h);
-    });
+     //$('.carousel.carousel-slider').carousel({fullWidth: true});
+     //$('.carousel.carousel-slider').height(h);
+     $('.parallax').parallax()
+     //setTimeout(function() {$('.parallax').parallax()}, 5000);
+   });
   });
 
 /*Template.home.onRendered(function () {
