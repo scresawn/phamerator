@@ -1,11 +1,11 @@
 <template name="account">
     {{#if currentUser}}
         <div class="row">
-            <div class="col s12 m8 l8 offset-m2 offset-l2">
-                <div class="card-panel blue">
+            <div class="col s12 m8 l6 offset-m2 offset-l3">
+                <div class="card-panel white">
                     {{>file}}
-                    <span class="white-text">
-                        <h4>{{username}}</h4>
+                    <span class="purple-text text-darken-2">
+                        <h4>{{name}} ({{username}})</h4>
                         <p>{{email}}</p>
                     </span>
                 </div>
@@ -15,6 +15,8 @@
             {{>uploadForm}}
         </div>
     {{/if}}
+
+    <!--<div id="range-input"></div>-->
 </template>
 
 <template name="uploadForm">
@@ -24,7 +26,7 @@
             <!--<span id="progress">progress%</span>-->
         {{/with}}
     {{else}}
-            <div class="col s12 m8 l8 offset-m2 offset-l2">
+            <div class="col s12 m8 l6 offset-m2 offset-l3">
                 <form action="#">
                 <div class="file-field input-field">
                     <div class="btn">
@@ -44,5 +46,6 @@
 </template>
 
 <template name='file'>
-    <img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width: 100%" />
+    <!--<img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width: 100%" />-->
+    <img id="profilepic" src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="responsive-img">
 </template>

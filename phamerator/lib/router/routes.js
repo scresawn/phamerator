@@ -1,5 +1,10 @@
 var subscriptions = new SubsManager();
 
+if (Meteor.isClient) {
+  Router.plugin('ensureSignedIn', {
+    only: ['account', 'phages']
+  });
+}
 
 Router.configure({
   layoutTemplate: 'masterLayout',
@@ -7,51 +12,33 @@ Router.configure({
   notFoundTemplate: 'pageNotFound',
   //progressDebug : true,
   progress : true,
+  progressSpinner : false,
   yieldTemplates: {
     nav: {to: 'nav'},
-    footer: {to: 'footer'},
+    footer: {to: 'footer'}
   }
 });
 
 Router.map(function() {
   this.route('home', {
-    path: '/',
+    path: '/'
   });
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return subscriptions.subscribe('genomes');
-    },
-    //subscriptions: function() {
-      // returning a subscription handle or an array of subscription handles
-      // adds them to the wait list.
-    //  return Meteor.subscribe('genomes');
-    //},
-    //action: function () {
-    //  this.render('phages');
-    //}
-    //action: function () {
-    //  if (this.ready()) {
-    //    this.render();
-    //  }
-    //  else { this.render('loading');}
-    //}
-      //data: function () {
-    //  templateData = { authors: Authors.find() };
-    //  return templateData;
+      return Meteor.subscribe('genomes');
     }
-  );
+  });
   this.route('phamilies');
   this.route('domains');
   this.route('barChart');
-  this.route('account');
-});
-
-if (Meteor.isClient) {
-  Router.plugin('ensureSignedIn', {
-    only: ['account']
+  this.route('account', {
+    loadingTemplate: 'loading',
+    waitOn: function() {
+      return [subscriptions.subscribe('files.images.all'), subscriptions.subscribe('fullname')];
+    }
   });
-}
+});
 
 //Routes
 AccountsTemplates.configureRoute('changePwd');
@@ -61,3 +48,4 @@ AccountsTemplates.configureRoute('resetPwd');
 AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('signUp');
 AccountsTemplates.configureRoute('verifyEmail');
+

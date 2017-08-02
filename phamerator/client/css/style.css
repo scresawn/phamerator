@@ -15,9 +15,9 @@ body {
 }
 
 @media only screen and (min-width: 993px) {
-    #content {
+    /*#content {
         margin-left: 240px;
-    }
+    }*/
 }
 
 footer {
@@ -44,29 +44,36 @@ footer > .content {
             url("/fonts/HARRP___.TTF");
 }
 
+@font-face {
+    font-family: Roboto-Regular;
+    src:
+            url("/fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+    font-family: Roboto-Light;
+    src:
+            url("/fonts/Roboto-Light.ttf");
+}
+
+a, h1, h2, h3, h4, h5, p {
+    font-family: Roboto-Light;
+}
+
 label {
-    color:#000;
-    font-family: Arial;
+    opacity: 1;
+    font-family: Roboto-Regular;
+    color: #555;
 }
 
-header,
-main,
-footer {
-    padding-left: 240px;
-}
-
-@media only screen and (max-width: 992px) {
-    header,
-    main,
-    footer {
-        padding-left: 0;
-    }
+.hp {
+    font-family: HarryPotter, ParryHotter;
+    font-size: 20pt;
 }
 
 .container {
     padding: 0 1.5rem;
     margin: 0 auto;
-    max-width: 1280px;
     width: 100%;
 }
 
@@ -74,6 +81,13 @@ footer {
     background-color:#3F48CC;
     color:white;
     font-weight:bold;
+}
+
+div.row.label {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
 }
 
 div.tooltip {
@@ -90,11 +104,86 @@ div.tooltip {
     pointer-events: none;
 }
 
+text.phagename {
+    cursor: move;
+}
+
 #preloader {
-    position: relative;
+    position: fixed;
     top: 50%;
+    left: 50%;
     display: none;
     transform: translateY(10%);
+}
+
+#profilepic {
+    opacity: 0;
+}
+
+.thumb_profilepic {
+    position: float;
+    max-height: 63px;
+    width: auto;
+    border: 0px;
+    margin: 0px;
+}
+
+.carousel_position {
+    height: auto;
+    position: relative;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 25px;
+    padding-left: 0px;
+}
+.acknowledgements_position {
+    padding-top: 25px;
+    padding-right: 80px;
+    padding-bottom: 10px;
+    padding-left: 80px;
+}
+.textAlignment {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+textarea{
+
+    resize: none;
+    font-family: monospace;
+    font-size:14px;
+    border:0;
+    margin:0;
+    outline:none;
+    height:90%;
+    max-width: 100%;
+    max-height: 90%;
+}
+
+.modal {
+    overflow: hidden;
+
+}
+.modal .modal-content {
+    overflow-y: scroll;
+
+}
+.modal .modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+h6 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.ack_images {
+    margin: auto;
+    width: 50%;
 }
 
 @media only screen and (min-width: 601px) {
@@ -107,4 +196,18 @@ div.tooltip {
     .container {
         width: 98%;
     }
+}
+
+#iron-router-progress {
+    background-color : gold;
+    box-shadow       : 0 0 5px purple;
+}
+
+.progress {
+    fill: purple;
+    background-color: #607d8b;
+    position: absolute;
+    top: -7px;
+    height: 65px;
+    left: 0px;
 }

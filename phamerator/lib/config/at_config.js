@@ -1,3 +1,15 @@
+AccountsTemplates.removeField('email');
+AccountsTemplates.removeField('password');
+
+AccountsTemplates.addField({
+  _id: 'name',
+  type: 'text',
+  required: true,
+  displayName: "Full Name",
+  func: function(value){return value === '';},
+  errStr: 'Please enter your full name'
+});
+
 AccountsTemplates.addField({
   _id: 'username',
   type: 'text',
@@ -13,11 +25,28 @@ AccountsTemplates.addField({
           self.setError(userExists);
         self.setValidating(false);
       });
-      return;
     }
-    // Server
-    return Meteor.call("userExists", value);
-  },
+  }
+});
+
+AccountsTemplates.addField({
+  _id: 'email',
+  type: 'email',
+  required: true,
+  displayName: "email",
+  re: /.+@(.+){2,}\.(.+){2,}/,
+  //re: /.+@(.+){2,}\.edu/, // this forces use of .edu email address
+  errStr: 'Please use the email provided by your college/university',
+});
+
+AccountsTemplates.addField({
+  _id: 'password',
+  type: 'password',
+  required: true,
+  minLength: 8,
+  //re: /(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
+  re: /^(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*$/,
+  errStr: 'Must contain at least 1 digit, 1 symbol, 1 lowercase, and 1 uppercase character'
 });
 
 // Options
@@ -27,7 +56,7 @@ AccountsTemplates.configure({
   overrideLoginErrors: true,
   enablePasswordChange: true,
 
-  // sendVerificationEmail: true,
+  sendVerificationEmail: true,
   // enforceEmailVerification: true,
   //confirmPassword: true,
   //continuousValidation: false,

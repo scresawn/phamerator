@@ -7,6 +7,11 @@ Meteor.startup(function () {
 //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
 
+  Phams = new Meteor.Collection("phams");
+
+  Proteins = new Meteor.Collection("proteins");
+
+
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
 
   var Schemas = {};
@@ -64,9 +69,10 @@ Schemas.Genome = new SimpleSchema({
 
 Images = new FilesCollection({
   collectionName: 'Images',
+  storagePath: '/data/phamerator/uploads',
   allowClientCode: false, // Disallow remove files from Client
   onBeforeUpload: function (file) {
-    console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));
+    //console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));
     // Allow upload files under 10MB, and only in png/jpg/jpeg formats
     return true;
     if (file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext)) {
