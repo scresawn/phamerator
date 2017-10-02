@@ -6,7 +6,7 @@ html {
 body {
     font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
     margin: 0px;
-    /* Margin bottom by footer height */
+    /* Margin bottom by footer height*/
     margin-bottom: 70px;
     padding: 0px;
     color: #555555;

@@ -261,6 +261,7 @@ function update_phages() {
 
   $("#preloader").fadeOut(300).hide();
   //console.log("in drawGenomeMap");
+  //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("width", function (d) {
     return d3.max(selectedGenomes.find().fetch(), function(d) {
@@ -375,7 +376,7 @@ function update_phages() {
 
     .on("dragstart", function(d){
 
-      d3.event.sourceEvent.stopPropagation();
+      //d3.event.sourceEvent.stopPropagation();
       //if (d.attr("phage"))
       d3.selectAll(".hspGroup").transition().duration(1000).style("opacity", 0);
       //d3.select("svg").selectAll(".hspGroup").style("opacity", 0);
@@ -389,7 +390,7 @@ function update_phages() {
 
     })
     .on("drag", function(d){
-
+      console.log(d3.event.y);
       d.ypos = d3.transform(d3.select(this).attr("transform")).translate[1];
 
       d3.select(this)
@@ -620,9 +621,12 @@ function update_phages() {
 
       console.log(d, this, gene);
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;
-      //console.log("selected gene:", d);
-      //console.log("d.parent:", d3.select(d));
-      //nodedata = this.parentNode.__data__;
+      Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
+        Session.set('selectedClusterMembers', selectedClusterMembers);
+        console.log('selectedClusterMembers:', selectedClusterMembers);
+        uniqueClusters = _.uniq(selectedClusterMembers);
+        Session.set('selectedClusters', uniqueClusters);
+      });
       Meteor.subscribe('proteinSeq', nodedata.phagename, {
         onReady: function () {
           Session.set('selectedProtein', ">" + nodedata.phagename + " gp" + d.name + "\n" + d.translation);
@@ -631,12 +635,11 @@ function update_phages() {
 
       var g = selectedGenomes.findOne({phagename: nodedata.phagename}, {fields: {sequence: 1}}).sequence;
       if (d.direction === "forward") {
-        Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + g.slice(d.start, d.stop));
+        Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start, d.stop));
       }
       else {
         complementSeq = g.slice(d.start, d.stop).split('').reverse().map(complement).join('');
         Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
-
       }
 
 
@@ -960,7 +963,7 @@ blast = function(q, d) {
  /////console.log("s1:", s1.length);
  /////console.log("s2:", s2.length);
 
-  myURL = "http://phamerator.org:3000/";
+  myURL = "http://phamerator.org:3000/blastalign";
   //console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({
@@ -1070,54 +1073,16 @@ Template.phages.onDestroyed(function () {
 Template.phages.onRendered(function () {
   console.log('Template.phages.onRendered');
 
-  // Reference: http://www.html5rocks.com/en/tutorials/speed/animations/
-
-  var last_known_scroll_position = 0;
-  var ticking = false;
-
-  function doSomething(scroll_pos) {
-    // do something with the scroll position
-    console.log(scroll_pos);
-  }
-
-  var genome_map = d3.select("body").selectAll("svg");
-  console.log(genome_map);
-
-  genome_map.on('scroll', function(e) {
-    console.log("scroll");
-    last_known_scroll_position = window.scrollX;
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        doSomething(last_known_scroll_position);
-        ticking = false;
-      });
-    }
-    ticking = true;
-  });
-
   $("#preloader").fadeOut(300).hide();
   $(document).ready(function() {
     $('ul.tabs').tabs();
+
     $('#mapSettings').modal();
     $('#geneData').modal();
-
-    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-    //$('.modal-trigger').leanModal();
-    //$('.modal-trigger').modal();
-
-    //$('#mapSettings').modal();
+    $('.collapsible').collapsible({
+      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    });
   });
-
-  /*$('.dropdown-button').dropdown({
-      inDuration: 300,
-      outDuration: 225,
-      constrain_width: false, // Does not change width of dropdown to that of the activator
-      hover: true, // Activate on hover
-      gutter: 0, // Spacing from edge
-      belowOrigin: false, // Displays dropdown below the button
-      stoppropagation: true,
-      alignment: 'left' // Displays dropdown with edge aligned to the left of button
-    });*/
 
   svg = d3.select("svg");
   svg.attr("id", "svg-genome-map")
@@ -1157,6 +1122,7 @@ Template.phages.helpers({
   selectedGenomes: selectedGenomes,
   selectedGene: function () { return Session.get('selectedGene'); },
   selectedProtein: function () { return Session.get('selectedProtein'); },
+  selectedClusters: function () { return Session.get('selectedClusters'); },
   genomes_are_selected: function() {
     return selectedGenomes.find({}).fetch().length > 0;
   },
@@ -1296,12 +1262,11 @@ Template.phages.events({
       fav.classed("grey-text", true);
     }
   },
-  
+
   "click .downloadGenomeMap": function (event, template) {
    /////console.log("downloadGenomeMap clicked");
 
       $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
-
       var svgData = $("#svg-genome-map")[0].outerHTML;
       var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
       var svgUrl = URL.createObjectURL(svgBlob);

@@ -79,17 +79,75 @@ Meteor.methods({
   },
 
   "getphams": function () {
+    console.log("calling getphams()...");
     if (typeof phams != "undefined") {
-      //console.log("sending precomputed phams...");
+      console.log("sending precomputed phams...");
       return phams;
     }
-    //console.log("computing phams...");
+    console.log("computing phams...");
     phamsObj = Phams.find().fetch().reduce(function (o, currentArray) {
       n = currentArray.name, v = currentArray.size;
       o[n] = v;
       return o
     }, {});
+    console.log("returning newly computed phams...");
     return phamsObj;
+  },
+
+  "get_clusters_by_pham": function (phamname) {
+    console.log("calling get_clusters_by_pham(", phamname, ")");
+
+    selectedClusterMembers = []; //array of objects of form {cluster: "A1", phages: ['L5', 'D29', ...]}
+
+    if (typeof phamname != null) {
+      phamclusters = Genomes.find({ genes: { $elemMatch : {
+        phamName: { $eq: phamname }
+      }}
+      }, {sort: {cluster:1, subcluster: 1} , fields: {_id: false, phagename:1, cluster: 1, subcluster: 1}}).fetch().map(function (x) {
+        console.log("x:", x);
+        console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
+        if (x.cluster === "") {
+          return x.phagename;
+        }
+        //console.log("selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster):", selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster));
+
+
+        //if (selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster) === false) {
+        var thiscluster = selectedClusterMembers.find(y => y.cluster === (x.cluster + x.subcluster));
+        if (thiscluster == undefined) {
+          thiscluster = {};
+          thiscluster.cluster = x.cluster + x.subcluster;
+          thiscluster.phages = [];
+          thiscluster.phages.push(x.phagename);
+          thiscluster.phages.sort();
+          selectedClusterMembers.push(thiscluster);
+        }
+        else {
+          thiscluster.phages.push(x.phagename);
+          thiscluster.phages.sort();
+          selectedClusterMembers[selectedClusterMembers.indexOf(thiscluster)] = thiscluster;
+        }
+      console.log("index:", selectedClusterMembers.indexOf(thiscluster));
+
+      });
+      console.log("selectedClusterMembers:", selectedClusterMembers);
+      return selectedClusterMembers;
+      //return phamclusters;
+      //uniqueClusters = _.uniq(phamclusters);
+      //console.log(uniqueClusters);
+      //return uniqueClusters;
+    }
+    else {
+      console.log("ERROR: no pham name was given to get_clusters_by_pham...");
+    }
+  },
+
+  "getlargestphamsize": function() {
+    //nobiggie = Phams.find().sort({size: -1}).limit(1);
+    //nobiggie = nobiggie.size;
+    nobiggie = Phams.findOne({}, {sort: {size:-1}});
+    console.log(nobiggie.size);
+    return nobiggie;
   },
 
   "getclusters": function () {
@@ -107,7 +165,6 @@ Meteor.methods({
       return x.cluster;
     }), false);
     //console.log("got cluster names");
-
 
     // for each cluster, get an array of unique subcluster names
     clusterNames.forEach(function (cluster, index, array) {

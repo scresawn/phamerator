@@ -1,5 +1,3 @@
-//Session.set('geneTranslation', )
-
 updateFeatureDiscoveryStore = function (featureName) {
   // this needs to do Meteor.call()...
   Meteor.call('updateFeatureDiscovery', featureName);
