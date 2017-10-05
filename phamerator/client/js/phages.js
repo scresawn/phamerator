@@ -13,6 +13,9 @@ Session.set("clustersExpanded", false);
 Session.set("showFunctionLabels", true);
 Session.set("showPhamLabels", true);
 Session.set("showhspGroups", true);
+Session.set("showphamabcolor", false);
+Session.set("showgccolor", false)
+Session.set("showphamcolor", true)
 
 function viewMapTabClicked () {
   if (Session.get("geneTranslation")) {
@@ -246,6 +249,34 @@ function update_phages() {
         return 0;
       }
     });
+
+    d3.selectAll(".generect")
+    //.transition()
+    //.duration(d3.max([500, phagedata.length * 20]))
+        .attr("fill", function (d) {
+            if (Session.get("showphamabcolor") === true) {
+                phamSize = phamsObj[+d.phamName];
+                /*rgb = colorsys.hsv_to_rgb(0.66, 0.0, 1-min(1,(5*scaledAbundance))) #(scaledAbundance+(abundance/largestPhamSize))) # orphams should be white for consistency
+                 rgb = (rgb[0]*255,rgb[1]*255,rgb[2]*255)
+                 return '#%02x%02x%02x' % rgb
+                    */
+                scaledAbundance = phamSize/maxPham;
+                //abundancecolorsys=colorsys.hsv_to_rgb({h:0.66, s:0.0, v:1-Math.min(1,(5*scaledAbundance))});
+                return ("hsl(0.66,0%," + (1-(scaledAbundance))*100 + "%)");
+
+            }
+            else if (Session.get("showphamcolor") === true) {
+                return d.phamColor;
+            }
+        })
+        .attr("opacity", function (d) {
+//            if (Session.get("showphamabcolor") === true) {
+
+            //          }
+            //      else if (Session.get("showphamcolor") === true) {
+            return "1";
+            //  }
+        });
 
   d3.selectAll(".phamLabel")
     .transition()
@@ -617,6 +648,7 @@ function update_phages() {
   gene
     .attr("transform", function (d) { return "translate(" + gene_group_x(d) + "," + gene_group_y(d) + ")"});
   gene.append("rect")
+      .classed("generect", true)
     .on("click", function (d, i) {
 
       console.log(d, this, gene);
@@ -647,9 +679,15 @@ function update_phages() {
     })
     .attr("height", function (d) {return 30;})
     .style({"stroke":"black", "stroke-width": "1px"})
-    .attr("fill", function (d) {
-      return d.phamColor;
-    })
+      .attr("fill", function (d) {
+          console.log("running colorchange");
+          if (Session.get("showphamcolor") === true) {
+              return d.phamColor
+          }
+          else if (Session.get("showphamabcolor") === true) {
+              return "white"
+          }
+      })
     .attr("width", 0)
     .attr("rx", 2)
     .transition()
@@ -713,6 +751,18 @@ function update_phages() {
     .style({"text-anchor": "middle", "fill": "black"})
     .attr("font-family", "Roboto-Regular")
     .text(function(d) {return d.name})
+        //FOR TEXT OPACITY AFTER PHAM COLOR SWITCH
+    /*.attr("fill", function (d) {
+         if (Session.get("showphamabcolor") === true) {
+             phamSize = phamsObj[+d.phamName];
+             console.log("scaledAbundance:", scaledAbundance);
+             scaledAbundance = phamSize/maxPham;
+             if (scaledAbundance > 0.5) {
+               return "white";
+             }
+             return "black";
+         }
+     })*/
     //.attr("opacity", 0)
     //.transition().delay(2000).duration(1500)
     .attr("opacity", 1);
@@ -875,6 +925,16 @@ Template.phages.onCreated(function() {
     console.log('route change');
   }
   var routeChange = true;*/
+
+    Meteor.call('getlargestphamsize', function(error, result) {
+        if (typeof error !== 'undefined') {
+            console.log('error getting phams:', error);
+        }
+        else {
+            maxPham = result;
+            console.log('maxpham', result)
+        }
+    });
 
   Meteor.call('getclusters', function(error, result) {
 
@@ -1295,6 +1355,44 @@ Template.phages.events({
     console.log(event.target.checked);
     setTimeout(function () { Session.set("showPhamLabels", event.target.checked) }, 200);
   },
+    "change #Phamabundancebutton": function (event, template) {
+        event.preventDefault();
+        console.log(event.target.checked);
+        setTimeout(function () {
+            Session.set("showgccolor", false);
+            Session.set("showphamcolor", false);
+            Session.set("showphamabcolor", true);
+            console.log("phamcolorabstate:",Session.get("showphamabcolor"));
+            console.log("showgccolorstate:",Session.get("showgccolor"));
+            console.log("showphamcolor:",Session.get("showphamcolor"));
+        }, 200);
+    },
+    "change #GCbutton": function (event, template) {
+        event.preventDefault();
+        console.log(event.target.checked);
+        setTimeout(function () {
+            //Session.set("showgccolor", event.target.checked)
+            Session.set("showphamabcolor", false);
+            Session.set("showgccolor", true);
+            Session.set("showphamcolor", false);
+            console.log("phamcolorabstate:", Session.get("showphamabcolor"));
+            console.log("showgccolorstate:", Session.get("showgccolor"));
+            console.log("showphamcolor:", Session.get("showphamcolor"));
+        }, 200);
+    },
+    "change #Eastereggbutton": function (event, template) {
+        event.preventDefault();
+        console.log(event.target.checked);
+        setTimeout(function () {
+            //Session.set("showphamcolor", event.target.checked)
+            Session.set("showphamabcolor", false);
+            Session.set("showgccolor", false);
+            Session.set("showphamcolor", true);
+            console.log("phamcolorabstate:",Session.get("showphamabcolor"));
+            console.log("showgccolorstate:",Session.get("showgccolor"));
+            console.log("showphamcolor:",Session.get("showphamcolor"));
+        }, 200);
+    },
 
   "change #hspGroupsSwitch": function (event, template) {
     event.preventDefault();
@@ -1436,13 +1534,23 @@ Template.cluster.helpers({
 });
 
 Template.mapSettingsModal.helpers({
-  'blastSwitchState': function () {
-    return Session.get("showhspGroups");
-  },
-  'phamLabelsSwitchState': function () {
-    return Session.get("showPhamLabels");
-  },
-  'functionLabelsSwitchState': function () {
-    return Session.get("showFunctionLabels");
-  }
+    'blastSwitchState': function () {
+        return Session.get("showhspGroups");
+    },
+    'phamLabelsSwitchState': function () {
+        return Session.get("showPhamLabels");
+    },
+    'functionLabelsSwitchState': function () {
+        return Session.get("showFunctionLabels");
+    },
+    'phamabstate': function () {
+        return Session.get("showphamabcolor");
+    },
+    'GCbuttonstate': function () {
+        return Session.get ("showgccolor");
+    },
+    'phamcolorstate': function () {
+        return Session.get ("showphamcolor");
+    }
+
 });
