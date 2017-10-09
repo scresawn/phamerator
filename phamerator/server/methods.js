@@ -94,6 +94,7 @@ Meteor.methods({
     return phamsObj;
   },
 
+
   "get_clusters_by_pham": function (phamname) {
     console.log("calling get_clusters_by_pham(", phamname, ")");
 
@@ -141,14 +142,17 @@ Meteor.methods({
       console.log("ERROR: no pham name was given to get_clusters_by_pham...");
     }
   },
+    "getlargestphamsize": function () {
+        return Phams.findOne({},{sort:{size: -1}}).size;
+    },
 
-  "getlargestphamsize": function() {
+  /*"getlargestphamsize": function() {
     //nobiggie = Phams.find().sort({size: -1}).limit(1);
     //nobiggie = nobiggie.size;
     nobiggie = Phams.findOne({}, {sort: {size:-1}});
     console.log(nobiggie.size);
     return nobiggie;
-  },
+  },*/
 
   "getclusters": function () {
     if (typeof clusters !== "undefined") {
