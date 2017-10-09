@@ -278,6 +278,19 @@ function update_phages() {
             //  }
         });
 
+  d3.selectAll(".geneNameLabel")
+    .style("fill", function (d) {
+         if (Session.get("showphamabcolor") === true) {
+             phamSize = phamsObj[+d.phamName];
+             scaledAbundance = phamSize/maxPham;
+             //console.log("scaledAbundance:", scaledAbundance);
+             if (scaledAbundance > 0.5) {
+               return "white";
+             }
+             return "black";
+         }
+     });
+
   d3.selectAll(".phamLabel")
     .transition()
     .duration(d3.max([500, phagedata.length * 20]))
@@ -733,6 +746,7 @@ function update_phages() {
    .attr("opacity", 0.9);*/
 
   gene.append("text") // gene name
+    .classed("geneNameLabel", true)
     .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
     .attr("y", function (d) {
       if (d.direction == "forward") {
@@ -752,17 +766,7 @@ function update_phages() {
     .attr("font-family", "Roboto-Regular")
     .text(function(d) {return d.name})
         //FOR TEXT OPACITY AFTER PHAM COLOR SWITCH
-    /*.attr("fill", function (d) {
-         if (Session.get("showphamabcolor") === true) {
-             phamSize = phamsObj[+d.phamName];
-             console.log("scaledAbundance:", scaledAbundance);
-             scaledAbundance = phamSize/maxPham;
-             if (scaledAbundance > 0.5) {
-               return "white";
-             }
-             return "black";
-         }
-     })*/
+
     //.attr("opacity", 0)
     //.transition().delay(2000).duration(1500)
     .attr("opacity", 1);

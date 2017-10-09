@@ -62,6 +62,8 @@ label {
     opacity: 1;
     font-family: Roboto-Regular;
     color: #555;
+    line-height: 2.5;
+    font-size: 1rem;
 }
 
 .hp {
