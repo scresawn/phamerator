@@ -9,7 +9,9 @@
         <ul class="tabs">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
             <li class="tab col s3"><a href="#protein-seq">Protein</a></li>
+            <li class="tab col s3"><a href="#domains">Domains</a></li>
             <li class="tab col s3"><a href="#pham-clusters">Clusters</a></li>
+
         </ul>
 
         <div id="dna-seq">
@@ -29,6 +31,29 @@
             </div>
             <div class="modal-footer">
                 <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
+                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
+        </div>
+
+        <div id="domains">
+        <div class="modal-content">
+        <ul class="collapsible" data-collapsible="expandable">
+        {{ #each domain in selectedDomains}}
+            <li>
+                <div class="collapsible-header">{{domain.domainname}}</div>
+                <div class="collapsible-body">
+                    <ul>
+                        <li>
+                            {{domain.description}}
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+        {{/each}}
+        </ul>
+        </div>
+            <div class="modal-footer">
                 <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>

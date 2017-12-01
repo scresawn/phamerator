@@ -105,8 +105,8 @@ Meteor.methods({
         phamName: { $eq: phamname }
       }}
       }, {sort: {cluster:1, subcluster: 1} , fields: {_id: false, phagename:1, cluster: 1, subcluster: 1}}).fetch().map(function (x) {
-        console.log("x:", x);
-        console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
+        //console.log("x:", x);
+        //console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
         if (x.cluster === "") {
           return x.phagename;
         }
@@ -128,10 +128,10 @@ Meteor.methods({
           thiscluster.phages.sort();
           selectedClusterMembers[selectedClusterMembers.indexOf(thiscluster)] = thiscluster;
         }
-      console.log("index:", selectedClusterMembers.indexOf(thiscluster));
+      //console.log("index:", selectedClusterMembers.indexOf(thiscluster));
 
       });
-      console.log("selectedClusterMembers:", selectedClusterMembers);
+      //console.log("selectedClusterMembers:", selectedClusterMembers);
       return selectedClusterMembers;
       //return phamclusters;
       //uniqueClusters = _.uniq(phamclusters);
@@ -141,6 +141,14 @@ Meteor.methods({
     else {
       console.log("ERROR: no pham name was given to get_clusters_by_pham...");
     }
+  },
+
+  "get_domains_by_gene":function (geneID) {
+    console.log(geneID)
+    domains = Domains.find({geneID:geneID}).fetch();
+    console.log (domains)
+    return domains;
+
   },
     "getlargestphamsize": function () {
         return Phams.findOne({},{sort:{size: -1}}).size;

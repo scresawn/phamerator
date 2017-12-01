@@ -11,6 +11,8 @@ Meteor.startup(function () {
 
   Proteins = new Meteor.Collection("proteins");
 
+  Domains = new Meteor.Collection("domains");
+
 
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
 
