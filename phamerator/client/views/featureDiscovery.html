@@ -1,14 +1,27 @@
 <template name="featureDiscovery">
     <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-        <a id="geneTranslationDismissButton" class="btn-floating btn-large waves-effect waves-light">
+      <a id="featureDiscoveryDismissButton" class="btn-floating btn-large waves-effect waves-light">
+          <i class="material-icons featureDiscoveryDismiss">thumb_up</i>
+      </a>
+        <!--<a id="geneTranslationDismissButton" class="btn-floating btn-large waves-effect waves-light">
             <i class="material-icons geneTranslationDismiss">thumb_up</i>
         </a>
+        <a id="phamAbundanceFDDismissButton" class="btn-floating btn-large waves-effect waves-light">
+            <i class="material-icons phamAbundanceFDDismiss">thumb_up</i>
+        </a>-->
     </div>
-        <div class="tap-target cyan" data-activates="geneTranslationDismissButton">
+        <!--<div class="tap-target cyan geneTranslation" data-activates="geneTranslationDismissButton">
             <div class="tap-target-content">
                 <h5 style="text-align: center;">Gene Translations</h5>
                 <p style="text-align: justify">Amino acid sequences are now available. Select a gene on the map, then select PROTEIN.</p>
                 <p style="text-align: justify">(Press the thumbs up and we won't show you this message again.)</p>
+            </div>
+        </div>-->
+        <div class="tap-target blue" data-activates="featureDiscoveryDismissButton">
+            <div class="tap-target-content">
+                <h5 style="text-align: center">{{featureText}}</h5>
+                <p style="text-align: justify">{{featureBody}}</p>
+                <p style="text-align: justify">{{featureDismiss}}</p>
             </div>
         </div>
 </template>

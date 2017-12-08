@@ -5,17 +5,13 @@ Template.home.onCreated(function() {
 });
 
 Template.home.onRendered(function () {
-  Meteor.subscribe('featureDiscovery', function () {
+  Meteor.subscribe('newTermsAndPolicies', function () {
 
-    updatedTerms = Meteor.user().featureDiscovery.indexOf('updatedTerms');
-    if (updatedTerms != -1) {
-      updatedTerms = true;
-    }
-    else { updatedTerms = false }
+    updatedTerms = Meteor.user().newTermsAndPolicies;
+
     Session.set('updatedTerms', updatedTerms);
-    console.log('subscribed to featureDiscovery');
     dismissToast = function () {
-      updateFeatureDiscoveryStore('updatedTerms');
+      Meteor.call("updateNewTermsAndPolicies");
       $('.toast').fadeOut();
 
       setTimeout(function () {
@@ -27,7 +23,7 @@ Template.home.onRendered(function () {
     console.log('updatedTerms:', updatedTerms);
     if (updatedTerms === true && $('.toast').length === 0) {
       setTimeout(function () {
-        var newPrivacyPolicyToast = $("<span>We have updated our <a href='terms'>terms and privacy policy</a>. Please take a look. <a href='' style='color: orange'><span onclick='dismissToast(); return false'>Dismiss</span></a>");
+        var newPrivacyPolicyToast = $("<span>We have updated our <a href='terms'>terms and privacy policy</a>. By continuing to use the software, you accept the terms and policies. <a href='' style='color: orange'><span onclick='dismissToast(); return false'>Dismiss</span></a>");
         Materialize.toast(newPrivacyPolicyToast, 6.048e+8); // Hide after a week...
       }, 1000);
 

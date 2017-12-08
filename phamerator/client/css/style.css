@@ -50,8 +50,24 @@ footer > .content {
             url("/fonts/Roboto-Light.ttf");
 }
 
-a, h1, h2, h3, h4, h5 {
-    font-family: Roboto-Light;
+@font-face {
+    font-family: Dosis-Regular;
+    src:
+            url("/fonts/Dosis-Regular.ttf");
+}
+
+@font-face {
+    font-family: Dosis-Light;
+    src:
+            url("/fonts/Dosis-Light.ttf");
+}
+
+h1, h2 {
+  font-family: Roboto-Regular;
+}
+
+a, h3, h4, h5 {
+    font-family: Dosis-Light;
 }
 
 p {
@@ -60,7 +76,7 @@ p {
 
 label {
     opacity: 1;
-    font-family: Roboto-Regular;
+    font-family: Dosis-Regular;
     color: #555;
     line-height: 2.5;
     font-size: 1rem;
@@ -105,7 +121,11 @@ div.tooltip {
 }
 
 text.phagename {
-    cursor: move;
+    cursor: ns-resize;
+}
+
+text.horizontalAlign {
+  cursor: ew-resize;
 }
 
 #preloader {
@@ -118,6 +138,10 @@ text.phagename {
 
 #profilepic {
     opacity: 0;
+}
+
+#genome-map {
+  overflow: scroll;
 }
 
 .thumb_profilepic {
@@ -169,7 +193,6 @@ textarea {
 
 .modal .modal-content {
     overflow-y: scroll;
-
 }
 
 .modal .modal-footer {
@@ -191,13 +214,12 @@ h6 {
 }
 
 #iron-router-progress {
-    background-color : gold;
+    background-color : cyan;
     box-shadow       : 0 0 5px purple;
 }
 
 .progress {
-    fill: purple;
-    background-color: #607d8b;
+    background-color: #2196f3;
     position: absolute;
     top: -7px;
     height: 65px;

@@ -1,9 +1,9 @@
 <template name="phages">
 
     {{> mapSettingsModal}}
-    {{#if geneTranslation}}
+      {{#if newFeature}}
         {{> featureDiscovery}}
-    {{/if}}
+      {{/if}}
 
     <div id="geneData" class="modal modal-fixed-footer">
         <ul class="tabs">
@@ -95,7 +95,7 @@
                     <li class="tab col s6 m6 l6"><a id="viewMapTab" href="#genome-map">View Map</a></li>
                 </ul>
         </div>
-        
+
         <div id="phages-list" class="col s12">
             <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
             <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
