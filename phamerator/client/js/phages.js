@@ -19,7 +19,23 @@ Session.set("showgccolor", false)
 Session.set("showphamcolor", true)
 
 function viewMapTabClicked () {
-  if (Session.get("geneTranslation")) {
+  //console.log('geneTranslation', Session.get('geneTranslation'));
+  //console.log('phamAbundanceFD', Session.get('phamAbundanceFD'));
+  Meteor.subscribe('featureDiscovery', function () {
+    var featureKey = Meteor.user().featureDiscovery[0];
+    console.log("meteor user:", Meteor.user());
+    console.log("features:", features);
+    console.log("featureKey:", features[featureKey]);
+    if (features[featureKey] != null) {
+      console.log("title:", features[featureKey].title);
+      Session.set("newFeatureTitle", features[featureKey].title);
+      Session.set("newFeatureBody", features[featureKey].body);
+      Session.set("newFeatureDismiss", features.dismiss);
+    }
+  });
+
+  if (Session.get("newFeature") === true) {
+    console.log("opening  featureDiscovery!");
     $('.tap-target').tapTarget('open');
   }
 }
@@ -86,7 +102,7 @@ alignedGenomes = new Meteor.Collection(null);
 
 function update_hsps(hspData) {
   console.log("update_hsps:", hspData);
-  hspGroup = svg.selectAll(".hspGroup")
+  hspGroup = mapGroup.selectAll(".hspGroup")
     .data(hspData, function (d) {
       return d.queryName + "___" + d.subjectName;
     });
@@ -135,7 +151,7 @@ function update_hsps(hspData) {
         .on("mouseover", function(d) {
           d3.select(this).style("stroke", "black");
           //d3.select(this).style("stroke-width", 3);
-          tooltip.html("e-value:" + d[0].evalue.toExponential(3) + "<br>" + d[0].identity + "/" + d[0].align_len + " (" + d3.format("0.000%")(d[0].identity/d[0].align_len) + ")");
+          tooltip.html("e-value: " + d[0].evalue.toExponential(3) + "<br>" + d[0].identity + "/" + d[0].align_len + " (" + d3.format("0.000%")(d[0].identity/d[0].align_len) + ")");
           //tooltip.html(d[0].queryName + ":" + d[0].subjectName);
           tooltip.style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY + 50) + "px")
@@ -149,6 +165,9 @@ function update_hsps(hspData) {
         .style("stroke-width", 0)
         .attr("d", function(d) { //console.log(d);
           return d3line2(d);})
+        /*attr("transform", function (d) {
+          return "translate(" + d[0].x + "," + d[0].y + ")";
+        })*/
         .style("fill", function (d) {
           /////console.log(d);
           evalue = d[0].evalue.toString();
@@ -170,7 +189,6 @@ function update_hsps(hspData) {
         .duration(1000)
         .delay(3000)
         //.style("stroke", "black")
-
 
         .style("opacity", function() {
           if (Session.get("showhspGroups") === true) {
@@ -208,8 +226,9 @@ function update_hsps(hspData) {
     .attr("transform", function (d) {
       if (d3.select('g#phage_'+d.queryName)[0][0] !== null) {
         var t = d3.transform(d3.select('g#phage_' + d.queryName).attr("transform")),
-          x = t.translate[0],
-          y = t.translate[1] - 150;
+          x = 0;//t.translate[0],
+          y = t.translate[1] + 30;// - 150;
+          //console.log(t);
         return "translate(" + x + "," + y + ")";
       }
     });
@@ -217,6 +236,8 @@ function update_hsps(hspData) {
   if (Session.get("showhspGroups") === true) {
     d3.selectAll(".hspGroup").transition().duration(1000).style("opacity", 1);
   }
+  adjust_skew_all();
+
 }
 var phageArray = [];
 var map_order = [];
@@ -230,14 +251,13 @@ function update_phages() {
 
   phageArray = phages.fetch();
 
-  phage = svg.selectAll(".phages")
+  phage = mapGroup.selectAll(".phages")
     .data(phageArray, function(d) {
       return d.phagename;
     });
   phage.exit().remove();
 
   phagedata = phage.data();
-
 
   d3.selectAll(".functionLabel")
     .transition()
@@ -329,11 +349,23 @@ function update_phages() {
   //console.log("in drawGenomeMap");
   //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
+
+  var minX = 0;
+  var maxX = 0;
+  var phages = d3.selectAll(".phages");
+  phages.each(function (d) {
+    //console.log(d, this);
+    minX = Math.min(minX, d3.transform(d3.select(this).attr("transform")).translate[0]);
+    maxX = Math.max(maxX, d3.transform(d3.select(this).attr("transform")).translate[0] + (d.genomelength/10));
+});
+  console.log ("minX", minX, "maxX", maxX);
+  //mapGroup.attr("transform", function(d) {"return translate(" + -minX + ",0)"})
+  var draggedGenome = d3.select(this);
   svg.attr("width", function (d) {
-    return d3.max(selectedGenomes.find().fetch(), function(d) {
-      return d.genomelength/10;
-    })
-  });
+    return (maxX - minX);
+  })
+  .attr("x", function (d) { return minX });
+
 
   // Define the div for the tooltip
   var div = d3.select("body").append("div")
@@ -399,87 +431,184 @@ function update_phages() {
     //.transition()
     //.duration(500)
     .attr("transform", function (d, i) {
-      return "translate(0," + ((i * 300)+150) + ")";
+      return "translate(" + d3.transform(d3.select('g#phage_' + d.phagename).attr("transform")).translate[0]
+ + "," + ((i * 300)+150) + ")";
     });
 
-  /*phage
-    .each(function(d) {
-      var previousPhage = null;
-      var nextPhage = null;
-      selectedGenomes.find({}, {sort: {cluster: 1, subcluster: 1, phagename: 1}}).fetch().findIndex(function (element, index, thearray) {
-        //console.log("checking ", d, element.phagename, element.cluster, element.subcluster);
-        if ( element.phagename === d.phagename ) {
-          selectedPhages = selectedGenomes.find().fetch();
-          if (selectedPhages.find(function (e, i, a, element) { return e.phagename === this.phagename; }) !== undefined) {
-            previousPhage = thearray[index - 1];
-          }
-          else {
-            /////console.log("this is the first selected phage, so no alignment to do with this as subject");
-          }
-          if (index < selectedGenomes.find().fetch().length - 1) {
-            nextPhage = thearray[index + 1 ];
-          }
-          else {
-            /////console.log("this is the last selected phage, so no alignment to do with this as query");
-          }
-        }
+  adjust_skew = function(genome) {
+
+    //console.log("genome:", genome);
+    //console.log(d3.event.x);
+    if (typeof d3.transform(d3.select(genome).attr("transform")).translate[0] == undefined) {
+      d3.select(genome).attr("transform", "translate(0," + d3.transform(d3.select(genome).attr("transform")).translate[1] + ")")
+    }
+    queryForThisSubjectName = null;
+    subjectForThisQueryName = null;
+    queryForThisSubjectX = null;
+    subjectForThisQueryX = null;
+    subjectForThisQuerySelection = null;
+    queryForThisSubjectSelection = null;
+    hspQueryPaths = null;
+    hspSubjectPaths = null;
+    //d.xpos = d3.transform(d3.select(this).attr("transform")).translate[0];
+
+    hspGroupHeight = 270;
+    // get the hspGroup whose subject is this genome
+    hspGroupSubject = d3.selectAll(".hspGroup").filter(function (d) {
+      // get only those .hspGroup that have the dragged subject
+      return (genome.id.indexOf("phage_" + d.subjectName) == 0)
+    });
+    if (hspGroupSubject.size() > 0) {
+      hspSubjectPaths = hspGroupSubject.selectAll("path");
+
+      // get the query of that subject (genome above this one)
+      queryForThisSubjectName = hspGroupSubject[0][0].id.split("___")[0];
+      queryForThisSubjectSelection = d3.select("g#" + queryForThisSubjectName);
+      // get the offset of the genome above
+      queryForThisSubjectX = d3.transform(queryForThisSubjectSelection.attr("transform")).translate[0];
+
+      console.log("queryForThisSubjectX:", queryForThisSubjectX);
+    }
+
+    // get the hspGroup whose query is this genome
+    hspGroupQuery = d3.selectAll(".hspGroup").filter(function (d) {
+      // get only those .hspGroup that have the dragged query
+      return (genome.id.indexOf("phage_" + d.queryName) == 0)
+    });
+    if (hspGroupQuery.size() > 0) {
+      hspQueryPaths = hspGroupQuery.selectAll("path");
+
+      // get the subject of that query (genome below this one)
+      subjectForThisQueryName = hspGroupQuery[0][0].id.split("___")[1];
+      subjectForThisQuerySelection = d3.select("g#" + subjectForThisQueryName);
+      subjectForThisQueryX = d3.transform(subjectForThisQuerySelection.attr("transform")).translate[0];
+    }
+    if ( d3.event && d3.event.x != undefined) {
+      if ((d3.event.x < svg.attr("x")) && d3.event.x < 0) {
+        // dragging this genome off the left end, keep this genome still and drag everything else to the right instead
+        d3.select("#mapGroup")
+          .attr("transform", function( d, i ) {
+            // move the genome along the x axis
+            return "translate(" + -d3.event.x + "," + 0 + ")";
+        });
+      }
+
+
+      d3.select(genome)
+        .attr("transform", function(d) {
+          // move the genome along the x axis
+          return "translate(" + d3.event.x + "," + d3.transform(d3.select(genome).attr("transform")).translate[1] + ")";
       });
-      if (previousPhage != null) {
-        /////console.log("submitting blast for ", previousPhage, "and ", d);
-        //blast(previousPhage, d);
-        previousPhage = null
-      }
-      if (nextPhage != null) {
-        /////console.log("submitting blast for ", d, "and ", nextPhage);
-        //blast(d, nextPhage);
-        nextPhage = null;
-      }
-    });*/
+    }
+    //console.log("typeof subjectForThisQueryName", typeof subjectForThisQueryName)
+    //console.log("typeof queryForThisSubjectName", typeof queryForThisSubjectName)
+
+    // if there is an hspGroup below this genome...
+    var x = d3.transform(d3.select(genome).attr("transform")).translate[0];
+    if (d3.event && d3.event.x != undefined) {
+      var x = d3.event.x;
+
+    }
+    if ( subjectForThisQueryName != null) {
+      hspQueryPaths.attr("transform", function (d) {
+        var angle = Math.atan2(subjectForThisQueryX - x,hspGroupHeight) * (180/Math.PI);
+        //console.log("belowX:", subjectForThisQueryX, "d3.event.x:", d3.event.x);
+        return "skewX(" + angle +")"+ "translate(" + (x) + "," + 0 + ")";
+      });
+    }
+
+    // if there is an hspGroup above this genome...
+    if (queryForThisSubjectName != null) {
+      hspSubjectPaths.attr("transform", function (d) {
+        var angle = -Math.atan2(queryForThisSubjectX - x,hspGroupHeight) * (180/Math.PI);
+        return "skewX(" + angle +")"+ "translate(" + queryForThisSubjectX + "," + 0 + ")";
+      })
+    }
+  }
+
+  adjust_skew_all = function () {
+    console.log("adjust_skew_all()");
+    var phages = d3.selectAll(".phages")
+    phages.each( function (d) {
+      adjust_skew(this);
+    });
+  }
 
   var drag = d3.behavior.drag()
-    .origin(function(d,i) { return {x:0, y:d3.transform(d3.select(this).attr("transform")).translate[1]}; })
-
+    //.origin(function(d,i) { return {x:0, y:d3.transform(d3.select(this).attr("transform")).translate[1]}; })
+    .origin(function(d,i) {
+      //console.log("origin:", d3.transform(d3.select(this).attr("transform")).translate);
+      return {x:d3.transform(d3.select(this).attr("transform")).translate[0], y:d3.transform(d3.select(this).attr("transform")).translate[1]}; })
 
     .on("dragstart", function(d){
+      dragging = this;
+      if (!d3.event.sourceEvent.shiftKey) {
+        d3.selectAll(".hspGroup")
+        .transition().delay(200).duration(500)
+        .style("opacity", 0)
+      }
+      //adjust_skew(dragging);
 
-      //d3.event.sourceEvent.stopPropagation();
-      //if (d.attr("phage"))
-      d3.selectAll(".hspGroup").transition().duration(1000).style("opacity", 0);
-      //d3.select("svg").selectAll(".hspGroup").style("opacity", 0);
-      /////console.log("removing hsps for", "g#" + d.phagename, "because it is dragged query");
-      /*hspData = hspData.filter(function(e, i, a) {
-        /////console.log("e:", e, !((e.queryName === phagename) || (e.subjectName === phagename)));
-        return !((e.queryName === d.phagename) || (e.subjectName === d.phagename));
-      });
-      alignedGenomes.remove({query: d.phagename});
-      alignedGenomes.remove({subject: d.phagename});*/
 
+      //console.log("hspGroupQuery:", hspGroupQuery.size());
+      //console.log("hspGroupSubject:", hspGroupSubject.size());
+
+      //console.log("dragging", dragging);
+      //console.log("above ", queryForThisSubjectName);
+      //console.log("below ", subjectForThisQueryName);
+      // get the offset of the genome below
+      //console.log("aboveX:", queryForThisSubjectX);
+      //console.log("subjectForThisQueryName:", subjectForThisQueryName);
+      //console.log("subjectForThisQuerySelection:", subjectForThisQuerySelection);
+      //console.log("belowX:", subjectForThisQueryX);
     })
-    .on("drag", function(d){
-      console.log(d3.event.y);
+    .on("drag", function(d) {
+
+      //console.log("d3.event.x:", d3.event.x);
+      //d.xpos = d3.transform(d3.select(this).attr("transform")).translate[1];
       d.ypos = d3.transform(d3.select(this).attr("transform")).translate[1];
 
-      d3.select(this)
-        //.attr("ypos", function (d, i){
-        //  d.ypos = (d3.event.y + 120);
-        //  return (d3.event.y + 120);
-        //})
-        .attr("transform", function( d, i ) {
-          return "translate(0," + (d3.event.y) + ")";
-      });
+      if (d3.event.sourceEvent.shiftKey) {
+        adjust_skew(dragging);
+      }
+      else {
+        // vertical dragging
+        d3.select(this)
+          .attr("transform", function(d) {
+            //return "translate(0," + (d3.event.y) + ")";
+            //console.log("translate(" + d3.transform(d3.select(this).attr("transform")).translate[0] + "," + (d3.event.y) + ")");
+            return "translate(" + d3.transform(d3.select(this).attr("transform")).translate[0] + "," + (d3.event.y) + ")";
+            //return "translate(" + 0 + "," + (d3.event.y) + ")";
+        });
+      }
     })
-    .on("dragend", function(d){
-      d3.selectAll(".phages")
+    .on("dragend", function(d) {
+      // get all genomes and then get the transformed x position of the one farthest to the left
+      update_phages();
+      if (d3.event.sourceEvent.shiftKey) {
+        adjust_skew_all();
 
+        console.log("horizontal dragend");
+
+      }
+
+      else {
+        console.log("vertical dragend");
+        // move the vertically dragged/dropped genome back to the left edge of the map, so that hsps are in the right place
+        //d3.select(this).attr("transform", function (d, i) {
+      //    return "translate(" + 0 + "," + d3.transform(d3.select(this).attr("transform")).translate[1] + ")";
+        //});
+      d3.selectAll(".phages")
         .sort(function (a,b) {
-          var ay = d3.transform(d3.select('g#phage_' + a.phagename).attr("transform")).translate[1];
-          var by = d3.transform(d3.select('g#phage_' + b.phagename).attr("transform")).translate[1];
+          var ay =   d3.transform(d3.select('g#phage_' + a.phagename).attr("transform")).translate[1];
+          var by =   d3.transform(d3.select('g#phage_' + b.phagename).attr("transform")).translate[1];
           return ay - by;
         })
         .transition().duration(1000)
         .attr("transform", function (d, i) {
           d.ypos = (i * 300) + 150;
-          return "translate(0," + ((i * 300)+150) + ")";
+
+          return "translate(" + d3.transform(d3.select(this).attr("transform")).translate[0] + "," + ((i * 300)+150) + ")";
         });
 
         phagesdata = d3.selectAll(".phages").data();
@@ -487,8 +616,6 @@ function update_phages() {
 
        var genome_pairs = [];
 
-        //Session.set("blastAlignmentsOutstanding", phagesdata.length - hspGroupData.length - 1);
-        //blastAlignmentsOutstanding = phagesdata.length - hspGroupData.length -1;
         phagesdata.forEach(function(d, i) {
           var c = phagesdata[ i - 1 ];
           if ( c && d ) {
@@ -512,32 +639,32 @@ function update_phages() {
 
           alignedGenomes.remove({query: v.query, subject: v.subject});
         });
-        //window.requestAnimationFrame(function () {
-        //  console.log("update_hsps 415");
-        //  update_hsps(hspData);
-        //});
+
         setTimeout(update_hsps, 1500, hspData);
+      }
     });
 
   phagedata = phage.data();
 
   newPhageNames = newPhages.append("text");
-    newPhageNames.attr("x", 0)
-    .attr("y", -120)
+    newPhageNames
+    //.attr("x", 0)
+    //.attr("y", -120)
     .classed("phagename", true)
     .attr("font-family", "Arial")
     .attr("font-size", "24px")
     .attr("fill", "black")
     .style("text-anchor", "start")
     .attr("position", "fixed")
+    .attr("transform", "translate(0,-120)")
 .text(function (d) {
       if (d.cluster === "") {
         return d.phagename + " (Singleton)";
       }
       return d.phagename + " (" + d.cluster + d.subcluster + ")";
     })
-    .attr({"opacity": 0})
-    .transition().delay(1500).duration(2000)
+    /*.attr({"opacity": 0})
+    .transition().delay(1500).duration(2000)*/
     .attr({"opacity": 1});
   newPhages.call(drag);
 
@@ -644,6 +771,7 @@ function update_phages() {
     .enter()
     .append("g");
 
+<<<<<<< HEAD
   gene.each(function (d)
   {
       domaingroup = this;
@@ -687,6 +815,8 @@ function update_phages() {
         .duration(500)
         .style("opacity", 0);
     });*/
+=======
+>>>>>>> scresawn/master
   gene_group_x = function(d) {
     return (d.start)/10;
   };
@@ -742,7 +872,6 @@ function update_phages() {
         Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
       }
 
-
       $('#geneData').modal('open');
     })
     .attr("height", function (d) {return 30;})
@@ -762,7 +891,7 @@ function update_phages() {
           }
       })
     .attr("width", 0)
-    .attr("rx", 2)
+    //.attr("rx", 2)
     .transition()
     .duration(1600)
     .attr("width", function (d) { return (d.stop-d.start)/10; });
@@ -916,19 +1045,10 @@ function update_phages() {
     });
 
   phage.exit().remove();
-  //phage.order();
-  /*phage.sort(function (a,b) {
-    console.log(a, b);
-    var ay = d3.transform(d3.select('g#' + a.phagename).attr("transform")).translate[1];
-    var by = d3.transform(d3.select('g#' + b.phagename).attr("transform")).translate[1];
-    //console.log(a.phagename, ay, b.phagename, by);
-    return ay - by;
-  });*/
+
 
   phagesdata = svg.selectAll(".phages").data();
   var hspGroupData = svg.selectAll(".hspGroup").data();
-  //Session.set("blastAlignmentsOutstanding", phagesdata.length - hspGroupData.length - 1);
-  //blastAlignmentsOutstanding = phagesdata.length - hspGroupData.length - 1;
 
   var genome_pairs = [];
   phagesdata.forEach(function(d, i) {
@@ -944,18 +1064,9 @@ function update_phages() {
         //console.log("skipping alignment for", c.phagename, "and", d.phagename);
         }
     }
-    /*window.requestAnimationFrame(function () {
-      //console.log("drawBLASTalignments");
-      update_hsps(hspData);
-    });*/
-    //setTimeout(update_hsps, 1500, hspData);
+
   });
-  /*setTimeout(function () {
-   //console.log("drawBLASTalignments");
-   update_hsps(hspData);
 
-
-   }, 10000);*/
   tempAlign = alignedGenomes.find().fetch();
   tempAlign.diff(genome_pairs).forEach( function (v, i, a) {
 
@@ -975,7 +1086,7 @@ function update_phages() {
   //setTimeout(update_hsps, 1000, hspData);
 
   //console.log("phagesdata:", phagesdata, "genome_pairs:", genome_pairs, "alignedGenomes:", alignedGenomes.find({}).fetch());
-
+        console.log("dragend");
 }
 
 Template.phages.onCreated(function() {
@@ -1124,10 +1235,10 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
     hspsArray.forEach(function(value, index, myArray) {
       var hspCoordinates = Array();
       //console.log(value);
-      hspCoordinates.push({x: value.query_from/10, y: 180, evalue: value.evalue, identity: value.identity, align_len: value.align_len});
-      hspCoordinates.push({x: value.query_to/10, y: 180});
-      hspCoordinates.push({x: value.hit_to/10, y: 450});
-      hspCoordinates.push({x: value.hit_from/10, y: 450});
+      hspCoordinates.push({x: value.query_from/10, y: 0, evalue: value.evalue, identity: value.identity, align_len: value.align_len});
+      hspCoordinates.push({x: value.query_to/10, y: 0});
+      hspCoordinates.push({x: value.hit_to/10, y: 270});
+      hspCoordinates.push({x: value.hit_from/10, y: 270});
       genome_pair_hsps.push(hspCoordinates);
     });
     genome_pair_hsps.sort(function(a, b) {
@@ -1206,15 +1317,29 @@ Template.phages.onRendered(function () {
     $('.collapsible').collapsible({
       accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
+    $(document).on("keydown", function (event) {
+      if (event.which === 16) {
+        d3.selectAll(".phagename").classed("horizontalAlign", true);
+      }
+    });
+    $(document).on("keyup", function (event) {
+      if (event.which === 16) {
+        d3.selectAll(".phagename").classed("horizontalAlign", false);
+      }
+    });
   });
 
   svg = d3.select("svg");
   svg.attr("id", "svg-genome-map")
-    .attr("border", "50px");
+    .attr("border", "50px")
+    .attr("overflow", "visible");
+
+  mapGroup = svg.append("g").attr("id", "mapGroup");
 
   Tracker.autorun(function () {
     update_phages();
     update_hsps(hspData);
+
   });
   document.getElementById("viewMapTab").addEventListener ("click", viewMapTabClicked, false);
 });
@@ -1243,7 +1368,17 @@ Template.phages.helpers({
     return Session.get('myMethodResult');
   },
   selectedDomains: function () {return Session.get ('selectedDomains')},
+
+  newFeature: function () {
+    if (Meteor.user().featureDiscovery.length > 0) {
+      Session.set('newFeature', true);
+      return true;
+    }
+    Session.set('newFeature', false);
+    return false
+  },
   geneTranslation: function () { return Session.get('geneTranslation'); },
+  phamAbundanceFD: function () { return Session.get('phamAbundanceFD'); },
   selectedGenomes: selectedGenomes,
   selectedGene: function () { return Session.get('selectedGene'); },
   selectedProtein: function () { return Session.get('selectedProtein'); },

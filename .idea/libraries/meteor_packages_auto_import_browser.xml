@@ -21,7 +21,6 @@
         <item url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_common.js" />
         <item url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_resend_verification_email_link.js" />
         <item url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_server.js" />
-        <item url="file://$USER_HOME$/.meteor/packages/mongo-dev-server/1.1.0/web.browser/server.js" />
         <item url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_oauth.js" />
         <item url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_client.js" />
         <item url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_form.js" />
@@ -314,6 +313,7 @@
         <item url="file://$USER_HOME$/.meteor/packages/reactive-dict/1.1.9/web.browser/reactive-dict.js" />
         <item url="file://$USER_HOME$/.meteor/packages/reactive-dict/1.1.9/web.browser/migration.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox/select-checkbox.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/mongo-dev-server/1.0.1/web.browser/server.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-radio-inline/select-radio-inline.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-radio-inline/select-radio-inline.css" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n.coffee.js" />
@@ -322,9 +322,12 @@
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/el.coffee.js" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/he.coffee.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox-inline/select-checkbox-inline.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/generator.js" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/en.coffee.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox-inline/select-checkbox-inline.css" />
+        <item url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/template-web.cordova.js" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/uk.coffee.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/template-web.browser.js" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/sl.coffee.js" />
         <item url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/th.coffee.js" />
         <item url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-horizontal/components/quickForm/quickForm.js" />
@@ -514,7 +517,6 @@
       <root url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_common.js" />
       <root url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_resend_verification_email_link.js" />
       <root url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_server.js" />
-      <root url="file://$USER_HOME$/.meteor/packages/mongo-dev-server/1.1.0/web.browser/server.js" />
       <root url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_oauth.js" />
       <root url="file://$USER_HOME$/.meteor/packages/http/1.2.12/web.browser/httpcall_client.js" />
       <root url="file://$USER_HOME$/.meteor/packages/useraccounts_materialize/1.14.2/web.browser/lib/at_form.js" />
@@ -807,6 +809,7 @@
       <root url="file://$USER_HOME$/.meteor/packages/reactive-dict/1.1.9/web.browser/reactive-dict.js" />
       <root url="file://$USER_HOME$/.meteor/packages/reactive-dict/1.1.9/web.browser/migration.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox/select-checkbox.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/mongo-dev-server/1.0.1/web.browser/server.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-radio-inline/select-radio-inline.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-radio-inline/select-radio-inline.css" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n.coffee.js" />
@@ -815,9 +818,12 @@
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/el.coffee.js" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/he.coffee.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox-inline/select-checkbox-inline.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/generator.js" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/en.coffee.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3/inputTypes/select-checkbox-inline/select-checkbox-inline.css" />
+      <root url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/template-web.cordova.js" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/uk.coffee.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/boilerplate-generator/1.2.0/web.browser/template-web.browser.js" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/sl.coffee.js" />
       <root url="file://$USER_HOME$/.meteor/packages/softwarerero_accounts-t9n/1.3.11/web.browser/packages/softwarerero_accounts-t9n/t9n/th.coffee.js" />
       <root url="file://$USER_HOME$/.meteor/packages/aldeed_autoform/5.8.1/web.browser/templates/bootstrap3-horizontal/components/quickForm/quickForm.js" />

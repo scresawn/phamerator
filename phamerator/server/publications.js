@@ -29,6 +29,10 @@ Meteor.publish('featureDiscovery', function() {
   return Meteor.users.find({_id: this.userId}, {fields: {featureDiscovery: 1}});
 });
 
+Meteor.publish('newTermsAndPolicies', function() {
+  return Meteor.users.find({_id: this.userId}, {fields: {newTermsAndPolicies: 1}});
+});
+
 Meteor.publish('fullname', function () {
   return Meteor.users.find({_id: this.userId}, {fields: {name: 1}});
 });
