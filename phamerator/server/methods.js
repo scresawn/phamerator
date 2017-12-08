@@ -144,9 +144,9 @@ Meteor.methods({
   },
 
   "get_domains_by_gene":function (geneID) {
-    console.log(geneID)
+    console.log(geneID);
     domains = Domains.find({geneID:geneID}).fetch();
-    console.log (domains)
+    console.log (domains);
     return domains;
 
   },
@@ -154,6 +154,12 @@ Meteor.methods({
         return Phams.findOne({},{sort:{size: -1}}).size;
     },
 
+    "get_number_of_domains" :function  (geneID) {
+        console.log(geneID);
+        domainsCount = Domains.find({geneID: geneID}).count();
+        console.log(domainsCount);
+        return {"geneID": geneID, "domainsCount": domainsCount};
+    },
   /*"getlargestphamsize": function() {
     //nobiggie = Phams.find().sort({size: -1}).limit(1);
     //nobiggie = nobiggie.size;
