@@ -9,6 +9,7 @@ clipboard.on('success', function(e) {
 
 var blastAlignmentsOutstanding = 0;
 
+
 Session.set("clustersExpanded", false);
 Session.set("showFunctionLabels", true);
 Session.set("showPhamLabels", true);
@@ -776,6 +777,13 @@ function update_phages() {
 
       console.log(d, this, gene);
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;
+
+    Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
+        Session.set('selectedDomains', selectedDomains);
+        console.log('selectedDomains:', selectedDomains);
+        //uniqueClusters = _.uniq(selectedClusterMembers);
+        //Session.set('selectedClusters', uniqueClusters);
+    });
       Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
         Session.set('selectedClusterMembers', selectedClusterMembers);
         console.log('selectedClusterMembers:', selectedClusterMembers);
@@ -1287,6 +1295,8 @@ Template.phages.helpers({
   clusters: function() {
     return Session.get('myMethodResult');
   },
+  selectedDomains: function () {return Session.get ('selectedDomains')},
+
   newFeature: function () {
     if (Meteor.user().featureDiscovery.length > 0) {
       Session.set('newFeature', true);
