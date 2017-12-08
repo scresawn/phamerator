@@ -56,19 +56,25 @@ Meteor.methods({
     Meteor.users.update({_id: Meteor.userId(), 'featureDiscovery': {$exists : false}}, {$set: {'featureDiscovery': []}});
     features = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"featureDiscovery": 1}}).featureDiscovery;
     //console.log("user has not yet dismissed", features);
-    // if featureName not in features
-    if (features.indexOf(featureName) === -1) {
-      //console.log("feature has already been dismissed");
+
+    // no features left to mark as seen by the user
+    if (features.length === 0) {
       return;
-      //features.push(featureName);
-      //Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.featureDiscovery": features}});
     }
-    var index = features.indexOf(featureName);
+    features.shift();
+    Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"featureDiscovery": features}});
+
+    /*var index = features.indexOf(featureName);
     if (index > -1) {
       //console.log("dismissing", featureName, "from", features);
       features.splice(index, 1);
       Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"featureDiscovery": features}});
-    }
+    }*/
+  },
+  "updateNewTermsAndPolicies": function() {
+
+    // initialize selectedData.featureDiscovery if it doesn't exist
+    Meteor.users.update({_id: Meteor.userId()}, {$set: {'newTermsAndPolicies': false}});
   },
   sendVerificationLink() {
     console.log('sending verification email to ', Meteor.userId());
