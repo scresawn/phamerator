@@ -289,6 +289,27 @@ function update_phages() {
             else if (Session.get("showphamcolor") === true) {
                 return d.phamColor;
             }
+            else if (Session.get("showgccolor") === true) {
+
+                        console.log(this, "this2");
+                        Meteor.call("get_number_of_domains", d.geneID, domaingroup, function(error, result){
+                            if (result != null) {
+                                d3.selectAll(".generect").filter(function(d){
+                                    console.log(d, result);
+                                    return d.geneID === result.geneID;
+                                })
+
+
+                                    .attr("fill", function(){
+                                            console.log(result);
+                                            console.log(d.geneID, result.domainsCount, domaingroup);
+                                            return (result.domainsCount === 0) ? "pink" : "red"
+                                        }
+                                    )
+                            }
+                        })
+
+            }
         })
         .attr("opacity", function (d) {
 //            if (Session.get("showphamabcolor") === true) {
@@ -750,6 +771,52 @@ function update_phages() {
     .enter()
     .append("g");
 
+<<<<<<< HEAD
+  gene.each(function (d)
+  {
+      domaingroup = this;
+  });
+    /*gene.each(function (d) {
+        console.log(this, "this2");
+        domaingroup = this;
+        Meteor.call("get_number_of_domains", d.geneID, domaingroup, function(error, result){
+            if (result != null) {
+               d3.selectAll(".generect").filter(function(d){
+                   console.log(d, result);
+                 return d.geneID === result.geneID;
+               })
+
+
+                    .style("stroke", function(){
+                        console.log(result);
+                    console.log(d.geneID, result.domainsCount, domaingroup);
+                    return (result.domainsCount === 0) ? "red" : "black"
+                }
+                )
+            }
+        })
+        }
+    );*/
+
+    /*.on("mouseover", function(d) {
+      nodedata = this.parentNode.__data__;
+      div.transition()
+        .duration(500)
+        .style("opacity", .9)
+        .style("font-size", "12px");
+      div.html(nodedata.phagename + " gp" + d.name + "<br>" + "phamily: " + d.phamName + "<br>" + d.genefunction)
+
+      // the text of the tooltip ...
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+    })
+    .on("mouseout", function(d) {
+      div.transition()
+        .duration(500)
+        .style("opacity", 0);
+    });*/
+=======
+>>>>>>> scresawn/master
   gene_group_x = function(d) {
     return (d.start)/10;
   };
@@ -808,7 +875,12 @@ function update_phages() {
       $('#geneData').modal('open');
     })
     .attr("height", function (d) {return 30;})
-    .style({"stroke":"black", "stroke-width": "1px"})
+      .style({"stroke":"black", "stroke-width": "1px"})
+      .attr("id", function(d) {
+          return d.geneID
+      })
+
+      .style({"stroke-width": "1px"})
       .attr("fill", function (d) {
           console.log("running colorchange");
           if (Session.get("showphamcolor") === true) {
