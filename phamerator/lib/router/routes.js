@@ -30,6 +30,7 @@ Router.map(function() {
     }
   });
   this.route('phamilies');
+  this.route('cresawnlab');
   this.route('domains');
   this.route('terms');
   this.route('account', {
@@ -48,4 +49,3 @@ AccountsTemplates.configureRoute('resetPwd');
 AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('signUp');
 AccountsTemplates.configureRoute('verifyEmail');
-
