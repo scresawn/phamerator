@@ -1,7 +1,9 @@
 Template.home.onCreated(function() {
   //Meteor.subscribe('genomes');
   console.log("home template created");
-
+  Session.set("phameratorVersionNumber", Meteor.call("get_phamerator_version"), function(error, result) {
+    return result;
+  });
 });
 
 Template.home.onRendered(function () {

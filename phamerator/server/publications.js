@@ -2,6 +2,7 @@
 // publish just genome names and clusters
 
 Meteor.publish("genomes", function () {
+  console.log('genomes');
   return Genomes.find({}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1}});
 });
 

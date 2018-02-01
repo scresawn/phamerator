@@ -13,6 +13,7 @@ Meteor.startup(function () {
 
   Domains = new Meteor.Collection("domains");
 
+  PhameratorVersionCollection = new Meteor.Collection("phameratorVersion");
 
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
 

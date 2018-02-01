@@ -70,6 +70,9 @@ Template.nav.helpers({
       console.log("no profilePic found");
       return "";
     }
+  },
+  phameratorVersion: function () {
+    return Session.get('phameratorVersionNumber');
   }
 });
 

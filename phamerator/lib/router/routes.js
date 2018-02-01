@@ -26,7 +26,7 @@ Router.map(function() {
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return Meteor.subscribe('genomes');
+      return [Meteor.subscribe('genomes')];
     }
   });
   this.route('phamilies');

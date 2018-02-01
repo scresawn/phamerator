@@ -5,6 +5,11 @@ Meteor.methods({
       username: username
     });
   },
+  "get_phamerator_version": function () {
+    return "uhhhh";
+    //return PhameratorVersionCollection.findOne();
+  },
+
   "updateSelectedData": function(phagename, addGenome) {
     //console.log('updateSelectedData called with', phagename, addGenome);
     genomeMaps = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.genomeMaps": 1}}).selectedData.genomeMaps;
@@ -102,7 +107,7 @@ Meteor.methods({
 
 
   "get_clusters_by_pham": function (phamname) {
-    console.log("calling get_clusters_by_pham(", phamname, ")");
+    //console.log("calling get_clusters_by_pham(", phamname, ")");
 
     selectedClusterMembers = []; //array of objects of form {cluster: "A1", phages: ['L5', 'D29', ...]}
 
@@ -150,9 +155,13 @@ Meteor.methods({
   },
 
   "get_domains_by_gene":function (geneID) {
-    console.log(geneID);
+    //console.log("get_domains_by_gene: ", geneID);
     domains = Domains.find({geneID:geneID}).fetch();
-    console.log (domains);
+    domains.forEach(function (d) {
+      d.domainLink = "https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=" + d.DomainID;
+      //console.log(d);
+    })
+    //console.log (domains);
     return domains;
 
   },
@@ -161,9 +170,9 @@ Meteor.methods({
     },
 
     "get_number_of_domains" :function  (geneID) {
-        console.log(geneID);
+        //console.log(geneID);
         domainsCount = Domains.find({geneID: geneID}).count();
-        console.log(domainsCount);
+        //console.log(domainsCount);
         return {"geneID": geneID, "domainsCount": domainsCount};
     },
   /*"getlargestphamsize": function() {
