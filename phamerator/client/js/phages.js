@@ -1450,7 +1450,7 @@ Template.phages.events({
                       //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                       Meteor.call('updateSelectedData', element.phagename, false);
                       window.requestAnimationFrame(function () {
-                        //console.log("update_hsps 1088");
+                        console.log("update_hsps 1088");
                         update_hsps(hspData);
                       });
                       //update_hsps(hspData);

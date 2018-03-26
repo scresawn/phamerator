@@ -61,15 +61,12 @@ Template.nav.helpers({
     return Meteor.user() != null;
   },
   imageFile: function () {
-    profilePic = Images.collection.findOne({_id: Meteor.user().profile.profilePic});
-    if ( typeof profilePic !== 'undefined') {
-      //console.log(profilePic);
-      return profilePic;
+    user = Images.collection.findOne({_id: Meteor.user()})
+    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
+      profilePic = user.profile.profilePic;
     }
-    else {
-      console.log("no profilePic found");
-      return "";
-    }
+    else profilePic = "";
+    return profilePic;
   },
   phameratorVersion: function () {
     return Session.get('phameratorVersionNumber');

@@ -79,15 +79,12 @@ Template.uploadForm.events({
 
 Template.file.helpers({
   imageFile: function () {
-    profilePic = Images.collection.findOne({_id: Meteor.user().profile.profilePic});
-    if ( typeof profilePic !== 'undefined') {
-      //console.log(profilePic);
-      return profilePic;
+    user = Images.collection.findOne({_id: Meteor.user()})
+    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
+      profilePic = user.profile.profilePic;
     }
-    else {
-      console.log("no profilePic found");
-      return "";
-    }
+    else profilePic = "";
+    return profilePic;
   },
   videoFile: function () {
     return Videos.collection.findOne({});
