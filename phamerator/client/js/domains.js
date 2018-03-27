@@ -6,3 +6,4 @@ Template.domains.onRendered(function () {
     accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
   });
 });
+// this change is totally arbitrary
