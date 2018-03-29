@@ -37,6 +37,7 @@
 
         <div id="domains">
         <div class="modal-content">
+        <svg id= svgDomain></svg>
         <ul class="collapsible" data-collapsible="expandable">
         {{ #each domain in selectedDomains}}
             <li>
@@ -48,6 +49,20 @@
                     </li>
                         <li>
                             {{domain.description}}
+
+                        </li>
+                        <br/>
+                        <li><u>
+                            Protein Alignment Data:
+                        </u></li>
+                        <li>
+                            Query Start (Amino Acid Position): {{domain.query_start}}
+                        </li>
+                        <li>
+                            Query End (Amino Acid Position): {{domain.query_end}}
+                        </li>
+                        <li>
+                            E-Value: {{domain.expect}}
                         </li>
                     </ul>
                 </div>
@@ -154,7 +169,7 @@
         </ul>-->
 
         <div id="genome-map" class="col s12">
-            <svg></svg>
+            <svg id="svg-genome-map"></svg>
             <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
                 <a id="menu2" class="waves-effect waves-light btn-floating btn-large">
                     <i class="material-icons">menu</i>
