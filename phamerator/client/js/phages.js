@@ -12,6 +12,10 @@ var blastAlignmentsOutstanding = 0;
 function viewMapTabClicked () {
   //console.log('geneTranslation', Session.get('geneTranslation'));
   //console.log('phamAbundanceFD', Session.get('phamAbundanceFD'));
+  /*d3.select("svg").attr("height", function (d) {
+    console.log("setting " + d3.select("svg") +  " height to " + $("#mapGroup")[0].getBBox().height);
+    return $("#mapGroup")[0].getBBox().height;
+  })*/
   Meteor.subscribe('featureDiscovery', function () {
     var featureKey = Meteor.user().featureDiscovery[0];
     console.log("meteor user:", Meteor.user());
@@ -266,7 +270,7 @@ function update_phages() {
     //.transition()
     //.duration(d3.max([500, phagedata.length * 20]))
         .attr("fill", function (d, i) {
-            if (Session.get("showphamabcolor") === true) {
+            if (Session.get("colorByPhamAbundance") === true) {
                 phamSize = phamsObj[+d.phamName];
                 /*rgb = colorsys.hsv_to_rgb(0.66, 0.0, 1-min(1,(5*scaledAbundance))) #(scaledAbundance+(abundance/largestPhamSize))) # orphams should be white for consistency
                  rgb = (rgb[0]*255,rgb[1]*255,rgb[2]*255)
@@ -277,12 +281,13 @@ function update_phages() {
                 return ("hsl(0.66,0%," + (1-(scaledAbundance))*100 + "%)");
 
             }
-            else if (Session.get("showphamcolor") === true) {
+            else if (Session.get("colorByPhams") === true) {
                 return d.phamColor;
             }
-            else if (Session.get("showgccolor") === true) {
-                        console.log(i);
-                        Meteor.call("get_number_of_domains", d.geneID, function(error, result){
+            else if (Session.get("colorByConservedDomains") === true) {
+                        //console.log(i);
+                        return (d.domainCount === 0) ? "white" : "orange"
+                        /*Meteor.call("get_number_of_domains", d.geneID, function(error, result){
                             if (result != null) {
                                 d3.selectAll(".generect").filter(function(d){
                                     //console.log(d, result);
@@ -295,7 +300,7 @@ function update_phages() {
                                         }
                                     )
                             }
-                        })
+                        })*/
 
             }
         })
@@ -337,7 +342,6 @@ function update_phages() {
   //console.log("in drawGenomeMap");
   //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
-
   console.log ("minX", minX, "maxX", maxX);
   //mapGroup.attr("transform", function(d) {"return translate(" + -minX + ",0)"})
   var draggedGenome = d3.select(this);
@@ -845,6 +849,7 @@ function update_phages() {
 
       console.log(d, this, gene);
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;
+      Session.set("selectedGeneTitle", nodedata.phagename + " " + d.name);
 
     Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
@@ -863,6 +868,7 @@ function update_phages() {
       });
 
       var g = selectedGenomes.findOne({phagename: nodedata.phagename}, {fields: {sequence: 1}}).sequence;
+      Session.set('selectedGeneNotes', d.genefunction);
       if (d.direction === "forward") {
         Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start, d.stop));
       }
@@ -882,11 +888,22 @@ function update_phages() {
       .style({"stroke-width": "1px"})
       .attr("fill", function (d) {
           console.log("running colorchange");
-          if (Session.get("showphamcolor") === true) {
+          if (Session.get("colorByPhams") === true) {
               return d.phamColor
           }
-          else if (Session.get("showphamabcolor") === true) {
-              return "white"
+          else if (Session.get("colorByPhamAbundance") === true) {
+            phamSize = phamsObj[+d.phamName];
+            /*rgb = colorsys.hsv_to_rgb(0.66, 0.0, 1-min(1,(5*scaledAbundance))) #(scaledAbundance+(abundance/largestPhamSize))) # orphams should be white for consistency
+             rgb = (rgb[0]*255,rgb[1]*255,rgb[2]*255)
+             return '#%02x%02x%02x' % rgb
+                */
+            scaledAbundance = phamSize/maxPham;
+            //abundancecolorsys=colorsys.hsv_to_rgb({h:0.66, s:0.0, v:1-Math.min(1,(5*scaledAbundance))});
+            return ("hsl(0.66,0%," + (1-(scaledAbundance))*100 + "%)");
+
+          }
+          else if (Session.get("colorByConservedDomains") === true) {
+            return (d.domainCount === 0) ? "white" : "orange"
           }
       })
     .attr("width", 0)
@@ -1086,6 +1103,7 @@ function update_phages() {
 
   //console.log("phagesdata:", phagesdata, "genome_pairs:", genome_pairs, "alignedGenomes:", alignedGenomes.find({}).fetch());
         console.log("dragend");
+
 }
 
 Template.phages.onCreated(function() {
@@ -1094,9 +1112,9 @@ Template.phages.onCreated(function() {
   Session.set("showFunctionLabels", true);
   Session.set("showPhamLabels", true);
   Session.set("showhspGroups", true);
-  Session.set("showphamabcolor", false);
-  Session.set("showgccolor", false)
-  Session.set("showphamcolor", true)
+  Session.set("colorByPhamAbundance", false);
+  Session.set("colorByConservedDomains", false)
+  Session.set("colorByPhams", true)
 
   /*if (typeof routeChange === "undefined") {
     console.log('initial load');
@@ -1387,7 +1405,9 @@ Template.phages.helpers({
   geneTranslation: function () { return Session.get('geneTranslation'); },
   phamAbundanceFD: function () { return Session.get('phamAbundanceFD'); },
   selectedGenomes: selectedGenomes,
+  selectedGeneTitle: function () { return Session.get('selectedGeneTitle')},
   selectedGene: function () { return Session.get('selectedGene'); },
+  selectedGeneNotes: function () { return Session.get('selectedGeneNotes'); },
   selectedProtein: function () { return Session.get('selectedProtein'); },
   selectedClusters: function () { return Session.get('selectedClusters'); },
   genomes_are_selected: function() {
@@ -1566,12 +1586,9 @@ Template.phages.events({
         event.preventDefault();
         console.log(event.target.checked);
         setTimeout(function () {
-            Session.set("showgccolor", false);
-            Session.set("showphamcolor", false);
-            Session.set("showphamabcolor", true);
-            console.log("phamcolorabstate:",Session.get("showphamabcolor"));
-            console.log("showgccolorstate:",Session.get("showgccolor"));
-            console.log("showphamcolor:",Session.get("showphamcolor"));
+            Session.set("colorByConservedDomains", false);
+            Session.set("colorByPhams", false);
+            Session.set("colorByPhamAbundance", true);
         }, 200);
     },
     "change #conservedDomainRadioButton": function (event, template) {
@@ -1579,12 +1596,9 @@ Template.phages.events({
         console.log(event.target.checked);
         setTimeout(function () {
             //Session.set("showgccolor", event.target.checked)
-            Session.set("showphamabcolor", false);
-            Session.set("showgccolor", true);
-            Session.set("showphamcolor", false);
-            console.log("phamcolorabstate:", Session.get("showphamabcolor"));
-            console.log("showgccolorstate:", Session.get("showgccolor"));
-            console.log("showphamcolor:", Session.get("showphamcolor"));
+            Session.set("colorByPhamAbundance", false);
+            Session.set("colorByConservedDomains", true);
+            Session.set("colorByPhams", false);
         }, 200);
     },
     "change #phamColorRadioButton": function (event, template) {
@@ -1592,12 +1606,9 @@ Template.phages.events({
         console.log(event.target.checked);
         setTimeout(function () {
             //Session.set("showphamcolor", event.target.checked)
-            Session.set("showphamabcolor", false);
-            Session.set("showgccolor", false);
-            Session.set("showphamcolor", true);
-            console.log("phamcolorabstate:",Session.get("showphamabcolor"));
-            console.log("showgccolorstate:",Session.get("showgccolor"));
-            console.log("showphamcolor:",Session.get("showphamcolor"));
+            Session.set("colorByPhamAbundance", false);
+            Session.set("colorByConservedDomains", false);
+            Session.set("colorByPhams", true);
         }, 200);
     },
 
@@ -1751,13 +1762,13 @@ Template.mapSettingsModal.helpers({
         return Session.get("showFunctionLabels");
     },
     'phamAbundanceState': function () {
-        return Session.get("showPhamAbundance");
+        return Session.get("colorByPhamAbundance");
     },
     'conservedDomainState': function () {
-        return Session.get ("showConservedDomains");
+        return Session.get ("colorByConservedDomains");
     },
     'phamColorState': function () {
-        return Session.get ("showPhamColor");
+        return Session.get ("colorByPhams");
     }
 
 });
