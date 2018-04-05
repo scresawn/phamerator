@@ -883,10 +883,26 @@ function update_phages() {
             .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-10)/numberOfDomains))) +")";})
             .on("mouseover", function(d) {
                 d3.select(this).style({"stroke": "black", "stroke-width": "5"});
-                d3.select("#" + d.domainname).style({"font-weight": "bold"})})
+                d3.select("#" + d.domainname + ".collapsible-header").style({"font-weight": "bold"})})
             .on("mouseout", function(d) {
                 d3.select(this).style({"stroke": "black", "stroke-width": "1"});
-                d3.select("#" + d.domainname).style({"font-weight": "normal"})})
+                d3.select("div#" + d.domainname + ".collapsible-header").style({"font-weight": "normal"})})
+            .on("click", function (d) {
+                d3.select("li#" + d.domainname).classed("active", !d3.select("li#" + d.domainname).classed("active"));
+                if (d3.select("div#" + d.domainname).attr("class") === "active collapsible-header")
+                {
+                    d3.select("div#" + d.domainname).classed("active collapsible-header", false);
+                    d3.select("div#" + d.domainname).classed("collapsible-header", true);
+                    d3.select("div#" + d.domainname + ".collapsible-body").style({"display": "none"})
+                }
+                else
+                {
+                    d3.select("div#" + d.domainname).classed("collapsible-header", false);
+                    d3.select("div#" + d.domainname).classed("active collapsible-header", true);
+                    d3.select("div#" + d.domainname + ".collapsible-body").style({"display": "block"})
+                }
+
+            })
         ;
 
     });
@@ -912,9 +928,10 @@ function update_phages() {
       }
 
         var onModalClose = function (){
-        console.log(d3.selectAll("g.domainVis"));
-        d3.selectAll("g.domainVis").remove();}
+        d3.selectAll("g.domainVis").remove();
+      }
         ;
+
 
       $('#geneData').modal('open');
       $('#geneData')[0].M_Modal.options.complete = onModalClose;
@@ -1438,7 +1455,7 @@ Template.phages.helpers({
     Session.set('newFeature', false);
     return false
   },
-  geneTranslation: function () { return Session.get('geneTranslation'); },
+    geneTranslation: function () { return Session.get('geneTranslation'); },
   phamAbundanceFD: function () { return Session.get('phamAbundanceFD'); },
   selectedGenomes: selectedGenomes,
   selectedGene: function () { return Session.get('selectedGene'); },

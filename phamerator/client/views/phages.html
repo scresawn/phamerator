@@ -40,9 +40,9 @@
         <svg id= svgDomain></svg>
         <ul class="collapsible" data-collapsible="expandable">
         {{ #each domain in selectedDomains}}
-            <li>
+            <li id= {{domain.domainname}}>
                 <div class="collapsible-header" id={{domain.domainname}}>{{domain.domainname}}</div>
-                <div class="collapsible-body">
+                <div class="collapsible-body" id={{domain.domainname}}>
                     <ul>
                       <li>
                       <a href={{domain.domainLink}} target="_blank"><i class="material-icons">insert_link</i></a>
