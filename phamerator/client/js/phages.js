@@ -852,6 +852,8 @@ function update_phages() {
       var phamAALength = Math.abs(d.stop-d.start)/3;
 
       svgDomain
+          .append("g")
+          .attr("class", "domainVis")
           .append("rect")
           .attr("height", phamHeight)
           .attr("width", phamWidth)
@@ -866,6 +868,8 @@ function update_phages() {
         function numOfDomains () {return selectedDomains.length;}
         var numberOfDomains = numOfDomains();
         svgDomain
+            .append("g")
+            .attr("class", "domainVis")
             .selectAll(".domainRects")
             .data(selectedDomains)
             .enter()
@@ -875,7 +879,7 @@ function update_phages() {
             .attr("width", function (d){return ((d.query_end - d.query_start)/phamAALength)*phamWidth;})
             .attr("fill", "#ffbd88")
             .attr("stroke", "black")
-            .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (15+(i*((phamHeight-10)/numberOfDomains))) +")";});
+            .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-10)/numberOfDomains))) +")";});
 
     });
       Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
@@ -899,7 +903,13 @@ function update_phages() {
         Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
       }
 
+        var onModalClose = function (){
+        console.log(d3.selectAll("g.domainVis"));
+        d3.selectAll("g.domainVis").remove();}
+        ;
+
       $('#geneData').modal('open');
+      $('#geneData')[0].M_Modal.options.complete = onModalClose;
 
     })
     .attr("height", function (d) {return 30;})
@@ -1348,12 +1358,7 @@ Template.phages.onRendered(function () {
     $('ul.tabs').tabs();
 
     $('#mapSettings').modal();
-    //Need to fix so clears svg once modal closes
-    $('#geneData').modal({
-            onCloseEnd: function (){
-            console.log("I'm running");
-            d3.selectAll(".domainRects").remove();}
-    });
+    $('#geneData').modal();
     $('.collapsible').collapsible({
       accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
