@@ -41,7 +41,7 @@
         <ul class="collapsible" data-collapsible="expandable">
         {{ #each domain in selectedDomains}}
             <li>
-                <div class="collapsible-header">{{domain.domainname}}</div>
+                <div class="collapsible-header" id={{domain.domainname}}>{{domain.domainname}}</div>
                 <div class="collapsible-body">
                     <ul>
                       <li>

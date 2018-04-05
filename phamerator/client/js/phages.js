@@ -867,6 +867,7 @@ function update_phages() {
         console.log('selectedDomains:', selectedDomains);
         function numOfDomains () {return selectedDomains.length;}
         var numberOfDomains = numOfDomains();
+
         svgDomain
             .append("g")
             .attr("class", "domainVis")
@@ -879,7 +880,14 @@ function update_phages() {
             .attr("width", function (d){return ((d.query_end - d.query_start)/phamAALength)*phamWidth;})
             .attr("fill", "#ffbd88")
             .attr("stroke", "black")
-            .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-10)/numberOfDomains))) +")";});
+            .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-10)/numberOfDomains))) +")";})
+            .on("mouseover", function(d) {
+                d3.select(this).style({"stroke": "black", "stroke-width": "5"});
+                d3.select("#" + d.domainname).style({"font-weight": "bold"})})
+            .on("mouseout", function(d) {
+                d3.select(this).style({"stroke": "black", "stroke-width": "1"});
+                d3.select("#" + d.domainname).style({"font-weight": "normal"})})
+        ;
 
     });
       Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
