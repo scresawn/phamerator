@@ -859,8 +859,9 @@ function update_phages() {
           .attr("width", phamWidth)
           .attr("fill", d.phamColor)
           .attr("stroke", "black")
-          .attr("stroke-width", 5)
-          .attr("transform", "translate(5,5)");
+          .attr("stroke-width", 20)
+          //.attr("transform", "translate(5,5)")
+      ;
 
     Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
@@ -875,14 +876,14 @@ function update_phages() {
             .data(selectedDomains)
             .enter()
             .append("rect")
-            .attr("height", (phamHeight-10)/(numberOfDomains))
+            .attr("height", (phamHeight-20)/(numberOfDomains))
             //Need to make responsive to screen width
             .attr("width", function (d){return ((d.query_end - d.query_start)/phamAALength)*phamWidth;})
             .attr("fill", "#ffbd88")
             .attr("stroke", "black")
-            .attr("transform", function(d,i){return "translate("+ (5+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-10)/numberOfDomains))) +")";})
+            .attr("transform", function(d,i){return "translate("+ (10+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-20)/numberOfDomains))) +")";})
             .on("mouseover", function(d) {
-                d3.select(this).style({"stroke": "black", "stroke-width": "5"});
+                d3.select(this).style({"stroke": "black", "stroke-width": "4"});
                 d3.select("#" + d.domainname + ".collapsible-header").style({"font-weight": "bold"})})
             .on("mouseout", function(d) {
                 d3.select(this).style({"stroke": "black", "stroke-width": "1"});
@@ -1409,8 +1410,10 @@ Template.phages.onRendered(function () {
   svgDomain = d3.select("#svgDomain");
   svgDomain.attr("display", "block")
       .attr("margin", "auto")
-      .attr("height", "300px")
-      .attr("width", "100%")
+      .attr("viewBox", "0 0 650 290")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      //.attr("height", "66%")
+      //.attr("width", "100%")
       ;
 
   Tracker.autorun(function () {
