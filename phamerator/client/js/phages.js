@@ -7,7 +7,38 @@ clipboard.on('success', function(e) {
   e.clearSelection();
 });
 
+
 var blastAlignmentsOutstanding = 0;
+
+// Don't forget line ~1408: addeventlistener
+
+function searchFunction() {
+//alert("Access 1");
+var rawInput = document.getElementById("searchBar");
+var inputToUpperCase = rawInput.value.toUpperCase();
+var phageListings = document.getElementsByClassName("col s12 m6 l4");
+
+  for (i = 0; i < phageListings.length; i++) {
+  var label = phageListings[i];
+
+if (label.innerHTML.toUpperCase().indexOf(inputToUpperCase) > -1) {
+// document.getElementsByClassName("collapsible-header")[i].style.display = "";
+label.style.backgroundColor = "Yellow";
+
+//document.label.click();
+//label.click();
+//label.style.display = "";
+//alert("Access 2");
+}
+else {
+  document.getElementsByClassName("collapsible-header")[i].style.display = "none";
+  label.style.backgroundColor = "White";
+
+//label.style.display = "none";
+//alert("Access 3");
+}
+}
+}
 
 function viewMapTabClicked () {
   //console.log('geneTranslation', Session.get('geneTranslation'));
@@ -16,6 +47,13 @@ function viewMapTabClicked () {
     console.log("setting " + d3.select("svg") +  " height to " + $("#mapGroup")[0].getBBox().height);
     return $("#mapGroup")[0].getBBox().height;
   })*/
+
+  if (!window.sessionStorage.getItem("isExecuted")) {
+      document.getElementById("menu2").click();
+      window.sessionStorage.setItem("isExecuted", true);
+  };
+
+
   Meteor.subscribe('featureDiscovery', function () {
     var featureKey = Meteor.user().featureDiscovery[0];
     console.log("meteor user:", Meteor.user());
@@ -338,7 +376,7 @@ function update_phages() {
       }
     });
 
-  $("#preloader").fadeOut(300).hide();
+  $("#preloader").fadeOut(3000).hide();
   //console.log("in drawGenomeMap");
   //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
@@ -1331,8 +1369,16 @@ Template.phages.onDestroyed(function () {
 
 Template.phages.onRendered(function () {
   console.log('Template.phages.onRendered');
+  $("#preloader").fadeOut(3000).hide();
 
-  $("#preloader").fadeOut(300).hide();
+  $(document).ready(function(){
+    console.log("Arrow Function");
+  $( ".collapsible-header" ).click(function() {
+      $(".more",this).toggle()
+      $(".less", this).toggle()
+  });
+});
+
   $(document).ready(function() {
     $('ul.tabs').tabs();
 
@@ -1341,6 +1387,7 @@ Template.phages.onRendered(function () {
     $('.collapsible').collapsible({
       accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });
+
     $(document).on("keydown", function (event) {
       if (event.which === 16) {
         d3.selectAll(".phagename").classed("horizontalAlign", true);
@@ -1360,12 +1407,21 @@ Template.phages.onRendered(function () {
 
   mapGroup = svg.append("g").attr("id", "mapGroup");
 
+
   Tracker.autorun(function () {
     update_phages();
     update_hsps(hspData);
 
   });
+  // document.getElementById("searchBar").addEventListener ("keyup", searchFunction, false);
   document.getElementById("viewMapTab").addEventListener ("click", viewMapTabClicked, false);
+
+  $(document).ready(function(){
+    $('#modal1').modal('open')});
+
+
+// return document.getElementById("menu").click();
+
 });
 
 Template.cluster.onRendered(function () {
@@ -1645,7 +1701,7 @@ Template.phages.events({
 
   "click #clearSelection": function (event, template){
        /////console.log("clearSelection clicked");
-    $('.fixed-action-btn').closeFAB();
+    $('.fixed-action-btn toolbar direction-top').closeFAB();
     d3.select("#clearSelection")
           .transition()
           .duration(250)
@@ -1654,14 +1710,14 @@ Template.phages.events({
             alignedGenomes.remove({});
             hspData = [];
             Meteor.call('updateSelectedData', "", true);
-          $('.fixed-action-btn').closeFAB();
+          $('.fixed-action-btn toolbar direction-top').closeFAB();
 
         });
     svg.selectAll(".hspGroup").remove();
     //blastAlignmentsOutstanding = 0;
   },
   "click #expand_all": function (event, template) {
-    $('.fixed-action-btn').closeFAB();
+    $('.fixed-action-btn toolbar direction-top').closeFAB();
     d3.select("#expand_all")
       .transition()
       .duration(250)
@@ -1673,7 +1729,7 @@ Template.phages.events({
       });
   },
   "click #collapse_all": function (event, template) {
-    $('.fixed-action-btn').closeFAB();
+    $('.fixed-action-btn toolbar direction-top').closeFAB();
     d3.select("#collapse_all")
       .transition()
       .duration(250)
@@ -1687,9 +1743,14 @@ Template.phages.events({
         Session.set("clustersExpanded", false);
       });
     $("html, body").animate({ scrollTop: 0 }, "slow");
+  },
+  "click #okayButton": function (event, template) {
+    return document.getElementById("menu").click();
+    console.log("Okay Button Clicked")
+  },
+  });
 
-  }
-});
+
 
 Template.registerHelper('clusterIsChecked',function(cluster, subcluster) {
 
