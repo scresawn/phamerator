@@ -19,7 +19,7 @@ Meteor.publish("proteinSeq", function (phagename) {
 });
 
 Meteor.publish('files.images.all', function () {
-  return Images.collection.find({});
+  return Images.find().cursor;
 });
 
 Meteor.publish('selectedData', function() {

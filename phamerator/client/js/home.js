@@ -20,8 +20,8 @@ Template.home.onRendered(function () {
         Materialize.toast("Links to the terms of use and privacy policy can be found at the bottom of every page", 5000);
         //var toastElement = $('.toast').first()[0].remove();
       }, 1000);
-
     };
+
     console.log('updatedTerms:', updatedTerms);
     if (updatedTerms === true && $('.toast').length === 0) {
       setTimeout(function () {

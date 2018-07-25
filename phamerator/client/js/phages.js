@@ -848,14 +848,27 @@ function update_phages() {
     .on("click", function (d, i) {
 
       console.log(d, this, gene);
+
+      // Initialize the dialog to empty strings and arrays, rather than showing old data while waiting for new
+      selectedDomains = [];
+      Session.set("selectedDomains", selectedDomains);
+      selectedClusterMembers = [];
+      Session.set('selectedClusterMembers', selectedClusterMembers);
+      Session.set('selectedGeneNotes', "");
+      Session.set('selectedGene', "");
+      Session.set('selectedProtein', "");
+      Session.set("selectedGeneTitle", "");
+
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;
-      Session.set("selectedGeneTitle", nodedata.phagename + " " + d.name);
+      console.log("d:", d);
+      Session.set("selectedGeneTitle", nodedata.phagename + " gene " + d.name + " (" + d.start + " - " + d.stop + " )" + " | pham " + d.phamName );
 
     Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
         console.log('selectedDomains:', selectedDomains);
     });
-      Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
+
+    Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
         Session.set('selectedClusterMembers', selectedClusterMembers);
         console.log('selectedClusterMembers:', selectedClusterMembers);
         uniqueClusters = _.uniq(selectedClusterMembers);
@@ -870,10 +883,10 @@ function update_phages() {
       var g = selectedGenomes.findOne({phagename: nodedata.phagename}, {fields: {sequence: 1}}).sequence;
       Session.set('selectedGeneNotes', d.genefunction);
       if (d.direction === "forward") {
-        Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start, d.stop));
+        Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start-1, d.stop));
       }
       else {
-        complementSeq = g.slice(d.start, d.stop).split('').reverse().map(complement).join('');
+        complementSeq = g.slice(d.start-1, d.stop).split('').reverse().map(complement).join('');
         Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
       }
 
@@ -1222,7 +1235,8 @@ blast = function(q, d) {
  /////console.log("s1:", s1.length);
  /////console.log("s2:", s2.length);
 
-  myURL = "http://phamerator.org:3000/blastalign";
+  // myURL = "http://phamerator.org:3000/blastalign";
+  myURL = "https://phamerator.org/blastalign";
   //console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({

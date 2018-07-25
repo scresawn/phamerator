@@ -1,10 +1,13 @@
+import { Meteor } from 'meteor/meteor';
+import { FilesCollection } from 'meteor/ostrio:files';
+
 Meteor.startup(function () {
   // The correct way
 
   console.log("grounding genomes collection");
   //Genomes = new Ground.Collection("genomes");
 
-//Genomes = new Ground.Collection("genomes");
+  //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
 
   Phams = new Meteor.Collection("phams");
@@ -78,7 +81,7 @@ Images = new FilesCollection({
     //console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));
     // Allow upload files under 10MB, and only in png/jpg/jpeg formats
     return true;
-    if (file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext)) {
+    if (file.size <= 10485760 && /png|jpg|jpeg/i.test(file.extension)) {
       return true;
     } else {
       return 'Please upload image, with size equal or less than 10MB';

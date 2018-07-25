@@ -11,15 +11,15 @@ updateFeatureDiscoveryStore = function () {
 };
 
 features = {
-   "geneTranslation": {"title": "Gene Translations", "body": "Amino acid sequences are now available. Select a gene on the map, then select PROTEIN."},
+   "geneTranslation": {"title": "Gene Translations", "body": "To view the amino acid sequence of a protein, select the gene on the map, then select PROTEIN."},
    "phamAbundance": {"title": "Color By Pham Abundance", "body": "In settings, switch color coding to Phamily Abundance. The darker the pham, the more members!"},
    "phamMembersByCluster": {"title": "Pham Members By Cluster", "body": "To see which other phages/clusters encode a member of this pham, select a gene on the map, then select CLUSTERS"},
+   "geneNotes": {"title": "Gene Functions", "body": "Some genes have annotated functions. To see them, select a gene from the map, then select the FUNCTION tab."},
    "dismiss": "(Press the thumbs up and we won't show you this message again.)"
 };
 
 Template.featureDiscovery.onCreated(function () {
   console.log('Template.featureDiscovery.onCreated');
-
 });
 
 Template.featureDiscovery.onRendered (function () {

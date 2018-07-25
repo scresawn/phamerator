@@ -30,6 +30,7 @@ Router.map(function() {
     }
   });
   this.route('phamilies');
+  this.route('newDatabase');
   this.route('cresawnlab');
   this.route('domains');
   this.route('terms');

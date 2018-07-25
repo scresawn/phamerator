@@ -73,6 +73,12 @@ Template.nav.helpers({
   }
 });
 
+Template.nav.onCreated (function () {
+
+
+})
+
+
 Template.nav.onRendered (function () {
   //$(".button-collapse").sideNav({
   //  menuWidth: 240, // Default is 240
@@ -85,12 +91,18 @@ Template.nav.onRendered (function () {
   //this.Images = new FilesCollection({collectionName: 'Images'});
   //Materialize.fadeInImage('#profilepic');
 
-  $(".button-collapse").sideNav();
+  $(document).ready(function(){
+    console.log("activating sideNav and dropdown");
+    $(".button-collapse").sideNav();
+    $(".dropdown-trigger").dropdown();
 
-
+    $(".sidenav-icon").sideNav({
+      closeOnClick: true
+  }); // http://materializecss.com/side-nav.html
+});
 
   // Side Navigation fix
-  $('.side-nav li a').on('click', function(e) {
+  /*$('.side-nav li a').on('click', function(e) {
     console.log("sideNav item selected");
     windowsize = $(window).width();
     console.log(windowsize);
@@ -101,5 +113,5 @@ Template.nav.onRendered (function () {
         $('.button-collapse', this).sideNav('hide');
       }, 1000);
     }
-  });
+  });*/
 });

@@ -1,4 +1,9 @@
 <template name="nav">
+  <!--<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">Bacillus_Draft</a></li>
+    <li class="divider"></li>
+    <li><a href="{{pathFor 'newDatabase'}}">Add a database...</a></li>
+  </ul>-->
 
 <nav class="blue">
     <div class="nav-wrapper">
@@ -20,6 +25,10 @@
 
         <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
 
+        <ul class="left hide-on-med-and-down">
+          <!--<li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">Actino_Draft<i class="material-icons right">arrow_drop_down</i></a></li>-->
+        </ul>
+
         <ul class="right hide-on-med-and-down">
             <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-purple lighten-5">Home</a></li>
             <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
@@ -33,6 +42,8 @@
         <ul id="mobile-menu" class="side-nav">
             <!--<img src="phamerator.png" style="width: 100%"/>-->
             {{#if loggedIn}}
+                <!--<li><a class="dropdown-trigger" href="{{pathFor 'newDatabase'}}" data-activates="dropdown1">Actino_Draft<i class="material-icons right">arrow_drop_down</i></a></li>-->
+
                 <!--<li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>-->
                 <li style="width=100%"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width:100%"></li>
             {{/if}}
@@ -55,7 +66,7 @@
     <footer class="page-footer cyan">
         <div class="footer-copyright cyan">
             <div class="container">
-                © SEA-PHAGES 2017. All rights reserved. <a class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms and Policies</a>
+                © Steven Cresawn, Ph.D. and SEA-PHAGES 2006-2018. All rights reserved.<a class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms and Policies</a>
                 <a class="grey-text text-lighten-4 right" href="https://seaphages.org">SEA-PHAGES</a>
             </div>
         </div>

@@ -105,7 +105,6 @@ Meteor.methods({
     return phamsObj;
   },
 
-
   "get_clusters_by_pham": function (phamname) {
     //console.log("calling get_clusters_by_pham(", phamname, ")");
 
