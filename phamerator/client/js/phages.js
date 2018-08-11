@@ -1151,8 +1151,10 @@ Template.phages.onCreated(function() {
   Session.set("showPhamLabels", true);
   Session.set("showhspGroups", true);
   Session.set("colorByPhamAbundance", false);
-  Session.set("colorByConservedDomains", false)
-  Session.set("colorByPhams", true)
+  Session.set("colorByConservedDomains", false);
+  Session.set("colorByPhams", true);
+  Session.set("modal1", false);
+
 
   /*if (typeof routeChange === "undefined") {
     console.log('initial load');
@@ -1381,7 +1383,6 @@ Template.phages.onRendered(function () {
 
   $(document).ready(function() {
     $('ul.tabs').tabs();
-
     $('#mapSettings').modal();
     $('#geneData').modal();
     $('.collapsible').collapsible({
@@ -1398,6 +1399,8 @@ Template.phages.onRendered(function () {
         d3.selectAll(".phagename").classed("horizontalAlign", false);
       }
     });
+    $(document).ready(function(){
+      $('#modal1').modal('open')});
   });
 
   svg = d3.select("svg");
@@ -1416,8 +1419,7 @@ Template.phages.onRendered(function () {
   // document.getElementById("searchBar").addEventListener ("keyup", searchFunction, false);
   document.getElementById("viewMapTab").addEventListener ("click", viewMapTabClicked, false);
 
-  $(document).ready(function(){
-    $('#modal1').modal('open')});
+
 
 
 // return document.getElementById("menu").click();
@@ -1436,6 +1438,7 @@ Template.cluster.onRendered(function () {
     $(e.target).trigger('favorites-click');
   });
 });
+
 
 updateSessionStore = function () {
  /////console.log('updating selected data');
@@ -1747,6 +1750,7 @@ Template.phages.events({
   "click #okayButton": function (event, template) {
     return document.getElementById("menu").click();
     console.log("Okay Button Clicked")
+    Session.set("modal1", false);
   },
   });
 
