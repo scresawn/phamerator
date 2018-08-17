@@ -5,51 +5,83 @@ Meteor.methods({
       username: username
     });
   },
-  "get_phamerator_version": function () {
-    return "uhhhh";
-    //return PhameratorVersionCollection.findOne();
+  "addUserToRole": function (user, role, group) {
+    console.log("adding",user,"(",role,") to",group);
+    Roles.addUsersToRoles(user, role, group);
+  },
+  "removeUserFromRole": function (user, role, group) {
+    console.log("removing",user,"(",role,") from",group);
+    Roles.removeUsersFromRoles(user, role, group);
+    Meteor.users.update({_id: user}, { $set: {"preferredDataset": ""}})
+  },
+  "getDatasetsIView": function () {
+    console.log("getDatasetsIView()", Roles.getGroupsForUser(Meteor.userId(), "view"))
+    return Roles.getGroupsForUser(Meteor.userId(), "view")
+  },
+  "getDatasetsIOwn": function () {
+    return Roles.getGroupsForUser(Meteor.userId(), "owner")
+  },
+  "updatePreferredDataset": function (dataset) {
+    groups = Roles.getGroupsForUser(Meteor.userId(), "view")
+    if (groups.includes(dataset)) {
+      console.log("updating preferredDataset to ", dataset)
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"preferredDataset": dataset}});
+      return;
+    }
   },
 
-  "updateSelectedData": function(phagename, addGenome) {
-    //console.log('updateSelectedData called with', phagename, addGenome);
-    genomeMaps = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.genomeMaps": 1}}).selectedData.genomeMaps;
+  "updateSelectedData": function(dataset, phagename, addGenome) {
+    console.log('updateSelectedData called with', dataset, phagename, addGenome);
+    //console.log(Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}))
+    var fields = "selectedData." + dataset + ".genomeMaps"
+    var set = {}
+    selectedData = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}).selectedData;
+    if (!selectedData[dataset]) {
+      selectedData[dataset] = {genomeMaps: []}
+      console.log("first use of dataset", dataset);
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
+    }
+    genomeMaps = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}).selectedData[dataset].genomeMaps;
     //console.log('genomeMaps:', genomeMaps);
 
     if (phagename === "") {
       //console.log('clearing selected data');
-      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.genomeMaps": []}});
+      selectedData[dataset] = {genomeMaps: []}
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
     }
 
     else if (addGenome === true && genomeMaps.indexOf(phagename) === -1) {
       //console.log('adding:', phagename, 'to selectedData');
       genomeMaps.push(phagename);
-      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.genomeMaps": genomeMaps}});
+      selectedData[dataset] = {genomeMaps: genomeMaps}
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
     }
     else if (addGenome === false) {
       //console.log("removing", phagename, "from selectedData");
       var index = genomeMaps.indexOf(phagename);
       if (index > -1) {
         genomeMaps.splice(index, 1);
-        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.genomeMaps": genomeMaps}});
+        selectedData[dataset] = {genomeMaps: genomeMaps}
+        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
       }
     }
   },
-  "updateSubclusterFavorites": function(subcluster, addFavorite) {
+  "updateSubclusterFavorites": function(dataset, subcluster, addFavorite) {
     //console.log('updateSubclusterFavorites called with', subcluster, addFavorite);
 
     // initialize selectedData.subclusterFavorites if it doesn't exist
-    Meteor.users.update({_id: Meteor.userId(), 'selectedData.subclusterFavorites': {$exists : false}}, {$set: {'selectedData.subclusterFavorites': []}});
-    favorites = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.subclusterFavorites": 1}}).selectedData.subclusterFavorites;
+    Meteor.users.update({_id: Meteor.userId(), 'selectedData.dataset.subclusterFavorites': {$exists : false}}, {$set: {'selectedData.dataset.subclusterFavorites': []}});
+    favorites = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {"selectedData.dataset.subclusterFavorites": 1}}).selectedData.dataset.subclusterFavorites;
 
     if (addFavorite === true && favorites.indexOf(subcluster) === -1) {
       favorites.push(subcluster);
-      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.subclusterFavorites": favorites}});
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.dataset.subclusterFavorites": favorites}});
     }
     else if (addFavorite === false && favorites.indexOf(subcluster) !== -1) {
       var index = favorites.indexOf(subcluster);
       if (index > -1) {
         favorites.splice(index, 1);
-        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.subclusterFavorites": favorites}});
+        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {"selectedData.dataset.subclusterFavorites": favorites}});
       }
     }
     //console.log('favorites:', favorites);
@@ -89,14 +121,17 @@ Meteor.methods({
     }
   },
 
-  "getphams": function () {
+  "getphams": function (currentDataset) {
     console.log("calling getphams()...");
+    if (!Roles.getGroupsForUser(Meteor.userId(), "view").includes(currentDataset)){
+      return [];
+    }
     if (typeof phams != "undefined") {
       console.log("sending precomputed phams...");
       return phams;
     }
     console.log("computing phams...");
-    phamsObj = Phams.find().fetch().reduce(function (o, currentArray) {
+    phamsObj = Phams.find({dataset: currentDataset}).fetch().reduce(function (o, currentArray) {
       n = currentArray.name, v = currentArray.size;
       o[n] = v;
       return o
@@ -182,26 +217,38 @@ Meteor.methods({
     return nobiggie;
   },*/
 
-  "getclusters": function () {
-    if (typeof clusters !== "undefined") {
-      //console.log("sending precomputed clusters...");
-      return clusters;
+  "getclusters": function (currentDataset) {
+    console.log("getting clusters for", currentDataset);
+    console.log("getting groups for", Meteor.userId(), Roles.getGroupsForUser(Meteor.userId(), "view"));
+    if (!Roles.getGroupsForUser(Meteor.userId(), "view").includes(currentDataset)){
+      return [];
     }
-    //console.log("computing clusters...");
+    //if (typeof clusters !== "undefined") {
+    //  console.log("sending precomputed clusters...");
+    //  return clusters;
+    //}
+    console.log("computing clusters...");
     clusters = [];
 
     // get an array of all unique cluster names
-    clusterNames = _.uniq(Genomes.find({}, {sort: {cluster:1},
+    /*clusterNames = _.uniq(Genomes.find({"dataset": currentDataset}, {sort: {cluster:1},
+      fields: {cluster: true}, reactive: false
+    }).fetch().map(function (x) {
+      return x.cluster;
+    }), false);*/
+    clusterNames = _.uniq(Genomes.find({"dataset": currentDataset}, {
       fields: {cluster: true}, reactive: false
     }).fetch().map(function (x) {
       return x.cluster;
     }), false);
+    console.log("clusterNames", clusterNames)
+    clusterNames.sort();
     //console.log("got cluster names");
 
     // for each cluster, get an array of unique subcluster names
     clusterNames.forEach(function (cluster, index, array) {
       //console.log(cluster);
-      subClusterNames = _.uniq(Genomes.find({cluster: cluster}, {
+      subClusterNames = _.uniq(Genomes.find({"dataset": currentDataset, "cluster": cluster}, {
         fields: {subcluster: true}, reactive: false
       }).fetch().map(function (x) {
         //return {'cluster': x.cluster, 'subcluster': x.subcluster, 'phagename': x.phagename};
@@ -215,11 +262,13 @@ Meteor.methods({
       //console.log("sorted subclusters");
       subClusterNames.forEach(function (subcluster, index, array) {
         phageNames = Genomes.find({
+          dataset: currentDataset,
           cluster: cluster,
           subcluster: subcluster
-        }, {fields: {phagename: true}, reactive: false, sort: {phagename: 1}}).fetch().map(function (x) {
+        }, {fields: {phagename: true}, reactive: false}).fetch().map(function (x) {
           return x.phagename
         });
+        phageNames.sort();
         //console.log("got phage names");
         var singletonator = function () {
           if (cluster === "") {

@@ -34,7 +34,8 @@ AccountsTemplates.addField({
   type: 'email',
   required: true,
   displayName: "email",
-  re: /.+@(.+){2,}\.(.+){2,}/,
+  //re: /.+@(.+){2,}\.(.+){2,}/,
+  re: /.+@(.+)\.(edu|org)/, // this forces .edu or .org email addresses
   //re: /.+@(.+){2,}\.edu/, // this forces use of .edu email address
   errStr: 'Please use the email provided by your college/university',
 });
@@ -55,9 +56,9 @@ AccountsTemplates.configure({
   showForgotPasswordLink: true,
   overrideLoginErrors: true,
   enablePasswordChange: true,
-
+  showResendVerificationEmailLink: true,
   sendVerificationEmail: true,
-  // enforceEmailVerification: true,
+  //enforceEmailVerification: true,
   //confirmPassword: true,
   //continuousValidation: false,
   //displayFormLabels: true,

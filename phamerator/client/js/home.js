@@ -1,17 +1,20 @@
 Template.home.onCreated(function() {
   //Meteor.subscribe('genomes');
   console.log("home template created");
-  Session.set("phameratorVersionNumber", Meteor.call("get_phamerator_version"), function(error, result) {
-    return result;
-  });
+  //Session.set("phameratorVersionNumber", Meteor.call("get_phamerator_version"), function(error, result) {
+  //  return result;
+  //});
 });
 
 Template.home.onRendered(function () {
+  var updatedTerms = false;
   Meteor.subscribe('newTermsAndPolicies', function () {
+    if (Meteor.user()) {
+      updatedTerms = Meteor.user().newTermsAndPolicies;
+      Session.set('updatedTerms', updatedTerms);
+    }
 
-    updatedTerms = Meteor.user().newTermsAndPolicies;
 
-    Session.set('updatedTerms', updatedTerms);
     dismissToast = function () {
       Meteor.call("updateNewTermsAndPolicies");
       $('.toast').fadeOut();

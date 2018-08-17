@@ -41,3 +41,5 @@ mizzao:user-status
 dynamic-import@0.4.0
 underscore@1.0.10
 materialize:materialize
+alanning:roles
+reywood:publish-composite

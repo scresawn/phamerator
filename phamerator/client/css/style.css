@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
+    font-family: "Raleway-Light", "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
     margin: 0px;
     /* Margin bottom by footer height*/
     margin-bottom: 70px;
@@ -12,6 +12,18 @@ body {
     color: #555555;
     min-width: 320px;
     font-size: 14.5px;
+}
+
+svg {
+  font-family: "Arial";
+}
+
+.switch {
+  padding: 3px;
+}
+
+.btn {
+    text-transform: none;
 }
 
 .tabs {
@@ -28,53 +40,30 @@ footer > .content {
     padding-left: 15px;
 }
 
-@font-face {
-    font-family: ParryHotter;
-    src:
-            url("/fonts/ParryHotter.ttf");
-}
-
-@font-face {
-    font-family: HarryPotter;
-    src:
-            url("/fonts/HARRP___.TTF");
-}
-
-@font-face {
-    font-family: Roboto-Regular;
-    src:
-            url("/fonts/Roboto-Regular.ttf");
-}
-
-@font-face {
-    font-family: Roboto-Light;
-    src:
-            url("/fonts/Roboto-Light.ttf");
-}
-
-@font-face {
-    font-family: Dosis-Regular;
-    src:
-            url("/fonts/Dosis-Regular.ttf");
-}
-
-@font-face {
-    font-family: Dosis-Light;
-    src:
-            url("/fonts/Dosis-Light.ttf");
-}
-
 h1, h2 {
-  font-family: Roboto-Regular;
+  font-family: Raleway-Regular;
 }
 
-a, h3, h4, h5 {
-    font-family: Dosis-Light;
+button, a, h3, h5 {
+    font-family: Raleway-Regular;
     margin-left: 5px;
 }
 
+h4 {
+  font-family: Raleway-Italic;
+}
+
+h6 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 p {
-    font-family: Roboto-Light;
+    font-family: Raleway-Light;
 }
 
 label {
@@ -86,8 +75,8 @@ label {
 }
 
 .hp {
-    font-family: HarryPotter, ParryHotter;
-    font-size: 20pt;
+    font-family: ParryHotter;
+    font-size: 48pt;
 }
 
 .container {
@@ -96,11 +85,11 @@ label {
     width: 100%;
 }
 
-.card-panel {
+/*.card-panel {
     background-color:#3F48CC;
     color:white;
     font-weight:bold;
-}
+}*/
 
 div.row.label {
     padding-top: 50px;
@@ -201,15 +190,6 @@ textarea {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-h6 {
-    display: block;
-    font-size: 1.5em;
-    margin-top: 2.33em;
-    margin-bottom: 2.33em;
-    margin-left: 0;
-    margin-right: 0;
-}
-
 .ack_images {
     margin: auto;
     width: 50%;
@@ -226,4 +206,73 @@ h6 {
     top: -7px;
     height: 65px;
     left: 0px;
+}
+
+ul.clusterSelector {
+  column-count: 4;
+  column-gap: 0;
+}
+li.phageSelector {
+  display: inline-block;
+  width:100%;
+}
+
+@font-face {
+    font-family: ParryHotter;
+    src:
+            url("/fonts/ParryHotter.ttf");
+}
+
+@font-face {
+    font-family: HarryPotter;
+    src:
+            url("/fonts/HARRP___.TTF");
+}
+
+@font-face {
+    font-family: Raleway-Light;
+    src:
+            url("/fonts/Raleway-Light.ttf");
+}
+
+@font-face {
+    font-family: Raleway-Regular;
+    src:
+            url("/fonts/Raleway-Regular.ttf");
+}
+
+@font-face {
+    font-family: Raleway-Italic;
+    src:
+            url("/fonts/Raleway-Italic.ttf");
+}
+
+@font-face {
+    font-family: Raleway-Black;
+    src:
+            url("/fonts/Raleway-Black.ttf");
+}
+
+@font-face {
+    font-family: Roboto-Regular;
+    src:
+            url("/fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+    font-family: Roboto-Light;
+    src:
+            url("/fonts/Roboto-Light.ttf");
+}
+
+@font-face {
+    font-family: Dosis-Regular;
+    src:
+            url("/fonts/Dosis-Regular.ttf");
+}
+
+@font-face {
+    font-family: Dosis-Light;
+    src:
+            url("/fonts/Dosis-Light.ttf");
 }

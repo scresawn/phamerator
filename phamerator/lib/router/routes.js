@@ -1,4 +1,4 @@
-var subscriptions = new SubsManager();
+//var subscriptions = new SubsManager();
 
 if (Meteor.isClient) {
   Router.plugin('ensureSignedIn', {
@@ -21,12 +21,16 @@ Router.configure({
 
 Router.map(function() {
   this.route('home', {
-    path: '/'
+    path: '/',
+    loadingTemplate: 'loading',
+    waitOn: function() {
+      return [Meteor.subscribe('allUsers')];
+    }
   });
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return [Meteor.subscribe('genomes')];
+      return [Meteor.subscribe('genomes', Session.get("currentDataset")), Meteor.subscribe('allUsers')];
     }
   });
   this.route('phamilies');
@@ -37,7 +41,7 @@ Router.map(function() {
   this.route('account', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return [subscriptions.subscribe('files.images.all'), subscriptions.subscribe('fullname')];
+      return [Meteor.subscribe('files.images.all'), Meteor.subscribe('fullname')];
     }
   });
 });

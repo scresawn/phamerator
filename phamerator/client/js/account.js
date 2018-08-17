@@ -36,8 +36,24 @@ Template.account.helpers({
   },
   name: function () {
     return Meteor.user() ? Meteor.user().name : null;
+  },
+  includeInDirectory: function () {
+    return Meteor.user() ? Meteor.user().profile.includeInDirectory : null;
   }
 });
+
+Template.account.events({
+  "change #directoryinfo-yes": function () {
+    console.log("opt in :)")
+    Meteor.users.update({_id: Meteor.user()._id},{$set: {'profile.includeInDirectory': true}});;
+    //getAutocompleteUsers()
+  },
+  "change #directoryinfo-no": function () {
+    console.log("opt out :(")
+    Meteor.users.update({_id: Meteor.user()._id},{$set: {'profile.includeInDirectory': false}});;
+    //getAutocompleteUsers()
+  }
+})
 
 Template.uploadForm.onCreated(function () {
   this.currentUpload = new ReactiveVar(false);
@@ -55,6 +71,7 @@ Template.uploadForm.events({
       // We upload only one file, in case
       // multiple files were selected
       var upload = Images.insert({
+        userId: Meteor.user()._id,
         file: e.currentTarget.files[0],
         streams: 'dynamic',
         chunkSize: 'dynamic'
@@ -80,6 +97,7 @@ Template.uploadForm.events({
 Template.file.helpers({
   imageFile: function () {
     return Images.collection.findOne({userId: Meteor.user()._id})
+    //return Images.collection.findOne()
   },
   /*imageFile: function () {
     user = Images.collection.findOne({_id: Meteor.user()})

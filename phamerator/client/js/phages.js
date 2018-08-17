@@ -2,7 +2,7 @@ import Clipboard from 'Clipboard';
 
 var clipboard = new Clipboard('.btn-copy-link');
 clipboard.on('success', function(e) {
-  console.log(e);
+  //console.log(e);
   Materialize.toast('sequence copied!', 1000);
   e.clearSelection();
 });
@@ -18,11 +18,11 @@ function viewMapTabClicked () {
   })*/
   Meteor.subscribe('featureDiscovery', function () {
     var featureKey = Meteor.user().featureDiscovery[0];
-    console.log("meteor user:", Meteor.user());
-    console.log("features:", features);
-    console.log("featureKey:", features[featureKey]);
+    //console.log("meteor user:", Meteor.user());
+    //console.log("features:", features);
+    //console.log("featureKey:", features[featureKey]);
     if (features[featureKey] != null) {
-      console.log("title:", features[featureKey].title);
+      //console.log("title:", features[featureKey].title);
       Session.set("newFeatureTitle", features[featureKey].title);
       Session.set("newFeatureBody", features[featureKey].body);
       Session.set("newFeatureDismiss", features.dismiss);
@@ -534,7 +534,7 @@ function update_phages() {
   }
 
   adjust_skew_all = function () {
-    console.log("adjust_skew_all()");
+    //console.log("adjust_skew_all()");
     var phages = d3.selectAll(".phages")
     phages.each( function (d) {
       adjust_skew(this);
@@ -595,12 +595,12 @@ function update_phages() {
       if (d3.event.sourceEvent.shiftKey) {
         adjust_skew_all();
 
-        console.log("horizontal dragend");
+        //console.log("horizontal dragend");
 
       }
 
       else {
-        console.log("vertical dragend");
+        //console.log("vertical dragend");
         // move the vertically dragged/dropped genome back to the left edge of the map, so that hsps are in the right place
         //d3.select(this).attr("transform", function (d, i) {
       //    return "translate(" + 0 + "," + d3.transform(d3.select(this).attr("transform")).translate[1] + ")";
@@ -658,7 +658,7 @@ function update_phages() {
     //.attr("x", 0)
     //.attr("y", -120)
     .classed("phagename", true)
-    .attr("font-family", "Arial")
+    //.attr("font-family", "Arial")
     .attr("font-size", "24px")
     .attr("fill", "black")
     .style("text-anchor", "start")
@@ -716,7 +716,7 @@ function update_phages() {
       return (d / 10) + 3;
     })
     .attr("y", 12)
-    .attr("font-family", "sans-serif")
+    //.attr("font-family", "sans-serif")
     .attr("font-size", "14px")
     .attr("fill", "green")
     .style("text-anchor", "start")
@@ -847,7 +847,7 @@ function update_phages() {
       .classed("generect", true)
     .on("click", function (d, i) {
 
-      console.log(d, this, gene);
+      //console.log(d, this, gene);
 
       // Initialize the dialog to empty strings and arrays, rather than showing old data while waiting for new
       selectedDomains = [];
@@ -860,12 +860,12 @@ function update_phages() {
       Session.set("selectedGeneTitle", "");
 
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;
-      console.log("d:", d);
+      //console.log("d:", d);
       Session.set("selectedGeneTitle", nodedata.phagename + " gene " + d.name + " (" + d.start + " - " + d.stop + " )" + " | pham " + d.phamName );
 
     Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
-        console.log('selectedDomains:', selectedDomains);
+        //console.log('selectedDomains:', selectedDomains);
     });
 
     Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
@@ -981,7 +981,7 @@ function update_phages() {
       }
     })
     .style({"text-anchor": "middle", "fill": "black"})
-    .attr("font-family", "Roboto-Regular")
+    //.attr("font-family", "Roboto-Regular")
     .text(function(d) {return d.name})
         //FOR TEXT OPACITY AFTER PHAM COLOR SWITCH
 
@@ -1007,7 +1007,7 @@ function update_phages() {
       }
     })
     .style({"text-anchor": "middle", "fill": "black"})
-    .attr("font-family", "Roboto-Regular")
+    //.attr("font-family", "Roboto-Regular")
     .attr("font-size", "11px")
     .text(function(d) {return d.genefunction; })
     //.attr("opacity", 0)
@@ -1020,7 +1020,7 @@ function update_phages() {
   gene.append("text") // pham name
     .classed("phamLabel", true)
     .style({"fill": "black"})
-    .attr("font-family", "Roboto-Regular")
+    //.attr("font-family", "Roboto-Regular")
     .attr("font-size", "9")
     .attr("x", function(d) { return ((d.stop - d.start)/2)/10;})
     .attr("y", function (d) {
@@ -1121,6 +1121,7 @@ function update_phages() {
 
 Template.phages.onCreated(function() {
   console.log('Template.phages.onCreated');
+  Session.set("clusters", []);
   Session.set("clustersExpanded", false);
   Session.set("showFunctionLabels", true);
   Session.set("showPhamLabels", true);
@@ -1128,6 +1129,7 @@ Template.phages.onCreated(function() {
   Session.set("colorByPhamAbundance", false);
   Session.set("colorByConservedDomains", false)
   Session.set("colorByPhams", true)
+  Session.set("currentDataset", Meteor.user().preferredDataset);
 
   /*if (typeof routeChange === "undefined") {
     console.log('initial load');
@@ -1148,17 +1150,17 @@ Template.phages.onCreated(function() {
         }
     });
 
-  Meteor.call('getclusters', function(error, result) {
+  Meteor.call('getclusters', Session.get("currentDataset"), function(error, result) {
 
     if (typeof error !== 'undefined') {
-     /////console.log('error getting clusters:', error);
+      console.log('error getting clusters:', error);
     }
     else {
-      Session.set('myMethodResult', result);
+      Session.set('clusters', result);
     }
   });
 
-  Meteor.call('getphams', function(error, result) {
+  Meteor.call('getphams', Session.get("currentDataset"), function(error, result) {
 
     if (typeof error !== 'undefined') {
       /////console.log('error getting clusters:', error);
@@ -1172,11 +1174,12 @@ Template.phages.onCreated(function() {
   //Meteor.subscribe('genomes');
  /////console.log("phages template created");
   //Meteor.startup(function () {
-    Meteor.subscribe('selectedData', function () {
-      names = Meteor.user().selectedData.genomeMaps;
+    console.log("currentDataset", Session.get("currentDataset"));
+    Meteor.subscribe('selectedData', Session.get("currentDataset"), function () {
+      names = Meteor.user().selectedData[Session.get("currentDataset")].genomeMaps;
       if (names && names.length > 0) {
         //Materialize.toast("Restoring your work...", 99999999999999, '', function () {
-          Meteor.subscribe("genomesWithSeq", names, {
+          Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), names, {
             onReady: function () {
               names.forEach(function (value, index, myArray) {
                 //console.log("value:", value);
@@ -1301,7 +1304,7 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
         subjectName = json.BlastOutput2.report.results.bl2seq[0].hits[0].description[0].title;
   }
   else {
-   console.log("no valid json found");
+    //console.log("no valid json found");
   }
 
   //console.log("drawBLASTalignments for ", queryName, subjectName);
@@ -1398,12 +1401,12 @@ Template.cluster.onRendered(function () {
 updateSessionStore = function () {
  /////console.log('updating selected data');
   //console.log('names:', selectedGenomes.find({}, {fields: {phagename: 1}}).fetch().map(function (p) {return p.phagename;}));
-  Meteor.user().selectedData['genomeMaps'] = selectedGenomes.find({}, {fields: {phagename: 1}}).fetch().map(function (p) {return p.phagename;});
+  Meteor.user().selectedData[Session.get('currentDataset')]['genomeMaps'] = selectedGenomes.find({}, {fields: {phagename: 1}}).fetch().map(function (p) {return p.phagename;});
 };
 
 Template.phages.helpers({
   clusters: function() {
-    return Session.get('myMethodResult');
+    return Session.get('clusters');
   },
   domainQuery: function () { return "https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=" },
   selectedDomains: function () {return Session.get ('selectedDomains')},
@@ -1433,7 +1436,6 @@ Template.phages.helpers({
 });
 
 Template.phages.events({
-
   "change .clusterCheckbox": function (event, template) {
    /////console.log("event", event.target.checked);
     //console.log(selectedGenomes.find().count());
@@ -1448,7 +1450,7 @@ Template.phages.events({
         clusterGenomes = Genomes.find({cluster: "", subcluster: ""}).fetch();
       }
       clusterPhageNames = clusterGenomes.map(function (obj) {return obj.phagename});
-      Meteor.subscribe("genomesWithSeq", clusterPhageNames, {
+      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
         onReady: function () {
           clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
           //console.log(clusterGenomes);
@@ -1465,7 +1467,7 @@ Template.phages.events({
                 cluster: element.cluster,
                 subcluster: element.subcluster
               }, function () {
-                Meteor.call('updateSelectedData', element.phagename, true);
+                Meteor.call('updateSelectedData', Session.get('currentDataset'), element.phagename, true);
               });
             });
           }
@@ -1482,7 +1484,7 @@ Template.phages.events({
                   alignedGenomes.remove({query: element.phagename}, function () {
                     alignedGenomes.remove({subject: element.phagename}, function () {
                       //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-                      Meteor.call('updateSelectedData', element.phagename, false);
+                      Meteor.call('updateSelectedData', Session.get('currentDataset'), element.phagename, false);
                       window.requestAnimationFrame(function () {
                         console.log("update_hsps 1088");
                         update_hsps(hspData);
@@ -1500,12 +1502,13 @@ Template.phages.events({
   "change .phageCheckbox": function (event, template) {
     $("#preloader").show(function () {
       // get a list of all phagenames on the client
-      phagename = event.target.id.split("-")[0];
+      //phagename = event.target.id.split("-")[0];
+      phagename = event.target.id;
       //console.log(event);
       //Session.set("selections", selections++);
 
       // if user just selected a phage, it doesn't yet exist on the client but should
-      Meteor.subscribe("genomesWithSeq", [phagename], {
+      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
         onReady: function () {
           if (event.target.checked) {
             console.log(phagename, 'was selected');
@@ -1516,7 +1519,7 @@ Template.phages.events({
               sequence: p.sequence,
               cluster: p.cluster,
               subcluster: p.subcluster
-            }, function () { Meteor.call('updateSelectedData', phagename, true); });
+            }, function () { Meteor.call('updateSelectedData', Session.get('currentDataset'), phagename, true); });
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
@@ -1532,7 +1535,7 @@ Template.phages.events({
               alignedGenomes.remove({query: phagename}, function () {
               alignedGenomes.remove({subject: phagename}, function () {
                 //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-                Meteor.call('updateSelectedData', phagename, false);
+                Meteor.call('updateSelectedData', Session.get('currentDataset'), phagename, false);
                   window.requestAnimationFrame(function () {
                     //console.log("update_hsps 1136");
                     update_hsps(hspData);
@@ -1587,18 +1590,18 @@ Template.phages.events({
 
   "change #functionLabelsSwitch": function (event, template) {
     event.preventDefault();
-    console.log(event.target.checked);
+    //console.log(event.target.checked);
     setTimeout(function () { Session.set("showFunctionLabels", event.target.checked) }, 200);
   },
 
   "change #phamLabelsSwitch": function (event, template) {
     event.preventDefault();
-    console.log(event.target.checked);
+    //console.log(event.target.checked);
     setTimeout(function () { Session.set("showPhamLabels", event.target.checked) }, 200);
   },
     "change #phamAbundanceRadioButton": function (event, template) {
         event.preventDefault();
-        console.log(event.target.checked);
+        //console.log(event.target.checked);
         setTimeout(function () {
             Session.set("colorByConservedDomains", false);
             Session.set("colorByPhams", false);
@@ -1607,7 +1610,7 @@ Template.phages.events({
     },
     "change #conservedDomainRadioButton": function (event, template) {
         event.preventDefault();
-        console.log(event.target.checked);
+        //console.log(event.target.checked);
         setTimeout(function () {
             //Session.set("showgccolor", event.target.checked)
             Session.set("colorByPhamAbundance", false);
@@ -1617,7 +1620,7 @@ Template.phages.events({
     },
     "change #phamColorRadioButton": function (event, template) {
         event.preventDefault();
-        console.log(event.target.checked);
+        //console.log(event.target.checked);
         setTimeout(function () {
             //Session.set("showphamcolor", event.target.checked)
             Session.set("colorByPhamAbundance", false);
@@ -1628,7 +1631,7 @@ Template.phages.events({
 
   "change #hspGroupsSwitch": function (event, template) {
     event.preventDefault();
-    console.log(event.target.checked);
+    //console.log(event.target.checked);
     setTimeout(function () {
       Session.set("showhspGroups", event.target.checked);
 
@@ -1667,7 +1670,7 @@ Template.phages.events({
             selectedGenomes.remove({});
             alignedGenomes.remove({});
             hspData = [];
-            Meteor.call('updateSelectedData', "", true);
+            Meteor.call('updateSelectedData', Session.get('currentDataset'), "", true);
           $('.fixed-action-btn').closeFAB();
 
         });
@@ -1686,6 +1689,11 @@ Template.phages.events({
         Session.set("clustersExpanded", true);
       });
   },
+  "click #scroll_top": function (event, template) {
+    $('.fixed-action-btn').closeFAB();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+  },
+
   "click #collapse_all": function (event, template) {
     $('.fixed-action-btn').closeFAB();
     d3.select("#collapse_all")
@@ -1749,8 +1757,8 @@ Template.cluster.helpers({
   },
   favoriteSubcluster: function(cluster, subcluster) {
     //console.log(Meteor.user().selectedData.subclusterFavorites);
-    if (Meteor.user() && Meteor.user().selectedData && Meteor.user().selectedData.subclusterFavorites) {
-      var favs = Meteor.user().selectedData.subclusterFavorites;
+    if (Meteor.user() && Meteor.user().selectedData && Meteor.user().selectedData[Session.get('currentDataset')] && Meteor.user().selectedData[Session.get('currentDataset')].subclusterFavorites) {
+      var favs = Meteor.user().selectedData[Session.get('currentDataset')].subclusterFavorites;
       //console.log(cluster + subcluster, favs);
       if (cluster === "") {
         if (favs.indexOf("favorite-Singletons") < 0) {

@@ -2,21 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { FilesCollection } from 'meteor/ostrio:files';
 
 Meteor.startup(function () {
-  // The correct way
 
   console.log("grounding genomes collection");
-  //Genomes = new Ground.Collection("genomes");
 
   //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
-
   Phams = new Meteor.Collection("phams");
-
-  Proteins = new Meteor.Collection("proteins");
-
   Domains = new Meteor.Collection("domains");
-
-  PhameratorVersionCollection = new Meteor.Collection("phameratorVersion");
+  Datasets = new Meteor.Collection("datasets");
 
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
 

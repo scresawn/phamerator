@@ -1,21 +1,66 @@
 // set up Genomes collection
 // publish just genome names and clusters
 
-Meteor.publish("genomes", function () {
-  console.log('genomes');
-  return Genomes.find({}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1}});
+Meteor.publish("allUsers", function () {
+  //return Meteor.users.find({}, {fields: {name: 1, emails: 1, roles: 1, username:1, profile:1}});
+  return Meteor.users.find({'profile.includeInDirectory': true}, {fields: {name: 1, emails: 1, roles: 1, username:1, profile:1}});
+})
+
+/*Meteor.publish("genomes", function (dataset) {
+  var datasets = Roles.getGroupsForUser(this.userId, "view")
+  if (!datasets.includes(dataset)) { return [] }
+  console.log("getting genomes in ", dataset);
+  return Genomes.find({dataset: dataset}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1}});
+});*/
+
+Meteor.publishComposite("genomes", function (dataset) {
+  return {
+    find: function () {
+      return Datasets.find({"name": {$in: Roles.getGroupsForUser(this.userId, "view")}});
+    },
+    children: [{
+      find: function () {
+        if (!Roles.getGroupsForUser(this.userId, "view").includes(dataset)) {
+          return [];
+        }
+        return Genomes.find({dataset: dataset}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1}});
+      }
+    }]
+  }
 });
 
-Meteor.publish("genomesWithSeq", function (selectedGenomes) {
+Meteor.publish("genomesWithSeq", function (dataset, selectedGenomes) {
   //console.log(selectedGenomes);
-  return Genomes.find({"phagename": {$in: selectedGenomes}});
+  var datasets = Roles.getGroupsForUser(this.userId, "view")
+  if (!datasets.includes(dataset)) { return [] }
+
+  //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
+  return Genomes.find({"phagename": {$in: selectedGenomes},dataset: dataset});
+
   //return Genomes.find({});
   //return Genomes.find({"phagename": {$in: selectedGenomes}});
 });
 
-Meteor.publish("proteinSeq", function (phagename) {
-  //console.log(selectedProtein, " selected");
-  return Proteins.find({"phagename": phagename});
+/*Meteor.publish("datasets", function () {
+  //var datasetsView = Roles.getGroupsForUser(this.userId, "view");
+  //console.log("datasets publication:", this.userId, datasetsView)
+  //return Datasets.find({"name": {$in: Session.get("datasetsView")}});
+  return Datasets.find({"name": {$in: Roles.getGroupsForUser(this.userId, "view")}});
+});*/
+
+Meteor.publishComposite("datasets", {
+  find: function () {
+    return Meteor.users.find({_id: this.userId});
+  },
+  children: [{
+    find: function () {
+      return Datasets.find({"name": {$in: Roles.getGroupsForUser(this.userId, "view")}});
+    }
+  }]
+});
+
+Meteor.publish('preferredDataset', function () {
+  return Meteor.users.find({_id: this.userId}, {fields: {preferredDataset: 1}});
 });
 
 Meteor.publish('files.images.all', function () {
@@ -36,6 +81,10 @@ Meteor.publish('newTermsAndPolicies', function() {
 
 Meteor.publish('fullname', function () {
   return Meteor.users.find({_id: this.userId}, {fields: {name: 1}});
+});
+
+Meteor.publish('phameratorVersion', function () {
+  return PhameratorVersion.find({}, {fields: {version: 1}});
 });
 
 Meteor.users.find({ "status.online": true }).observe({

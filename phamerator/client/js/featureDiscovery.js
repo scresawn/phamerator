@@ -28,7 +28,7 @@ Template.featureDiscovery.onRendered (function () {
 
     //$('div').find('.geneTranslationDismiss').unbind('click');
     $('div').find('.featureDiscoveryDismiss').on('click', function (e) {
-      console.log("e:", e);
+      //console.log("e:", e);
       updateFeatureDiscoveryStore();
         //e.preventDefault();
         //e.stopPropagation();
