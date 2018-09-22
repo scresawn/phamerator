@@ -1,0 +1,12 @@
+<template name="progressbar">
+    <!--{{#transition in="fadeIn" out="fadeOut"}}-->
+
+    {{#if progressbarVisibility}}
+        <div class="animated out">
+            <div class="progress">
+                <div class="determinate blue darken-2" style="width: {{progressbarState}}"></div>
+            </div>
+        </div>
+    {{/if}}
+    <!--{{/transition}}-->
+</template>

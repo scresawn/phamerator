@@ -1,0 +1,65 @@
+<template name="mapSettingsModal">
+    <div id="mapSettings" class="modal">
+        <div class="modal-content">
+            <h4>Genome Map Settings</h4>
+            <form action="#">
+              <div class="card-panel white black-text">
+
+                <div class="row">
+                  <h5>Show on the genome map</h5>
+
+                    <div class="col s12 m6 l6 switch">
+                        <label>
+                            <input type="checkbox" id="functionLabelsSwitch" checked="{{functionLabelsSwitchState}}"/>
+                            <span class="lever"></span>
+                            Protein functions
+                        </label>
+                    </div>
+                    <div class = "col s12 m6 l6 switch">
+                        <label>
+                            <input type="checkbox" id="phamLabelsSwitch"  checked="{{phamLabelsSwitchState}}"/>
+                            <span class="lever"></span>
+                            Phamily names
+                        </label>
+                    </div>
+                    <div class = "col s12 m6 l6 switch">
+                        <label>
+                            <input type="checkbox" id="hspGroupsSwitch" checked="{{blastSwitchState}}"/>
+                            <span class="lever"></span>
+                            Nucleotide alignments
+                        </label>
+                    </div>
+
+                    <!-- <div class="col s6 m6 l6">
+                        <input name="colorswitch" type="radio" id="GCbutton" checked="{{GCbuttonstate}}"  />
+                        <label for="GCbutton">GC Content</label>
+                    </div> -->
+                  </div>
+                </div>
+                <div class="card-panel white black-text">
+
+                <div class="row">
+                  <h5>Gene color coding</h5>
+
+                  <div class = "col s12 m6 l6">
+                      <input name="colorswitch" type="radio" id="phamColorRadioButton" value="{{phamColorState}}" checked="checked" />
+                      <label for="phamColorRadioButton">Phamily color</label>
+                  </div>
+
+                  <div class="col s12 m6 l6">
+                      <input name="colorswitch"  type="radio" id="phamAbundanceRadioButton" value="{{phamAbundanceState}}"/>
+                      <label for="phamAbundanceRadioButton">Phamily abundance</label>
+                  </div>
+                    <div class="col s12 m6 l6">
+                        <input name="colorswitch"  type="radio" id="conservedDomainRadioButton" value="{{conservedDomainState}}"/>
+                        <label for="conservedDomainRadioButton">Conserved domain display</label>
+                    </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+</template>
