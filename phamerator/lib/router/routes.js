@@ -28,9 +28,13 @@ Router.map(function() {
     waitOn: function() {
       return [Meteor.subscribe('genomes')];
     }
+    // /////INVALIDATES THE CODE ABOVE (ACCESSES GENOMES PUBLISHED INFO//////
+    //  ,waitOn: function() {
+    //    return [Meteor.subscribe('phams')];
+    //  }
+    // //////////////////////////////////////////////////////////////////////
   });
   this.route('phamilies');
-  this.route('statistics');
   this.route('cresawnlab');
   this.route('domains');
   this.route('terms');

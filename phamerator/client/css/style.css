@@ -29,7 +29,7 @@ padding-top: 0px;
 padding-bottom: 0px;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
 -webkit-appearance: none;
 width: 7px;
 height: 7px;
@@ -38,7 +38,7 @@ height: 7px;
 border-radius: 4px;
 background-color: rgba(0, 0, 0, .5);
 -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-}
+} */
 
 .page-footer {
     padding-top: 0px;
@@ -298,6 +298,10 @@ padding-right: 10px;
 margin: 0px 0px 0px 0px;
 }
 
+.highlighted {
+  background-color: yellow;
+}
+
 .stats {
   font-family: Dosis-Light;
   font-size: 15px;
@@ -309,6 +313,20 @@ margin: 0px 0px 0px 0px;
 .stats-content{
   font-family: Dosis-Light;
   font-size: 15px;
-  margin-top: 30px;
-  margin-left: 20px;
+  margin-top: 0px;
+  margin-left: 50px;
+}
+
+.stats-title {
+  font-family: Dosis-Light;
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.stats-data {
+  font-family: Dosis-Light;
+  font-size: 15px;
+  margin-left: 30px;
+  margin-top: 10px;
 }

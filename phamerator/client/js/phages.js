@@ -10,34 +10,92 @@ clipboard.on('success', function(e) {
 
 var blastAlignmentsOutstanding = 0;
 
-// Don't forget line ~1408: addeventlistener
+//Eventlistener and Initialization begin @ 1512
+//Fix for href jump @ 1851 and slideToggle @ 1855
 
-function searchFunction() {
-//alert("Access 1");
-var rawInput = document.getElementById("searchBar");
-var inputToUpperCase = rawInput.value.toUpperCase();
-var phageListings = document.getElementsByClassName("col s12 m6 l4");
+function searchPhage(e) {
+  if (e.keyCode == 13) {
+    var rawInput = document.getElementById("autocomplete-input").value;
+    var inputToUpperCase = rawInput.toUpperCase();
+    //var phageListings = document.getElementsByClassName("labelAccess");
+    //var headerListings = document.getElementsByClassName("labelAccess2");
+    var highlighted = document.getElementsByClassName("highlighted");
+    var $phageListings = $(".labelAccess");
+    var $headerListings = $(".labelAccess2");
+    var phageHits = [];
 
-  for (i = 0; i < phageListings.length; i++) {
-  var label = phageListings[i];
+    if ($(".collapsible-body").show())
+    {
+      $(".collapsible-body").hide();
+    }
 
-if (label.innerHTML.toUpperCase().indexOf(inputToUpperCase) > -1) {
-// document.getElementsByClassName("collapsible-header")[i].style.display = "";
-label.style.backgroundColor = "Yellow";
+    if (rawInput == "") {
+      //console.log("Who is in the Highlighted class?", highlighted.toString());
+      while (highlighted[0]) {
+        highlighted[0].classList.remove("highlighted");
+        //console.log("Current index being removed:", highlighted[0]);
+        //console.log("Truthy/Falsey value:", !!highlighted[0]);
+      }
+      $headerListings.filter((index) => {
+        $headerListings.eq(index).parent().show();
+      });
+      return; //to exit the function if this block is entered
+    }
 
-//document.label.click();
-//label.click();
-//label.style.display = "";
-//alert("Access 2");
+    $phageListings.filter((index) => {
+      if ($phageListings.eq(index).text().toUpperCase().indexOf(inputToUpperCase) > -1) {
+        $phageListings.eq(index).addClass("highlighted");
+        phageHits.push($phageListings.eq(index).text());
+        //console.log("ADD highlighted class", $phageListings.eq(index).text());
+      } else {
+        $phageListings.eq(index).removeClass("highlighted");
+        //console.log("REMOVE highlighted class", $phageListings.eq(index).text());
+      }
+    });
+
+//////////USE phageHits ARRAY TO FIND CORRESPONDING HEADERS////////////////
+  $headerListings.filter((index) => {
+    var cleanedHeader = $headerListings.eq(index).text().replace(/[^a-zA-Z0-9]/g, "");
+    var keepHeader = false;
+
+    phageHits.filter(function (i) {
+      var headerNameToCheck = Genomes.findOne({"phagename": i}).cluster +
+        Genomes.findOne({"phagename": i}).subcluster;
+
+        if (headerNameToCheck == "") {
+          headerNameToCheck = "Singletons";
+        }
+
+        if (cleanedHeader == headerNameToCheck) {
+          $headerListings.eq(index).parent().show();
+          keepHeader = true;
+        } else {
+          if (keepHeader) {
+            $headerListings.eq(index).parent().show();
+          } else {
+            $headerListings.eq(index).parent().hide();
+          }
+        }
+      });
+
+      if (cleanedHeader.indexOf(inputToUpperCase) > -1) {
+        $headerListings.eq(index).parent().show();
+        $headerListings.eq(index).addClass("highlighted");
+      }
+    });
+  }
 }
-else {
-  document.getElementsByClassName("collapsible-header")[i].style.display = "none";
-  label.style.backgroundColor = "White";
 
-//label.style.display = "none";
-//alert("Access 3");
-}
-}
+function formattedAutocompleteData() {
+  var dataObj = {"phagename": null}
+
+  Genomes.find({}, {_id:0, phagename:1, cluster:1, subcluster:1}).fetch()
+    .filter(function (index) {
+    dataObj[index.phagename] = null;
+    dataObj[index.cluster + index.subcluster] = null;
+  })
+
+  return dataObj;
 }
 
 function viewMapTabClicked () {
@@ -1399,9 +1457,11 @@ Template.phages.onRendered(function () {
         d3.selectAll(".phagename").classed("horizontalAlign", false);
       }
     });
-    $(document).ready(function(){
-      $('#modal1').modal('open')});
+    // $(document).one().ready(function (event) {
+    //   $('#modal1').modal('open')});
+
   });
+
 
   svg = d3.select("svg");
   svg.attr("id", "svg-genome-map")
@@ -1416,14 +1476,20 @@ Template.phages.onRendered(function () {
     update_hsps(hspData);
 
   });
-  // document.getElementById("searchBar").addEventListener ("keyup", searchFunction, false);
-  document.getElementById("viewMapTab").addEventListener ("click", viewMapTabClicked, false);
+  document.getElementById("viewMapTab").addEventListener("click", viewMapTabClicked, false);
+  document.getElementById("autocomplete-input").addEventListener ("keyup", searchPhage, false);
 
+  $(document).ready(function () {
+    $("#autocomplete-input").hide();
 
-
-
-// return document.getElementById("menu").click();
-
+    $('input.autocomplete').autocomplete({
+      data: formattedAutocompleteData(),
+      limit: 10, // The max amount of results that can be shown at once. Default: Infinity.
+      onAutocomplete: function(val) {
+      },
+      minLength: 3, // The minimum length of the input for the autocomplete to start. Default: 1.
+    });
+  });
 });
 
 Template.cluster.onRendered(function () {
@@ -1747,6 +1813,12 @@ Template.phages.events({
       });
     $("html, body").animate({ scrollTop: 0 }, "slow");
   },
+  "click #search": function (event, template) {
+    $('.fixed-action-btn toolbar direction-top').closeFAB();
+    $("#autocomplete-input").slideToggle();
+    document.location = "#autocomplete-input"
+    console.log("Search Clicked");
+    },
   "click #okayButton": function (event, template) {
     return document.getElementById("menu").click();
     console.log("Okay Button Clicked")
