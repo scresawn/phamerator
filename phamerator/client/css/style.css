@@ -298,6 +298,14 @@ padding-right: 10px;
 margin: 0px 0px 0px 0px;
 }
 
+.portraits {
+  padding-left: 80px;
+}
+
+.labtext {
+  text-align: center;
+}
+
 .highlighted {
   background-color: yellow;
 }
