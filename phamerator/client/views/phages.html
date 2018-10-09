@@ -5,7 +5,8 @@
         {{> featureDiscovery}}
       {{/if}}
 
-    <div id="geneData" class="modal modal-fixed-footer">
+
+    <div id="geneData" class="modal modal-fixed-footer" sytle="overflow:">
         <h4>{{selectedGeneTitle}}</h4>
         <ul class="tabs">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
@@ -17,7 +18,7 @@
         </ul>
 
         <div id="dna-seq">
-            <div class="modal-content">
+            <div class="modal-content modal-fixed-footer">
                 <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
                 <textarea readonly id="gene_dna_seq">{{selectedGene}}</textarea>
             </div>
@@ -29,7 +30,10 @@
 
         <div id="protein-seq">
             <div class="modal-content">
-                <textarea readonly id="gene_protein_seq">{{selectedProtein}}</textarea>
+                <textarea readonly id="gene_protein_seq">
+                  {{selectedProtein}}
+                <br></br>
+              </textarea>
             </div>
             <div class="modal-footer">
                 <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
@@ -81,6 +85,7 @@
                 {{/each}}
                 </ul>
             </div>
+
             <div class="modal-footer">
                 <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
@@ -98,9 +103,24 @@
     </div>
 
 
-    <div class="row">
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+          <h4>Toolbar Options</h4>
+          <p>
+            The menu button on the bottom right of the screen contains options aiding in phage selection.
+            Click the button at any time to view menu in toolbar form.
+          </p>
+        </div>
+        <div class=".modal-close">
+        </div>
+        <div class="modal-footer">
+          <a id="okayButton" href="#!" class="modal-close waves-effect waves-green btn-flat">Okay</a>
+        </div>
+      </div>
 
-        <div class="col s12">
+
+    <div class="row">
+        <div class="col s12" id="yellow-tabs">
             <!--<div class="progress">
                 <div class="determinate" style="width: 0%"></div>
             </div>-->
@@ -109,6 +129,17 @@
                     <li class="tab col s6 m6 l6"><a id="viewMapTab" class="black-text" href="#genome-map">View Map</a></li>
                 </ul>
         </div>
+
+        <div>
+          <div class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">search</i>
+                <input type="text" id="autocomplete-input" class="autocomplete">
+                <label for="autocomplete-input">Search</label>
+              </div>
+            </div>
+          </div>
 
         <div id="phages-list" class="col s12">
             <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
@@ -120,28 +151,47 @@
             <!--{{/transition}}-->
 
             </ul>
-            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-                <a id="menu" class="btn-floating btn-large waves-effect waves-light">
+
+
+            <div id="toolbar-phagelist" class="fixed-action-btn toolbar direction-top" style="transition: transform 0.2s; transform: translate3d(0px, 0px, 0px);">
+                <a id="menu" class="btn-floating btn-large teal">
+
                     <i class="material-icons">menu</i>
                 </a>
-                <ul>
-                    {{#if clusters_expanded}}
-                        <li><a id="collapse_all" class="waves-effect waves-yellow btn-floating light-blue darken-1">
-                            <i class="material-icons left">remove</i>remove
-                        </a></li>
-                    {{else}}
-                        <li><a id="expand_all" class="waves-effect waves-yellow btn-floating light-blue ">
-                            <i class="material-icons left">add</i>search
-                        </a></li>
-                    {{/if}}
+                  <ul>
+                      <li class="waves-effect waves-light">
+                        <a href="#autocomplete-input" type="search" placeholder="Search..." id="search" style="opacity: 1; color: white; font-size: 15px; padding-top: 2.5px; padding-right: 30px;">
+                            <i class="material-icons" style="font-size: 15px; padding-right: 10px;">search</i>Search
+                        </a>
+                      </li>
+
                     {{#if genomes_are_selected}}
-                        <li><a id="clearSelection" class="waves-effect waves-yellow btn-floating purple">
-                            <i class="material-icons left">clear</i>Clear Selection
-                        </a></li>
+                        <li class="waves-effect waves-light">
+                          <a href="#!" id="clearSelection" class="toolbar-buttons">
+                              <i class="tiny material-icons toolbar-icons">clear</i>Clear All
+                          </a>
+                        </li>
                     {{/if}}
+
+                    {{#if clusters_expanded}}
+                        <li class="waves-effect waves-light">
+                          <a href="#!" id="collapse_all" class="toolbar-buttons">
+                              <i class="tiny material-icons toolbar-icons">do_not_disturb</i>Hide All
+                          </a>
+                        </li>
+                    {{else}}
+                    <li class="waves-effect waves-light">
+                      <a href="#!" id="expand_all" class="toolbar-buttons">
+                          <i class="tiny material-icons toolbar-icons">add_circle_outline</i>Expand All
+                      </a>
+                    </li>
+                    {{/if}}
+
                 </ul>
             </div>
+          </div>
         </div>
+
         <!--<ul id="cluster-cards">
                 #each clusters
                     <div class="row">
@@ -164,23 +214,28 @@
                 /each
         </ul>-->
 
+
         <div id="genome-map" class="col s12">
             <svg></svg>
-            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-                <a id="menu2" class="waves-effect waves-light btn-floating btn-large">
+
+            <div id="toolbar-phagelist" class="fixed-action-btn toolbar direction-top" style="transition: transform 0.2s; transform: translate3d(0px, 0px, 0px);">
+                <a id="menu2" class="btn-floating btn-large teal tool">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li>
-                        <button class="downloadGenomeMap waves-effect waves-yellow btn-floating purple">
-                            <i class="material-icons left">system_update_alt</i>Export Genome Map
-                        </button>
+                    <li class="wave-effect waves-light">
+                        <a href="#!" id="download" class="downloadGenomeMap waves-effect waves-light toolbar-buttons">
+                            <i class="tiny material-icons center toolbar-icons">system_update_alt</i>Export Genome Map
+                        </a>
                     </li>
                     <li>
-                        <button class="mapSettings waves-effect waves-purple btn-floating yellow">
-                            <i class="material-icons left">settings</i>Settings
-                        </button>
+                        <a href="#!" id="settings" class="mapSettings waves-effect waves-light toolbar-buttons">
+                            <i class="tiny material-icons center toolbar-icons">settings</i>Settings
+                        </a>
                     </li>
+
+
+
                     <!--
                     <li>
                         <button data-target="mapsettings" class="btn modal-trigger settings waves-effect waves-purple btn-floating yellow">
@@ -197,11 +252,16 @@
 
 </template>
 
+
+
 <template name="cluster">
 
             <li>
 
                 <div class="collapsible-header">
+                      <i class="material-icons right more">expand_more</i>
+                      <i class="material-icons right less" style="display: none">expand_less</i>
+
                     <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
                     <label for="cluster-{{name}}">
                         {{name}}
@@ -223,6 +283,7 @@
                     </div>
                 </div>
             </li>
+
 
 
 </template>

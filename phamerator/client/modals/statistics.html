@@ -1,0 +1,60 @@
+<head>
+    <div id="statisticsModal" class="modal">
+        <div class="modal-content" style="padding-bottom: 10px;">
+            <h4>Database Statistics</h4>
+            <ul class="tabs">
+                <li class="tab col s3 row"><a href="#genome-data">Genome Data</a></li>
+                <li class="tab col s3 row"><a href="#gene-data">Gene Data</a></li>
+                <li class="tab col s3 row"><a href="#phamily-data">Phamily Data</a></li>
+            </ul>
+        </div>
+
+          <div id="genome-data">
+              <div style="column-count:2">
+                  <ul class="stats-content">
+                    <li class="stats-title">Smallest Genome</li>
+                      <li class="tab col s3 row stats-data" id="smallest-genome"></li>
+                    <li class="stats-title">Largest Genome</li>
+                      <li class="tab col s3 row stats-data" id="largest-genome"> </li>
+                    <li class="stats-title">Average Genome Length</li>
+                      <li class="tab col s3 row stats-data" id="mean-genome"> </li>
+                    <li class="stats-title">Average GC Content</li>
+                    <li class="tab col s3 row stats-data" id="GC-content"> </li>
+                  </ul>
+              </div>
+          </div>
+
+          <div id="gene-data">
+              <div style="column-count:1">
+                  <ul class="stats-content">
+                    <li class="stats-title">Smallest Gene</li>
+                      <li class="tab col s3 row stats-data" id="smallest-gene"></li>
+                    <li class="stats-title">Largest Gene</li>
+                      <li class="tab col s3 row stats-data" id="largest-gene"></li>
+                    <li class="stats-title">Average Gene Length</li>
+                      <li class="tab col s3 row stats-data" id="mean-gene"></li>
+                  </ul>
+              </div>
+          </div>
+
+          <div id="phamily-data">
+              <div style="column-count:1">
+                  <ul class="stats-content">
+                    <!-- <li class="stats-title">Smallest Phamily</li>
+                      <li class="tab col s3 row stats-data" id="single-pham">_____ - _____ members</li> -->
+                    <li class="stats-title">Largest Phamily</li>
+                      <li class="tab col s3 row stats-data" id="largest-pham"></li>
+                    <li class="stats-title">Phamilies With 1 Member
+                      <li class="tab col s3 row stats-data" id="single-pham"></li>
+                    <li class="stats-title">Average Phamily Size</li>
+                      <li class="tab col s3 row stats-data" id="mean-pham"></li>
+
+                  </ul>
+              </div>
+          </div>
+
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+</head>
