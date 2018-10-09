@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
+    font-family: "Arial", "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
     margin: 0px;
     /* Margin bottom by footer height*/
     margin-bottom: 70px;
@@ -225,4 +225,37 @@ h6 {
     top: -7px;
     height: 65px;
     left: 0px;
+}
+
+.LabPicture {
+    border-radius: 0%;
+    height: 300px;
+    width: 225px;
+    margin: 0px 0px 0px 0px;
+}
+
+figure {
+  display: inline-block;
+  height: 300px;
+  width: 225px;
+  margin: 0px 20px 100px 20px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+figcaption {
+font-variant: small-caps;
+font-size: 25px;
+text-align: center;
+padding-left: 0px;
+padding-right: 10px;
+margin: 0px 0px 0px 0px;
+}
+
+.portraits {
+  padding-left: 80px;
+}
+
+.labtext {
+  text-align: center;
 }
