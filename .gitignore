@@ -1,2 +1,7 @@
 phamerator/node_modules/
 phamerator/package-lock.json
+phamerator/.DS_Store
+phamerator/public/.DS_Store
+phamerator/public/images/.DS_Store
+.DS_Store
+
