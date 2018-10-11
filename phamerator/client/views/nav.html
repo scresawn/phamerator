@@ -22,7 +22,7 @@
 
         <ul class="right hide-on-med-and-down">
             <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-purple lighten-5">Home</a></li>
-            <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
+            <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5" id="genomeMaps">Genome Maps</a></li>
             {{#if loggedIn}}
                 <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
                 <li style="max-height: 63px"><a href="{{pathFor 'account'}}"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></a></li>

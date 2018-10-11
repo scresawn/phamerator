@@ -10,12 +10,11 @@ clipboard.on('success', function(e) {
 var blastAlignmentsOutstanding = 0;
 
 function viewMapTabClicked () {
-  //console.log('geneTranslation', Session.get('geneTranslation'));
-  //console.log('phamAbundanceFD', Session.get('phamAbundanceFD'));
-  /*d3.select("svg").attr("height", function (d) {
-    console.log("setting " + d3.select("svg") +  " height to " + $("#mapGroup")[0].getBBox().height);
-    return $("#mapGroup")[0].getBBox().height;
-  })*/
+  if (!window.sessionStorage.getItem("isExecuted")) {
+      document.getElementById("menu2").click();
+      window.sessionStorage.setItem("isExecuted", true);
+  };
+
   Meteor.subscribe('featureDiscovery', function () {
     var featureKey = Meteor.user().featureDiscovery[0];
     console.log("meteor user:", Meteor.user());
@@ -1330,6 +1329,11 @@ Template.phages.onDestroyed(function () {
 });
 
 Template.phages.onRendered(function () {
+  if (!window.sessionStorage.getItem("isExecuted")) {
+      document.getElementById("menu").click();
+      window.sessionStorage.setItem("isExecuted", true);
+      console.log('It worked!');
+  };
   console.log('Template.phages.onRendered');
 
   $("#preloader").fadeOut(300).hide();
@@ -1688,7 +1692,7 @@ Template.phages.events({
       });
     $("html, body").animate({ scrollTop: 0 }, "slow");
 
-  }
+  },
 });
 
 Template.registerHelper('clusterIsChecked',function(cluster, subcluster) {
