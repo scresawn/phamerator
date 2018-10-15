@@ -1,6 +1,11 @@
 switch_dataset = function (dataset) {
   console.log("switch_dataset()", dataset);
   selectedGenomes.remove({});
+  if (typeof genomesWithSeqHandle !== 'undefined') {
+    console.log('stopping genomesWithSeqHandle subscription')
+    genomesWithSeqHandle.stop()
+  }
+  genomesWithSeqHandle = Meteor.subscribe("genomesWithSeq");
   preferredDataset = dataset;
   Session.set("currentDataset", dataset);
   console.log("active dataset switched to:", dataset);
@@ -17,17 +22,19 @@ switch_dataset = function (dataset) {
   Tracker.autorun(() => {
     autoCompleteUsers = getAutocompleteUsers()
 
-    console.log("rerunning autocomplete");
+    //console.log("rerunning autocomplete");
   $('input.autocomplete').autocomplete({
-      data: Session.get('usersThatCanViewAutocomplete'),
+      //data: Session.get('usersThatCanViewAutocomplete'),
+      data: autoCompleteUsers,
       limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
       onAutocomplete: function(val) {
         var regExp = /\(([^)]+)\)/;
         var email = regExp.exec(val)[1];
         var id = Meteor.users.findOne({"emails.0.address": email})._id
-        Meteor.call("addUserToRole", id, 'view', Session.get("currentDataset"), (error, result) => {
+        var currentDataset = Session.get('currentDataset');
+        Meteor.call("addUserToRole", id, 'view', currentDataset, (error, result) => {
           //Roles.addUsersToRoles(id, ['view'], Session.get("currentDataset"))
-          console.log("adding ", val, "to", Session.get("currentDataset"), "with id", id);
+          console.log("adding ", val, "to", currentDataset, "with id", id);
           getUsersThatCanView();
           $('input#autocomplete-input.autocomplete')[0].value = "";
         })

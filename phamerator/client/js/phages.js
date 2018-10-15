@@ -868,7 +868,7 @@ function update_phages() {
         //console.log('selectedDomains:', selectedDomains);
     });
 
-    Meteor.call("get_clusters_by_pham", d.phamName, function (error, selectedClusterMembers) {
+    Meteor.call("get_clusters_by_pham", Session.get('currentDataset'), d.phamName, function (error, selectedClusterMembers) {
         Session.set('selectedClusterMembers', selectedClusterMembers);
         console.log('selectedClusterMembers:', selectedClusterMembers);
         uniqueClusters = _.uniq(selectedClusterMembers);
@@ -889,8 +889,9 @@ function update_phages() {
         complementSeq = g.slice(d.start-1, d.stop).split('').reverse().map(complement).join('');
         Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
       }
-
       $('#geneData').modal('open');
+      $('#geneData .modal-content').animate({ scrollTop: 0 }, "fast")
+
     })
     .attr("height", function (d) {return 30;})
       .style({"stroke":"black", "stroke-width": "1px"})
@@ -1121,6 +1122,8 @@ function update_phages() {
 
 Template.phages.onCreated(function() {
   console.log('Template.phages.onCreated');
+
+  //Session.set("canRender": false);
   Session.set("clusters", []);
   Session.set("clustersExpanded", false);
   Session.set("showFunctionLabels", true);
@@ -1163,7 +1166,8 @@ Template.phages.onCreated(function() {
   Meteor.call('getphams', Session.get("currentDataset"), function(error, result) {
 
     if (typeof error !== 'undefined') {
-      /////console.log('error getting clusters:', error);
+      alert('error getting phams:', error)
+      console.log('error getting phams:', error);
     }
     else {
       Session.set('phamsObj', result);
@@ -1172,13 +1176,14 @@ Template.phages.onCreated(function() {
   });
 
   //Meteor.subscribe('genomes');
- /////console.log("phages template created");
+  /////console.log("phages template created");
   //Meteor.startup(function () {
     console.log("currentDataset", Session.get("currentDataset"));
     Meteor.subscribe('selectedData', Session.get("currentDataset"), function () {
       names = Meteor.user().selectedData[Session.get("currentDataset")].genomeMaps;
       if (names && names.length > 0) {
         //Materialize.toast("Restoring your work...", 99999999999999, '', function () {
+        Tracker.autorun(function () {
           Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), names, {
             onReady: function () {
               names.forEach(function (value, index, myArray) {
@@ -1206,6 +1211,7 @@ Template.phages.onCreated(function() {
               });
             }
           });
+        })
       }
     });
 });
@@ -1220,7 +1226,7 @@ var tooltip = d3.select("body")
   .style("text-align", "center")
   .style("position", "absolute")
   .style("padding", "2px")
-  .style("font", "Arial")
+  .style("font-family", "Arial")
   .style("border-radius","8px");
 
 //in rendered callback
@@ -1239,7 +1245,8 @@ blast = function(q, d) {
  /////console.log("s2:", s2.length);
 
   // myURL = "http://phamerator.org:3000/blastalign";
-  myURL = "https://phamerator.org/blastalign";
+  // myURL = "https://phamerator.org/blastalign";
+  myURL = "http://localhost:8080";
   //console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({
@@ -1348,7 +1355,11 @@ Template.phages.onDestroyed(function () {
 
 Template.phages.onRendered(function () {
   console.log('Template.phages.onRendered');
+  //Session.set("canRender", true);
 
+  Tracker.autorun(function () {
+    Meteor.subscribe('genomes', Session.get("currentDataset"))
+  })
   $("#preloader").fadeOut(300).hide();
   $(document).ready(function() {
     $('ul.tabs').tabs();
@@ -1432,7 +1443,10 @@ Template.phages.helpers({
   },
   clusters_expanded: function () {
     return Session.get("clustersExpanded");
-  }
+  },
+  /*canRender() {
+    return Session.get("canRender");
+}*/
 });
 
 Template.phages.events({
@@ -1450,6 +1464,7 @@ Template.phages.events({
         clusterGenomes = Genomes.find({cluster: "", subcluster: ""}).fetch();
       }
       clusterPhageNames = clusterGenomes.map(function (obj) {return obj.phagename});
+      Tracker.autorun(function () {
       Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
         onReady: function () {
           clusterGenomes = Genomes.find({cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster")}).fetch();
@@ -1467,7 +1482,8 @@ Template.phages.events({
                 cluster: element.cluster,
                 subcluster: element.subcluster
               }, function () {
-                Meteor.call('updateSelectedData', Session.get('currentDataset'), element.phagename, true);
+                var dataset = Session.get('currentDataset');
+                Meteor.call('updateSelectedData', 'cluster checked', dataset, element.phagename, true);
               });
             });
           }
@@ -1484,7 +1500,8 @@ Template.phages.events({
                   alignedGenomes.remove({query: element.phagename}, function () {
                     alignedGenomes.remove({subject: element.phagename}, function () {
                       //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-                      Meteor.call('updateSelectedData', Session.get('currentDataset'), element.phagename, false);
+                      var dataset = Session.get('currentDataset');
+                      Meteor.call('updateSelectedData', 'cluster unchecked', dataset, element.phagename, false);
                       window.requestAnimationFrame(function () {
                         console.log("update_hsps 1088");
                         update_hsps(hspData);
@@ -1498,6 +1515,7 @@ Template.phages.events({
         }
       });
     });
+    });
   },
   "change .phageCheckbox": function (event, template) {
     $("#preloader").show(function () {
@@ -1508,6 +1526,7 @@ Template.phages.events({
       //Session.set("selections", selections++);
 
       // if user just selected a phage, it doesn't yet exist on the client but should
+      //Tracker.autorun(function () {
       Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
         onReady: function () {
           if (event.target.checked) {
@@ -1519,7 +1538,10 @@ Template.phages.events({
               sequence: p.sequence,
               cluster: p.cluster,
               subcluster: p.subcluster
-            }, function () { Meteor.call('updateSelectedData', Session.get('currentDataset'), phagename, true); });
+            }, function () {
+              var dataset = Session.get('currentDataset');
+              Meteor.call('updateSelectedData', 'phage checked', dataset, phagename, true);
+            });
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
@@ -1535,7 +1557,8 @@ Template.phages.events({
               alignedGenomes.remove({query: phagename}, function () {
               alignedGenomes.remove({subject: phagename}, function () {
                 //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-                Meteor.call('updateSelectedData', Session.get('currentDataset'), phagename, false);
+                var dataset = Session.get('currentDataset');
+                Meteor.call('updateSelectedData', 'phage unchecked', dataset, phagename, false);
                   window.requestAnimationFrame(function () {
                     //console.log("update_hsps 1136");
                     update_hsps(hspData);
@@ -1547,6 +1570,7 @@ Template.phages.events({
           }
         }
       });
+    // }) end Tracker.autorun()
     });
   },
 
@@ -1670,7 +1694,8 @@ Template.phages.events({
             selectedGenomes.remove({});
             alignedGenomes.remove({});
             hspData = [];
-            Meteor.call('updateSelectedData', Session.get('currentDataset'), "", true);
+            var dataset = Session.get('currentDataset');
+            Meteor.call('updateSelectedData', 'clear selection', dataset, "", true);
           $('.fixed-action-btn').closeFAB();
 
         });

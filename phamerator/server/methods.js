@@ -8,6 +8,9 @@ Meteor.methods({
   "addUserToRole": function (user, role, group) {
     console.log("adding",user,"(",role,") to",group);
     Roles.addUsersToRoles(user, role, group);
+    var key = "selectedData." + group;
+    var projection = {key : {genomeMaps:[]}}
+    Meteor.users.update({_id: user}, {$set: projection})
   },
   "removeUserFromRole": function (user, role, group) {
     console.log("removing",user,"(",role,") from",group);
@@ -30,8 +33,8 @@ Meteor.methods({
     }
   },
 
-  "updateSelectedData": function(dataset, phagename, addGenome) {
-    console.log('updateSelectedData called with', dataset, phagename, addGenome);
+  "updateSelectedData": function(message, dataset, phagename, addGenome) {
+    console.log('updateSelectedData called:', message, dataset, phagename, addGenome);
     //console.log(Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}))
     var fields = "selectedData." + dataset + ".genomeMaps"
     var set = {}
@@ -126,10 +129,12 @@ Meteor.methods({
     if (!Roles.getGroupsForUser(Meteor.userId(), "view").includes(currentDataset)){
       return [];
     }
+    /*
+    // pham cache is now called phamsObj, but needs to be specific for 'currentDataset'
     if (typeof phams != "undefined") {
       console.log("sending precomputed phams...");
       return phams;
-    }
+    }*/
     console.log("computing phams...");
     phamsObj = Phams.find({dataset: currentDataset}).fetch().reduce(function (o, currentArray) {
       n = currentArray.name, v = currentArray.size;
@@ -140,13 +145,13 @@ Meteor.methods({
     return phamsObj;
   },
 
-  "get_clusters_by_pham": function (phamname) {
+  "get_clusters_by_pham": function (dataset, phamname) {
     //console.log("calling get_clusters_by_pham(", phamname, ")");
 
     selectedClusterMembers = []; //array of objects of form {cluster: "A1", phages: ['L5', 'D29', ...]}
 
     if (typeof phamname != null) {
-      phamclusters = Genomes.find({ genes: { $elemMatch : {
+      phamclusters = Genomes.find({dataset: dataset, genes: { $elemMatch : {
         phamName: { $eq: phamname }
       }}
       }, {sort: {cluster:1, subcluster: 1} , fields: {_id: false, phagename:1, cluster: 1, subcluster: 1}}).fetch().map(function (x) {
@@ -209,13 +214,6 @@ Meteor.methods({
         //console.log(domainsCount);
         return {"geneID": geneID, "domainsCount": domainsCount};
     },
-  /*"getlargestphamsize": function() {
-    //nobiggie = Phams.find().sort({size: -1}).limit(1);
-    //nobiggie = nobiggie.size;
-    nobiggie = Phams.findOne({}, {sort: {size:-1}});
-    console.log(nobiggie.size);
-    return nobiggie;
-  },*/
 
   "getclusters": function (currentDataset) {
     console.log("getting clusters for", currentDataset);
@@ -241,7 +239,7 @@ Meteor.methods({
     }).fetch().map(function (x) {
       return x.cluster;
     }), false);
-    console.log("clusterNames", clusterNames)
+    //console.log("clusterNames", clusterNames)
     clusterNames.sort();
     //console.log("got cluster names");
 

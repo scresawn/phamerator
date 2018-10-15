@@ -26,6 +26,8 @@
           <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
           {{#if currentUser}}
             <ul class="left hide-on-med-and-down">
+              <!--<li><i class="material-icons" style="padding-left: 5px;">info_outline</i></li>-->
+
               {{#unless loggingIn}}
                 <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i class="material-icons right">arrow_drop_down</i></a></li>
                 {{#if iAmOwner}}

@@ -27,6 +27,7 @@ svg {
 }
 
 .tabs {
+  overflow-x: hidden;
 }
 footer {
     position: absolute;
@@ -172,19 +173,28 @@ textarea {
     border:0;
     margin:0;
     outline:none;
-    height:80%;
+    height:95%;
     max-width: 100%;
-    max-height: 80%;
+    max-height: 95%;
 }
 
 .modal {
-    overflow: hidden;
-
+    overflow: visible;
 }
 
 .modal .modal-content {
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
+    overflow: auto;
+    height: 50vh;
+    max-height: 50vh;
 }
+
+.modal-collapsible {
+  overflow: auto;
+  height: 50vh;
+  max-height: 50vh;
+}
+
 
 .modal .modal-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.1);

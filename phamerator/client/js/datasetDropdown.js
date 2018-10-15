@@ -17,6 +17,9 @@ Template.datasetDropdown.onRendered(function () {
       if (Meteor.user() && Meteor.user().preferredDataset) {
         switch_dataset(Meteor.user().preferredDataset)
       }
+      /*else {
+        alert("no preferredDataset dataset defined")
+      }*/
     })
 
     //console.log("subscriptionsReady()", this.subscriptionsReady())
@@ -52,9 +55,16 @@ Template.datasetDropdown.helpers({
     console.log("datasets helper changed:", Datasets.find().fetch())
     waitForEl(".dropdown-trigger", function() {
       $(".dropdown-trigger").dropdown({ hover: false, constrainWidth: false })
-      $('#editDataset').modal({complete: function() {
-        $('input#autocomplete-input.autocomplete')[0].value = "";
-      }});
+      $('#editDataset').modal({
+        ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+          $('#editDataset .modal-content').animate({ scrollTop: 0 }, "fast")
+          console.log(modal, trigger);
+        },
+        complete: function() {
+          console.log('editDataset modal closed');
+          $(  'input#autocomplete-input.autocomplete')[0].value = "";
+        }
+      });
     })
     if (Datasets.find().fetch().length === 0) {
       Session.set("preferredDataset", "No data sets available")

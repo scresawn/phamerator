@@ -9,20 +9,17 @@ getUsersThatCanView = function (user) {
 
 getAutocompleteUsers = function () {
   console.log("getAutocompleteUsers()")
-  activeDataset = Session.get("currentDataset")
   users = Meteor.users.find({'profile.includeInDirectory': true}).fetch()
   autoCompleteUsers = {}
   users.forEach(user => {
     var email = user.emails[0].address;
     //email = email.split("@")[1]
 
-
-
     var key = user.name + " (" + email + ")";
     //console.log("key:", key);
     autoCompleteUsers[key] = null;
   })
-  Session.set("usersThatCanViewAutocomplete", autoCompleteUsers);
+  //Session.set("usersThatCanViewAutocomplete", autoCompleteUsers);
   return autoCompleteUsers;
 }
 

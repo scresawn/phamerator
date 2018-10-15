@@ -5,7 +5,7 @@
         {{> featureDiscovery}}
       {{/if}}
 
-    <div id="geneData" class="modal modal-fixed-footer">
+    <div id="geneData" class="modal">
         <h5>{{selectedGeneTitle}}</h5>
         <ul class="tabs">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
@@ -114,7 +114,8 @@
             <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
             <!--{{#transition in="fadeIn" out="fadeOut"}}-->
                 {{#each clusters}}
-                    {{> cluster }}
+                    <!--{{> cluster canRender=canRender}}-->
+                    {{> cluster}}
                 {{/each}}
             <!--{{/transition}}-->
 
@@ -195,8 +196,6 @@
 
         </div>
     </div>
-
-
 </template>
 
 <template name="cluster">
@@ -212,12 +211,14 @@
                 </div>
                 <div class="collapsible-body">
                         <ul class="clusterSelector">
-                          {{#each p in phageNames}}
-                            <li class="phageSelector">
-                                  <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
-                                  <label for="{{p}}">{{p}}</label>
-                            </li>
-                          {{/each}}
+                          <!--{{#if canRender}}-->
+                            {{#each p in phageNames}}
+                              <li class="phageSelector">
+                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
+                                    <label for="{{p}}">{{p}}</label>
+                              </li>
+                            {{/each}}
+                          <!--{{/if}}-->
                         </ul>
                 </div>
             </li>

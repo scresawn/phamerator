@@ -8,6 +8,7 @@ Meteor.startup(function () {
   //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
   Phams = new Meteor.Collection("phams");
+  Proteins = new Meteor.Collection("proteins");
   Domains = new Meteor.Collection("domains");
   Datasets = new Meteor.Collection("datasets");
 
@@ -70,6 +71,7 @@ Images = new FilesCollection({
   collectionName: 'Images',
   storagePath: '/data/phamerator/uploads',
   allowClientCode: false, // Disallow remove files from Client
+  debug: true,
   onBeforeUpload: function (file) {
     //console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));
     // Allow upload files under 10MB, and only in png/jpg/jpeg formats

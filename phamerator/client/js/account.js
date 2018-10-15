@@ -3,6 +3,8 @@
  */
 
 Template.account.onRendered(function () {
+  $("html, body").animate({ scrollTop: 0 }, "slow");
+
   //Meteor.subscribe('files.images.all');
   //Meteor.subscribe('fullname');
   //this.Images = new FilesCollection({collectionName: 'Images'});
@@ -71,10 +73,9 @@ Template.uploadForm.events({
       // We upload only one file, in case
       // multiple files were selected
       var upload = Images.insert({
-        userId: Meteor.user()._id,
         file: e.currentTarget.files[0],
         streams: 'dynamic',
-        chunkSize: 'dynamic'
+        chunkSize: 'dynamic',
       }, false);
 
       upload.on('start', function () {
@@ -85,7 +86,8 @@ Template.uploadForm.events({
         if (error) {
           alert('Error during upload: ' + error);
         } else {
-          Meteor.users.update({_id: Meteor.userId()}, {$set: {"profile.profilePic": fileObj._id}});
+          console.log(Meteor.user().name, 'uploaded picture', fileObj._id)
+          Meteor.users.update({_id: Meteor.user()._id}, {$set: {"profile.profilePic": fileObj._id}});
         }
         template.currentUpload.set(false);
       });
@@ -95,18 +97,24 @@ Template.uploadForm.events({
 });
 
 Template.file.helpers({
-  imageFile: function () {
-    return Images.collection.findOne({userId: Meteor.user()._id})
-    //return Images.collection.findOne()
-  },
   /*imageFile: function () {
-    user = Images.collection.findOne({_id: Meteor.user()})
+    return Images.collection.find().fetch()
+    //return Images.collection.findOne()
+  },*/
+  imageFile: function () {
+    user = Meteor.user();
+    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
+      profilePic = user.profile.profilePic;
+    }
+    return Images.collection.findOne({userId: user._id, _id: profilePic})
+
+    /*user = Meteor.user();
     if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
       profilePic = user.profile.profilePic;
     }
     else profilePic = "";
-    return profilePic;
-  },*/
+    return profilePic;*/
+  },
   videoFile: function () {
     return Videos.collection.findOne({});
   }

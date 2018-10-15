@@ -30,8 +30,12 @@ Router.map(function() {
   this.route('phages', {
     loadingTemplate: 'loading',
     waitOn: function() {
-      return [Meteor.subscribe('genomes', Session.get("currentDataset")), Meteor.subscribe('allUsers')];
-    }
+      if(Meteor.isClient) {
+        dataset = Session.get('currentDataset');
+      }
+      return [Meteor.subscribe('genomes', dataset), Meteor.subscribe('allUsers')];
+    },
+    fastRender: true
   });
   this.route('phamilies');
   this.route('newDatabase');

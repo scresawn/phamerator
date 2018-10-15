@@ -16,13 +16,14 @@ Meteor.publish("allUsers", function () {
 Meteor.publishComposite("genomes", function (dataset) {
   return {
     find: function () {
-      return Datasets.find({"name": {$in: Roles.getGroupsForUser(this.userId, "view")}});
+      return Datasets.find({'name': {$in: Roles.getGroupsForUser(this.userId, "view")}});
     },
     children: [{
       find: function () {
         if (!Roles.getGroupsForUser(this.userId, "view").includes(dataset)) {
-          return [];
+          return;
         }
+        console.log('dataset:', dataset);
         return Genomes.find({dataset: dataset}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1}});
       }
     }]
@@ -31,14 +32,21 @@ Meteor.publishComposite("genomes", function (dataset) {
 
 Meteor.publish("genomesWithSeq", function (dataset, selectedGenomes) {
   //console.log(selectedGenomes);
-  var datasets = Roles.getGroupsForUser(this.userId, "view")
-  if (!datasets.includes(dataset)) { return [] }
+  if (dataset) {
+    var datasets = Roles.getGroupsForUser(this.userId, "view")
+    if (!datasets.includes(dataset)) { return [] }
 
-  //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
-  return Genomes.find({"phagename": {$in: selectedGenomes},dataset: dataset});
+    //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
+    return Genomes.find({"phagename": {$in: selectedGenomes},dataset: dataset});
+  }
+  else {
+    return this.stop();
+  }
+});
 
-  //return Genomes.find({});
-  //return Genomes.find({"phagename": {$in: selectedGenomes}});
+Meteor.publish("proteinSeq", function (phagename) {
+  //console.log(selectedProtein, " selected");
+  return Proteins.find({"phagename": phagename});
 });
 
 /*Meteor.publish("datasets", function () {

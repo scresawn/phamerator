@@ -45,6 +45,7 @@ Template.home.onRendered(function () {
 
      //setTimeout(function() {$('.parallax').parallax()}, 5000);
    });
+   $("html, body").animate({ scrollTop: 0 }, "slow");
   });
 
   Template.home.helpers({

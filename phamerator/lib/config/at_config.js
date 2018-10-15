@@ -19,10 +19,11 @@ AccountsTemplates.addField({
       console.log("Validating username...");
       var self = this;
       Meteor.call("userExists", value, function(err, userExists){
+        console.log("err:", err);
         if (!userExists)
           self.setSuccess();
         else
-          self.setError(userExists);
+          self.setError("This username is already taken. Please try something else.");
         self.setValidating(false);
       });
     }
@@ -33,9 +34,10 @@ AccountsTemplates.addField({
   _id: 'email',
   type: 'email',
   required: true,
-  displayName: "email",
-  //re: /.+@(.+){2,}\.(.+){2,}/,
-  re: /.+@(.+)\.(edu|org)/, // this forces .edu or .org email addresses
+  displayName: "College/University-provided email address",
+  re: /.+@(.+){2,}\.(.+){2,}/, // anything that looks like an email
+  //re: /.+@(.+)\.(edu|org)/, // this forces .edu or .org email addresses
+  //re: /.+@(.+\.edu|hhmi.org|.*ufrj.br|.*mcgill.ca)/, // any .edu, hhmi.org, or ufrj.br address
   //re: /.+@(.+){2,}\.edu/, // this forces use of .edu email address
   errStr: 'Please use the email provided by your college/university',
 });
@@ -60,7 +62,7 @@ AccountsTemplates.configure({
   sendVerificationEmail: true,
   //enforceEmailVerification: true,
   //confirmPassword: true,
-  //continuousValidation: false,
+  continuousValidation: true,
   //displayFormLabels: true,
   //forbidClientAccountCreation: true,
   //formValidationFeedback: true,
