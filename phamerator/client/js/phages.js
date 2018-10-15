@@ -134,7 +134,7 @@ function update_hsps(hspData) {
       return "phage_" + d.queryName + "___phage_" + d.subjectName;
     })
     .each(function (d) {
-      var hsps = svg.selectAll("g#phage_" + d.queryName + "___phage_" + d.subjectName + ".hspGroup")
+      var hsps = svgMap.selectAll("g#phage_" + d.queryName + "___phage_" + d.subjectName + ".hspGroup")
         .selectAll(".hsp")
         .data(function(d) {
           return d.genome_pair_hsps;
@@ -342,6 +342,8 @@ function update_phages() {
   //console.log("in drawGenomeMap");
   //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svg.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
+    svgMap.attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
+
   console.log ("minX", minX, "maxX", maxX);
   //mapGroup.attr("transform", function(d) {"return translate(" + -minX + ",0)"})
   var draggedGenome = d3.select(this);
@@ -355,6 +357,7 @@ function update_phages() {
   });
   //alert(maxX-minX);
   svg.attr("width", function (d) {
+    svgMap.attr("width", function (d) {
     return (maxX - minX);
   })
   .attr("x", function (d) { return minX });
@@ -390,11 +393,13 @@ function update_phages() {
   });
 
   svg.attr("width", function (d) {
+    svgMap.attr("width", function (d) {
     return (maxX - minX);
   })
   .attr("x", function (d) { return minX });
 
   svg.selectAll(".phages")
+    svgMap.selectAll(".phages")
     //.sort( function(a,b) {
     //  console.log(d3.selectAll(".phages").filter(phagename === a.phagename).attr("cx"));
 
@@ -492,6 +497,7 @@ function update_phages() {
     }
     if ( d3.event && d3.event.x != undefined) {
       if ((d3.event.x < svg.attr("x")) && d3.event.x < 0) {
+      if ((d3.event.x < svgMap.attr("x")) && d3.event.x < 0) {
         // dragging this genome off the left end, keep this genome still and drag everything else to the right instead
         d3.select("#mapGroup")
           .attr("transform", function( d, i ) {
@@ -863,9 +869,67 @@ function update_phages() {
       //console.log("d:", d);
       Session.set("selectedGeneTitle", nodedata.phagename + " gene " + d.name + " (" + d.start + " - " + d.stop + " )" + " | pham " + d.phamName );
 
+      //Modify these to be reactive to screen size
+      var phamWidth = 650;
+      var phamHeight = 290;
+      var phamAALength = Math.abs(d.stop-d.start)/3;
+
+      svgDomain
+          .append("g")
+          .attr("class", "domainVis")
+          .append("rect")
+          .attr("height", phamHeight)
+          .attr("width", phamWidth)
+          .attr("fill", d.phamColor)
+          .attr("stroke", "black")
+          .attr("stroke-width", 20)
+          //.attr("transform", "translate(5,5)")
+      ;
+
     Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
         //console.log('selectedDomains:', selectedDomains);
+        console.log('selectedDomains:', selectedDomains);
+        function numOfDomains () {return selectedDomains.length;}
+        var numberOfDomains = numOfDomains();
+
+        svgDomain
+            .append("g")
+            .attr("class", "domainVis")
+            .selectAll(".domainRects")
+            .data(selectedDomains)
+            .enter()
+            .append("rect")
+            .attr("height", (phamHeight-20)/(numberOfDomains))
+            //Need to make responsive to screen width
+            .attr("width", function (d){return ((d.query_end - d.query_start)/phamAALength)*phamWidth;})
+            .attr("fill", "#ffbd88")
+            .attr("stroke", "black")
+            .attr("transform", function(d,i){return "translate("+ (10+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-20)/numberOfDomains))) +")";})
+            .on("mouseover", function(d) {
+                d3.select(this).style({"stroke": "black", "stroke-width": "4"});
+                d3.select("#" + d.domainname + ".collapsible-header").style({"font-weight": "bold"})})
+            .on("mouseout", function(d) {
+                d3.select(this).style({"stroke": "black", "stroke-width": "1"});
+                d3.select("div#" + d.domainname + ".collapsible-header").style({"font-weight": "normal"})})
+            .on("click", function (d) {
+                d3.select("li#" + d.domainname).classed("active", !d3.select("li#" + d.domainname).classed("active"));
+                if (d3.select("div#" + d.domainname).attr("class") === "active collapsible-header")
+                {
+                    d3.select("div#" + d.domainname).classed("active collapsible-header", false);
+                    d3.select("div#" + d.domainname).classed("collapsible-header", true);
+                    d3.select("div#" + d.domainname + ".collapsible-body").style({"display": "none"})
+                }
+                else
+                {
+                    d3.select("div#" + d.domainname).classed("collapsible-header", false);
+                    d3.select("div#" + d.domainname).classed("active collapsible-header", true);
+                    d3.select("div#" + d.domainname + ".collapsible-body").style({"display": "block"})
+                }
+
+            })
+        ;
+
     });
 
     Meteor.call("get_clusters_by_pham", Session.get('currentDataset'), d.phamName, function (error, selectedClusterMembers) {
@@ -891,6 +955,15 @@ function update_phages() {
       }
       $('#geneData').modal('open');
       $('#geneData .modal-content').animate({ scrollTop: 0 }, "fast")
+
+        var onModalClose = function (){
+        d3.selectAll("g.domainVis").remove();
+      }
+        ;
+
+
+      $('#geneData').modal('open');
+      $('#geneData')[0].M_Modal.options.complete = onModalClose;
 
     })
     .attr("height", function (d) {return 30;})
@@ -1077,8 +1150,8 @@ function update_phages() {
   phage.exit().remove();
 
 
-  phagesdata = svg.selectAll(".phages").data();
-  var hspGroupData = svg.selectAll(".hspGroup").data();
+  phagesdata = svgMap.selectAll(".phages").data();
+  var hspGroupData = svgMap.selectAll(".hspGroup").data();
 
   var genome_pairs = [];
   phagesdata.forEach(function(d, i) {
@@ -1380,13 +1453,22 @@ Template.phages.onRendered(function () {
       }
     });
   });
+//Renamed svg to svgMap to distinguish genome map svg canvas from other canvases
+  svgMap = d3.select("#svg-genome-map");
+  svgMap.attr("border", "50px")
+      .attr("overflow", "visible");
 
-  svg = d3.select("svg");
-  svg.attr("id", "svg-genome-map")
-    .attr("border", "50px")
-    .attr("overflow", "visible");
+  mapGroup = svgMap.append("g").attr("id", "mapGroup");
 
-  mapGroup = svg.append("g").attr("id", "mapGroup");
+ // Access Domain Visual SVG canvas and add to it
+  svgDomain = d3.select("#svgDomain");
+  svgDomain.attr("display", "block")
+      .attr("margin", "auto")
+      .attr("viewBox", "0 0 650 290")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      //.attr("height", "66%")
+      //.attr("width", "100%")
+      ;
 
   Tracker.autorun(function () {
     update_phages();
@@ -1430,7 +1512,7 @@ Template.phages.helpers({
     Session.set('newFeature', false);
     return false
   },
-  geneTranslation: function () { return Session.get('geneTranslation'); },
+    geneTranslation: function () { return Session.get('geneTranslation'); },
   phamAbundanceFD: function () { return Session.get('phamAbundanceFD'); },
   selectedGenomes: selectedGenomes,
   selectedGeneTitle: function () { return Session.get('selectedGeneTitle')},
@@ -1699,7 +1781,7 @@ Template.phages.events({
           $('.fixed-action-btn').closeFAB();
 
         });
-    svg.selectAll(".hspGroup").remove();
+    svgMap.selectAll(".hspGroup").remove();
     //blastAlignmentsOutstanding = 0;
   },
   "click #expand_all": function (event, template) {
@@ -1819,3 +1901,4 @@ Template.mapSettingsModal.helpers({
     }
 
 });
+
