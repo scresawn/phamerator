@@ -131,10 +131,10 @@ function update_hsps(hspData) {
         i++;
       }
 
-      return "phage_" + d.queryName + "___phage_" + d.subjectName;
+      return "phage_" + d.queryName.replace(/\./g, '_dot_') + "___phage_" + d.subjectName.replace(/\./g, '_dot_');
     })
     .each(function (d) {
-      var hsps = svgMap.selectAll("g#phage_" + d.queryName + "___phage_" + d.subjectName + ".hspGroup")
+      var hsps = svgMap.selectAll("g#phage_" + d.queryName.replace(/\./g, '_dot_') + "___phage_" + d.subjectName.replace(/\./g, '_dot_') + ".hspGroup")
         .selectAll(".hsp")
         .data(function(d) {
           return d.genome_pair_hsps;
@@ -219,8 +219,8 @@ function update_hsps(hspData) {
 
   hspGroup
     .attr("transform", function (d) {
-      if (d3.select('g#phage_'+d.queryName)[0][0] !== null) {
-        var t = d3.transform(d3.select('g#phage_' + d.queryName).attr("transform")),
+      if (d3.select('g#phage_'+d.queryName.replace(/\./g, '_dot_'))[0][0] !== null) {
+        var t = d3.transform(d3.select('g#phage_' + d.queryName.replace(/\./g, '_dot_')).attr("transform")),
           x = 0;//t.translate[0],
           y = t.translate[1] + 30;// - 150;
           //console.log(t);
@@ -245,6 +245,9 @@ function update_phages() {
   //todo: get selected primary and secondary sort fields and ascending/descending
 
   phageArray = phages.fetch();
+  phageArray.forEach( p => {
+    p.selector = p.phagename.replace(/\./g, '_dot_');
+  })
 
   phage = mapGroup.selectAll(".phages")
     .data(phageArray, function(d) {
@@ -372,7 +375,7 @@ function update_phages() {
   //  });
 
   newPhages = phage.enter().append("g")
-    .attr("id", function(d, i){ return "phage_" + d.phagename; })
+    .attr("id", function(d, i){ return "phage_" + d.selector; })
     .classed("phages", true);
     //.attr("ypos", function (d, i) {
     //  d.ypos = (i * 300)+150;
@@ -409,8 +412,8 @@ function update_phages() {
     .sort(function (a,b) {
       //console.log("sorting");
       //console.log(a, b);
-      var ay = d3.transform(d3.select('g#phage_' + a.phagename).attr("transform")).translate[1];
-      var by = d3.transform(d3.select('g#phage_' + b.phagename).attr("transform")).translate[1];
+      var ay = d3.transform(d3.select('g#phage_' + a.selector).attr("transform")).translate[1];
+      var by = d3.transform(d3.select('g#phage_' + b.selector).attr("transform")).translate[1];
       //console.log(a.phagename, ay, b.phagename, by);
 
       // if both are old, sort by position (new genomes will be at position 0)
@@ -439,7 +442,8 @@ function update_phages() {
     //.transition()
     //.duration(500)
     .attr("transform", function (d, i) {
-      return "translate(" + d3.transform(d3.select('g#phage_' + d.phagename).attr("transform")).translate[0]
+      console.log('d:', d)
+      return "translate(" + d3.transform(d3.select('g#phage_' + d.selector).attr("transform")).translate[0]
  + "," + ((i * 300)+150) + ")";
     });
 
@@ -464,7 +468,7 @@ function update_phages() {
     // get the hspGroup whose subject is this genome
     hspGroupSubject = d3.selectAll(".hspGroup").filter(function (d) {
       // get only those .hspGroup that have the dragged subject
-      return (genome.id.indexOf("phage_" + d.subjectName) == 0)
+      return (genome.id.indexOf("phage_" + d.subjectName.replace(/\./g, '_dot_')) == 0)
     });
     if (hspGroupSubject.size() > 0) {
       hspSubjectPaths = hspGroupSubject.selectAll("path");
@@ -481,7 +485,7 @@ function update_phages() {
     // get the hspGroup whose query is this genome
     hspGroupQuery = d3.selectAll(".hspGroup").filter(function (d) {
       // get only those .hspGroup that have the dragged query
-      return (genome.id.indexOf("phage_" + d.queryName) == 0)
+      return (genome.id.indexOf("phage_" + d.queryName.replace(/\./g, '_dot_')) == 0)
     });
     if (hspGroupQuery.size() > 0) {
       hspQueryPaths = hspGroupQuery.selectAll("path");
@@ -608,8 +612,8 @@ function update_phages() {
         //});
       d3.selectAll(".phages")
         .sort(function (a,b) {
-          var ay =   d3.transform(d3.select('g#phage_' + a.phagename).attr("transform")).translate[1];
-          var by =   d3.transform(d3.select('g#phage_' + b.phagename).attr("transform")).translate[1];
+          var ay =   d3.transform(d3.select('g#phage_' + a.selector).attr("transform")).translate[1];
+          var by =   d3.transform(d3.select('g#phage_' + b.selector).attr("transform")).translate[1];
           return ay - by;
         })
         .transition().duration(1000)
@@ -848,7 +852,7 @@ function update_phages() {
       .classed("generect", true)
     .on("click", function (d, i) {
 
-      //console.log(d, this, gene);
+      console.log(d);
 
       // Initialize the dialog to empty strings and arrays, rather than showing old data while waiting for new
       selectedDomains = [];
@@ -865,23 +869,23 @@ function update_phages() {
       Session.set("selectedGeneTitle", nodedata.phagename + " gene " + d.name + " (" + d.start + " - " + d.stop + " )" + " | pham " + d.phamName );
 
       //Modify these to be reactive to screen size
-      var phamWidth = 650;
-      var phamHeight = 290;
-      var phamAALength = Math.abs(d.stop-d.start)/3;
+      var phamWidth = 500;
+      var phamHeight = 100;
+      var phamAALength = Math.abs(d.stop-d.start)/3.0;
 
       svgDomain
           .append("g")
           .attr("class", "domainVis")
-          .append("rect")
+          .append("rect") // 'gene' rect
           .attr("height", phamHeight)
           .attr("width", phamWidth)
           .attr("fill", d.phamColor)
           .attr("stroke", "black")
-          .attr("stroke-width", 20)
+          .attr("stroke-width", 5)
           //.attr("transform", "translate(5,5)")
       ;
 
-    Meteor.call("get_domains_by_gene", d.geneID, function (error, selectedDomains) {
+    Meteor.call("get_domains_by_gene", d.geneID, dataset, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
 
         console.log('selectedDomains:', selectedDomains);
@@ -894,13 +898,13 @@ function update_phages() {
             .selectAll(".domainRects")
             .data(selectedDomains)
             .enter()
-            .append("rect")
+            .append("rect") // 'domain' rect
             .attr("height", (phamHeight-20)/(numberOfDomains))
             //Need to make responsive to screen width
-            .attr("width", function (d){return ((d.query_end - d.query_start)/phamAALength)*phamWidth;})
+            .attr("width", function (d){return (Math.abs(d.query_end - d.query_start)/phamAALength)*phamWidth;})
             .attr("fill", "#ffbd88")
             .attr("stroke", "black")
-            .attr("transform", function(d,i){return "translate("+ (10+(d.query_start/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-20)/numberOfDomains))) +")";})
+            .attr("transform", function(d,i){return "translate("+ (((d.query_start-1)/phamAALength)*phamWidth) +","+ (10+(i*((phamHeight-20)/numberOfDomains))) +")";})
             .on("mouseover", function(d) {
                 d3.select(this).style({"stroke": "black", "stroke-width": "4"});
                 d3.select("#" + d.domainname + ".collapsible-header").style({"font-weight": "bold"})})
@@ -1454,7 +1458,7 @@ Template.phages.onRendered(function () {
   svgDomain = d3.select("#svgDomain");
   svgDomain.attr("display", "block")
       .attr("margin", "auto")
-      .attr("viewBox", "0 0 650 290")
+      .attr("viewBox", "0 0 650 100")
       .attr("preserveAspectRatio", "xMinYMin meet")
       //.attr("height", "66%")
       //.attr("width", "100%")

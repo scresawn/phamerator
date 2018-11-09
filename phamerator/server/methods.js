@@ -193,9 +193,9 @@ Meteor.methods({
     }
   },
 
-  "get_domains_by_gene":function (geneID) {
+  "get_domains_by_gene":function (geneID, dataset) {
     //console.log("get_domains_by_gene: ", geneID);
-    domains = Domains.find({geneID:geneID}).fetch();
+    domains = Domains.find({geneID:geneID, dataset:dataset}).fetch();
     domains.forEach(function (d) {
       d.domainLink = "https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=" + d.DomainID;
       //console.log(d);
@@ -208,9 +208,9 @@ Meteor.methods({
         return Phams.findOne({},{sort:{size: -1}}).size;
     },
 
-    "get_number_of_domains" :function  (geneID) {
+    "get_number_of_domains" :function  (geneID, dataset) {
         //console.log(geneID);
-        domainsCount = Domains.find({geneID: geneID}).count();
+        domainsCount = Domains.find({geneID: geneID, dataset:dataset}).count();
         //console.log(domainsCount);
         return {"geneID": geneID, "domainsCount": domainsCount};
     },
