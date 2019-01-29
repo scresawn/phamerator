@@ -7,6 +7,29 @@ clipboard.on('success', function(e) {
   e.clearSelection();
 });
 
+let last_known_scroll_position = 0;
+let ticking = false;
+
+function doSomething(scroll_pos) {
+  // Do something with the scroll position
+  d3.selectAll('text.phagename').attr('transform', function () {
+    return 'translate(' + scroll_pos + ', -120)';
+  });
+}
+
+window.addEventListener('scroll', function(e) {
+  last_known_scroll_position = window.scrollX;
+
+  if (!ticking) {
+    window.requestAnimationFrame(function() {
+      doSomething(last_known_scroll_position);
+      ticking = false;
+    });
+
+    ticking = true;
+  }
+});
+
 var blastAlignmentsOutstanding = 0;
 
 function viewMapTabClicked () {
@@ -604,6 +627,7 @@ function update_phages() {
     //.attr("x", 0)
     //.attr("y", -120)
     .classed("phagename", true)
+    .attr('position', 'fixed')
     //.attr("font-family", "Arial")
     .attr("font-size", "24px")
     .attr("fill", "black")
@@ -1242,10 +1266,9 @@ blast = function(q, d) {
  /////console.log("s1:", s1.length);
  /////console.log("s2:", s2.length);
 
-  // myURL = "http://phamerator.org:3000/blastalign";
-  // myURL = "https://phamerator.org/blastalign";
-  myURL = "http://localhost:8080";
-  //console.log("aligning", query.phagename, subject.phagename);
+  myURL = "https://phamerator.org/blastalign";
+  //myURL = "http://localhost:8080";
+  console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({
     type: "POST",
@@ -1379,6 +1402,7 @@ Template.phages.onRendered(function () {
     });
   });
 //Renamed svg to svgMap to distinguish genome map svg canvas from other canvases
+
   svgMap = d3.select("#svg-genome-map");
   svgMap.attr("border", "50px")
       .attr("overflow", "visible");
@@ -1600,17 +1624,20 @@ Template.phages.events({
 
   "click .downloadGenomeMap": function (event, template) {
    /////console.log("downloadGenomeMap clicked");
+     d3.selectAll('text.phagename').attr('transform', function () {
+       return 'translate(' + 0 + ', -120)';
+     });
 
-      $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
-      var svgData = $("#svg-genome-map")[0].outerHTML;
-      var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
-      var svgUrl = URL.createObjectURL(svgBlob);
-      var downloadLink = document.createElement("a");
-      downloadLink.href = svgUrl;
-      downloadLink.download = "phamerator_map.svg";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+     $("svg").attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+     var svgData = $("#svg-genome-map")[0].outerHTML;
+     var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+     var svgUrl = URL.createObjectURL(svgBlob);
+     var downloadLink = document.createElement("a");
+     downloadLink.href = svgUrl;
+     downloadLink.download = "phamerator_map.svg";
+     document.body.appendChild(downloadLink);
+     downloadLink.click();
+     document.body.removeChild(downloadLink);
   },
 
   "click .mapSettings": function (event, template) {
