@@ -12,4 +12,4 @@ Create a MongoDB index on the "Genomes" collection.
 * `use meteor`
 * `db.genomes.createIndex({cluster:1});`
 
-The name "Phamerator" is &copy; Steven Cresawn, Ph.D. 2006-2018. All rights reserved.
+The name "Phamerator" is &copy; Steven Cresawn, Ph.D. 2006-2019. All rights reserved.
