@@ -7,11 +7,18 @@ body {
     font-family: "Raleway-Light", "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif /*rtl:prepend:"Droid Arabic Kufi","Droid Sans", */;
     margin: 0px;
     /* Margin bottom by footer height*/
-    margin-bottom: 70px;
+    margin-bottom: 0;
     padding: 0px;
     color: #555555;
     min-width: 320px;
     font-size: 14.5px;
+
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+main {
+    flex: 1 0 auto;
 }
 
 svg {
@@ -29,11 +36,10 @@ svg {
 .tabs {
   overflow-x: hidden;
 }
+
 footer {
-    position: absolute;
     bottom: 0;
     width: 100%;
-    height: 70px;
 }
 
 footer > .content {
@@ -41,6 +47,9 @@ footer > .content {
     padding-left: 15px;
 }
 
+footer.page-footer {
+  padding-top: 0px;
+}
 h1, h2 {
   font-family: Raleway-Regular;
 }
@@ -129,10 +138,6 @@ text.horizontalAlign {
     transform: translateY(10%);
 }
 
-#profilepic {
-    opacity: 0;
-}
-
 #genome-map {
   /*overflow: scroll;*/
 }
@@ -166,7 +171,22 @@ text.horizontalAlign {
     margin-right: 25px;
 }
 
-textarea {
+p.sequence {
+  font-family: Courier;
+}
+
+span.sequence {
+    display:block;
+    overflow: visible;
+    width:100%;
+    word-wrap:break-word;
+}
+
+.badge {
+  font-weight: 0.9rem;
+}
+
+/*textarea {
     resize: none;
     font-family: monospace;
     font-size:14px;
@@ -176,11 +196,19 @@ textarea {
     height:95%;
     max-width: 100%;
     max-height: 95%;
+}*/
+
+textarea {
+  font-family: Courier;
+  font-size:14px;
+  outline: none;
 }
+
 
 .modal {
     overflow: visible;
 }
+
 
 .modal .modal-content {
     /*overflow-y: scroll;*/
@@ -210,12 +238,16 @@ textarea {
     box-shadow       : 0 0 5px purple;
 }
 
-.progress {
-    background-color: #2196f3;
+#myprogressbar {
+    /*background-color: #2196f3;*/
     position: absolute;
+    overflow: visible;
     top: -7px;
     height: 65px;
     left: 0px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 ul.clusterSelector {

@@ -1,15 +1,48 @@
 switch_dataset = function (dataset) {
   console.log("switch_dataset()", dataset);
+  // invalidate the local cache of genomes
   selectedGenomes.remove({});
-  if (typeof genomesWithSeqHandle !== 'undefined') {
+  alignedGenomes.remove({});
+
+  /*if (typeof genomesWithSeqHandle !== 'undefined') {
     console.log('stopping genomesWithSeqHandle subscription')
     genomesWithSeqHandle.stop()
-  }
-  genomesWithSeqHandle = Meteor.subscribe("genomesWithSeq");
+  }*/
+  //genomesWithSeqHandle = Meteor.subscribe("genomesWithSeq");
   preferredDataset = dataset;
   Session.set("currentDataset", dataset);
-  console.log("active dataset switched to:", dataset);
-  Session.set("currentDataset", dataset);
+  //console.log("active dataset switched to:", dataset);
+  //Session.set("currentDataset", dataset);
+
+  //console.log(Meteor.user())
+  names = Meteor.user().selectedData[dataset].genomeMaps;
+  if (names && names.length > 0) {
+    //Materialize.toast("Restoring your work...", 99999999999999, '', function () {
+    names.forEach(function (value, index, myArray) {
+      //console.log("value:", value);
+      xx = Genomes.find({phagename: value}, {
+        fields: {
+          phagename: 1,
+          genomelength: 1,
+          sequence: 1,
+          cluster: 1,
+          subcluster: 1
+        }
+      }).fetch();
+      //console.log("xx:", xx);
+      xx.forEach(function (p, i, a) {
+        //console.log("restoring saved", p);
+        selectedGenomes.upsert({phagename: p.phagename}, {
+          phagename: p.phagename,
+          genomelength: p.genomelength,
+          sequence: p.sequence,
+          cluster: p.cluster,
+          subcluster: p.subcluster
+        });
+      });
+    });
+  }
+
   var preferredDataset = "Choose a Data Set";
   Meteor.call("updatePreferredDataset", dataset, function (error, result) {
     if (Meteor.user().preferredDataset) {
@@ -19,10 +52,9 @@ switch_dataset = function (dataset) {
     console.log("preferredDataset updated to", dataset)
   })
   usersThatCanView = getUsersThatCanView()
-  Tracker.autorun(() => {
+  //Tracker.autorun(() => {
     autoCompleteUsers = getAutocompleteUsers()
-
-    //console.log("rerunning autocomplete");
+    console.log("rerunning autocomplete");
   $('input.autocomplete').autocomplete({
       //data: Session.get('usersThatCanViewAutocomplete'),
       data: autoCompleteUsers,
@@ -41,12 +73,23 @@ switch_dataset = function (dataset) {
       },
       minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
-  })
+  //})
 }
 
   Meteor.startup(function() {
     // Here we can be sure the plugin has been initialized
     //if (Meteor.isCordova) { alert("start saving your pennies")}
+
+    //M.AutoInit();
+    // M.textareaAutoResize(document.querySelector('.materialize-textarea'))
+    var elems = document.querySelectorAll('.collapsible');
+    var instances = M.Collapsible.init(elems);
+
+    // var elems = document.querySelectorAll('.fixed-action-btn');
+    // var instances = M.FloatingActionButton.init(elems, {
+    //   direction: 'left'
+    // });
+
     Session.set("datasetsOwn", []);
     Session.set("datasetsView", []);
 
@@ -137,6 +180,7 @@ Template.nav.helpers({
 });
 
 Template.nav.onCreated (function () {
+  M.AutoInit()
 })
 
 Template.nav.onRendered (function () {
@@ -168,11 +212,11 @@ Template.nav.onRendered (function () {
   //Materialize.fadeInImage('#profilepic');
 
   //console.log("activating sideNav and dropdown");
-  $(".button-collapse").sideNav();
+  //$(".button-collapse").sideNav();
 
-  $(".sidenav-icon").sideNav({
-    closeOnClick: true
-  }); // http://materializecss.com/side-nav.html
+  //$(".sidenav-icon").sideNav({
+  //  closeOnClick: true
+  //}); // http://materializecss.com/side-nav.html
   /*Meteor.subscribe("preferredDataset", function () {
     var preferredDataset = "Choose a Data Set";
     if (Meteor.user() && Meteor.user().preferredDataset) {

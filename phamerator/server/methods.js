@@ -33,12 +33,17 @@ Meteor.methods({
     }
   },
 
-  "updateSelectedData": function(message, dataset, phagename, addGenome) {
-    console.log('updateSelectedData called:', message, dataset, phagename, addGenome);
+  "updateSelectedData": function(message, dataset, phagenames, addGenome) {
+    // message: just used for the console.log
+    // dataset: which dataset to modify (can only modify one per call to updateSelectedData())
+    // phagename: an array of phagesnames to add or remove
+    // addGenome: boolean
+    //console.log('updateSelectedData called:', message, dataset, phagenames, addGenome);
     //console.log(Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}))
     var fields = "selectedData." + dataset + ".genomeMaps"
     var set = {}
     selectedData = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}).selectedData;
+    //if the dataset hasn't been used by this user, create it on their 'user' document
     if (!selectedData[dataset]) {
       selectedData[dataset] = {genomeMaps: []}
       console.log("first use of dataset", dataset);
@@ -47,26 +52,36 @@ Meteor.methods({
     genomeMaps = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {selectedData: 1}}).selectedData[dataset].genomeMaps;
     //console.log('genomeMaps:', genomeMaps);
 
-    if (phagename === "") {
+    // if no phagename is given, clear the genomeMaps for the selected dataset
+    if (phagenames.length === 0) {
       //console.log('clearing selected data');
       selectedData[dataset] = {genomeMaps: []}
       Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
     }
 
-    else if (addGenome === true && genomeMaps.indexOf(phagename) === -1) {
+    // if addGenome is true, add each phagename to genomeMaps (if it's not there already)
+    else if (addGenome === true) {
       //console.log('adding:', phagename, 'to selectedData');
-      genomeMaps.push(phagename);
+      phagenames.forEach(function (phagename) {
+        if (genomeMaps.indexOf(phagename) === -1) {
+          genomeMaps.push(phagename);
+        }
+      })
       selectedData[dataset] = {genomeMaps: genomeMaps}
       Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
     }
+
+    // if addGenome is false, remove each phagename from genomeMaps
     else if (addGenome === false) {
       //console.log("removing", phagename, "from selectedData");
-      var index = genomeMaps.indexOf(phagename);
-      if (index > -1) {
-        genomeMaps.splice(index, 1);
-        selectedData[dataset] = {genomeMaps: genomeMaps}
-        Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
-      }
+      phagenames.forEach((phagename) => {
+        var index = genomeMaps.indexOf(phagename);
+        if (index > -1) {
+          genomeMaps.splice(index, 1);
+          selectedData[dataset] = {genomeMaps: genomeMaps}
+        }
+      })
+      Meteor.users.upsert({_id: Meteor.userId()},{ $set: {selectedData: selectedData}});
     }
   },
   "updateSubclusterFavorites": function(dataset, subcluster, addFavorite) {
@@ -155,7 +170,7 @@ Meteor.methods({
         phamName: { $eq: phamname }
       }}
       }, {sort: {cluster:1, subcluster: 1} , fields: {_id: false, phagename:1, cluster: 1, subcluster: 1}}).fetch().map(function (x) {
-        //console.log("x:", x);
+        console.log("x:", x);
         //console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
         if (x.cluster === "") {
           return x.phagename;
@@ -241,7 +256,7 @@ Meteor.methods({
     }), false);
     //console.log("clusterNames", clusterNames)
     clusterNames.sort();
-    //console.log("got cluster names");
+    //console.log("sorted cluster names");
 
     // for each cluster, get an array of unique subcluster names
     clusterNames.forEach(function (cluster, index, array) {
@@ -281,7 +296,7 @@ Meteor.methods({
         clusters.push(singletonated);
       });
     });
-    //console.log('clusters:', clusters);
+    console.log('getclusters() complete');
     return clusters;
   }
 });

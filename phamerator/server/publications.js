@@ -23,7 +23,7 @@ Meteor.publishComposite("genomes", function (dataset) {
         if (!Roles.getGroupsForUser(this.userId, "view").includes(dataset)) {
           return;
         }
-        console.log('dataset:', dataset);
+        //console.log('dataset:', dataset);
         return Genomes.find({dataset: dataset}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1}});
       }
     }]
@@ -31,16 +31,17 @@ Meteor.publishComposite("genomes", function (dataset) {
 });
 
 Meteor.publish("genomesWithSeq", function (dataset, selectedGenomes) {
-  //console.log(selectedGenomes);
-  if (dataset) {
+  //console.log("genomesWithSeq:", Genomes.find({"phagename": {$in: selectedGenomes}, dataset: dataset}).fetch());
+  //console.log('genomesWithSeq', dataset, selectedGenomes)
+  if (dataset != null) {
     var datasets = Roles.getGroupsForUser(this.userId, "view")
-    if (!datasets.includes(dataset)) { return [] }
-
+    //if (!datasets.includes(dataset)) { this.ready() }
+    selectedGenomes = selectedGenomes || [];
     //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
-    return Genomes.find({"phagename": {$in: selectedGenomes},dataset: dataset});
+    return Genomes.find({"phagename": {$in: selectedGenomes}, dataset: dataset});
   }
   else {
-    return this.stop();
+    this.ready();
   }
 });
 
@@ -76,6 +77,11 @@ Meteor.publish('files.images.all', function () {
 });
 
 Meteor.publish('selectedData', function() {
+  //console.log(this.userId);
+  if (!this.userId) {
+    this.ready();
+  }
+  //console.log(Meteor.users.find({_id: this.userId}, {fields: {selectedData: 1}}).fetch()[0]['selectedData']['Actino_Draft'])
   return Meteor.users.find({_id: this.userId}, {fields: {selectedData: 1}});
 });
 

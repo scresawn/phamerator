@@ -22,7 +22,7 @@ Template.account.onRendered(function () {
       decimals: 0
     })
   });*/
-  Materialize.fadeInImage('#profilepic');
+  //Materialize.fadeInImage('#profilepic');
 
   /*setTimeout(function () {
     Materialize.fadeInImage('#profilepic')

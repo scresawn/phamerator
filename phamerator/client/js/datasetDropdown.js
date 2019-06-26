@@ -67,15 +67,15 @@ Template.datasetDropdown.helpers({
       });
     })
     if (Datasets.find().fetch().length === 0) {
-      Session.set("preferredDataset", "No data sets available")
+      Session.set("preferredDataset", "Loading . . .")
     }
     else {
-      if (Meteor.user().preferredDataset != "") {
+      /*if (Meteor.user().preferredDataset != "") {
         Session.set("preferredDataset", Meteor.user().preferredDataset)
       }
       else {
         Session.set("preferredDataset", "Choose a Data Set")
-      }
+      }*/
     }
     return Datasets.find().fetch();
   },

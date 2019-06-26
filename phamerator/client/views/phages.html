@@ -7,7 +7,7 @@
 
     <div id="geneData" class="modal">
         <h5>{{selectedGeneTitle}}</h5>
-        <ul class="tabs">
+        <ul class="tabs tabs-fixed-width" style="overflow-x: hidden">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
             <li class="tab col s3"><a href="#protein-seq">Protein</a></li>
             <li class="tab col s3"><a href="#domains">Domains</a></li>
@@ -17,8 +17,7 @@
 
         <div id="dna-seq">
             <div class="modal-content">
-                <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
-                <textarea readonly id="gene_dna_seq">{{selectedGene}}</textarea>
+              <span class='sequence'><p id="gene_dna_seq" class='sequence'>{{selectedGene}}</p></span>
             </div>
             <div class="modal-footer">
                 <button id="copy-dna-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
@@ -28,7 +27,7 @@
 
         <div id="protein-seq">
             <div class="modal-content">
-                <textarea readonly id="gene_protein_seq">{{selectedProtein}}</textarea>
+              <span class='sequence'><p id="gene_protein_seq" class='sequence'>{{selectedProtein}}</p></span>
             </div>
             <div class="modal-footer">
                 <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
@@ -99,7 +98,7 @@
                 <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
-        <div id="notes">
+        <div>
             <div class="modal-content">
                 <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
                 <p id="notes">{{selectedGeneNotes}}</p>
@@ -118,15 +117,15 @@
             <!--<div class="progress">
                 <div class="determinate" style="width: 0%"></div>
             </div>-->
-                <ul class="tabs yellow lighten-3">
+                <ul class="tabs white tabs-fixed-width" style="overflow-x: hidden">
                     <li class="tab col s6 m6 l6"><a class="active black-text" href="#phages-list">Select Phages</a></li>
-                    <li class="tab col s6 m6 l6"><a id="viewMapTab" class="black-text" href="#genome-map">View Map</a></li>
+                    <li class="tab col s6 m6 l6"><a id="viewMapTab" class="black-text" href="#genome-map">Draw Map</a></li>
                 </ul>
         </div>
 
         <div id="phages-list" class="col s12">
             <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
-            <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
+            <ul id="cluster-list" class="collapsible">
             <!--{{#transition in="fadeIn" out="fadeOut"}}-->
                 {{#each clusters}}
                     <!--{{> cluster canRender=canRender}}-->
@@ -135,52 +134,29 @@
             <!--{{/transition}}-->
 
             </ul>
-            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+
+            <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
                 <a id="menu" class="btn-floating btn-large waves-effect waves-light">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li><a id="scroll_top" class="waves-effect waves-purple btn-floating orange ">
+                    <li><a id="scroll_top" class="btn-floating orange ">
                         <i class="material-icons left">arrow_upward</i>up
                     </a></li>
-                    {{#if clusters_expanded}}
-                        <li><a id="collapse_all" class="waves-effect waves-yellow btn-floating light-blue darken-1">
+                        <li><a id="collapse_all" class="btn-floating light-blue darken-1">
                             <i class="material-icons left">remove</i>remove
                         </a></li>
-                    {{else}}
-                        <li><a id="expand_all" class="waves-effect waves-yellow btn-floating light-blue ">
+                        <li><a id="expand_all" class="btn-floating light-blue ">
                             <i class="material-icons left">add</i>search
                         </a></li>
-                    {{/if}}
-                    {{#if genomes_are_selected}}
-                        <li><a id="clearSelection" class="waves-effect waves-yellow btn-floating purple">
+                    <!--{{#if genomes_are_selected}}-->
+                        <li><a id="clearPhageSelection" class="btn-floating purple">
                             <i class="material-icons left">clear</i>Clear Selection
                         </a></li>
-                    {{/if}}
+                    <!--{{/if}}-->
                 </ul>
             </div>
         </div>
-        <!--<ul id="cluster-cards">
-                #each clusters
-                    <div class="row">
-                    <li>
-                        <div class="col s12 l12 m12">
-                            <div class="card hoverable">
-                                <div class="card-content">
-                                    <span class="card-title">name</span>
-                                    <ul class="collapsible white" data-collapsible="expandable">
-                                        cluster
-                                    </ul>
-                                </div>
-                                <div class="card-action">
-                                    <a href="http://phagesdb.org/subclusters/name" target="_blank">name on PhagesDB</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    </div>
-                /each
-        </ul>-->
 
         <div id="genome-map" class="col s12">
             <svg id="svg-genome-map"></svg>
@@ -214,29 +190,26 @@
 </template>
 
 <template name="cluster">
-            <li>
-                <div class="collapsible-header">
-                    <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
-                    <label for="cluster-{{name}}">
-                        {{name}}
-                    </label>
-                    <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
+  <li>
+      <div class="collapsible-header">
+        <label for="cluster-{{name}}">
+          <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
+          <span>{{name}}</span>
+        </label>
 
-                    <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
-                </div>
-                <div class="collapsible-body">
-                        <ul class="clusterSelector">
-                          <!--{{#if canRender}}-->
-                            {{#each p in phageNames}}
-                              <li class="phageSelector">
-                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
-                                    <label for="{{p}}">{{p}}</label>
-                              </li>
-                            {{/each}}
-                          <!--{{/if}}-->
-                        </ul>
-                </div>
-            </li>
-
-
+        <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
+      </div>
+      <div class="collapsible-body">
+              <ul class="clusterSelector">
+                  {{#each p in phageNames}}
+                    <li class="phageSelector">
+                      <label for="{{p}}">
+                        <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
+                        <span>{{p}}</span>
+                      </label>
+                    </li>
+                  {{/each}}
+              </ul>
+      </div>
+  </li>
 </template>
