@@ -17,10 +17,8 @@ ecmascript@0.12.4              # Enable ECMAScript2015+ syntax in app code
 
 useraccounts:materialize
 gildaspk:autoform-materialize
-iron:router
 useraccounts:core
 accounts-password@1.5.1
-useraccounts:iron-routing
 softwarerero:accounts-t9n
 zimme:active-route
 d3js:d3
@@ -42,3 +40,4 @@ underscore@1.0.10
 alanning:roles
 reywood:publish-composite
 montiapm:agent
+apollo@2.0.0
