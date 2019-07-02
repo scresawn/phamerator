@@ -1,0 +1,5 @@
+type Cluster {
+  _id: String!
+  clusterSubcluster: String
+  phages: [Genome]
+}

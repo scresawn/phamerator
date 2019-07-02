@@ -6,66 +6,14 @@ Meteor.startup(function () {
   console.log("grounding genomes collection");
 
   //Genomes = new Ground.Collection("genomes");
-  Genomes = new Meteor.Collection("genomes");
-  Phams = new Meteor.Collection("phams");
-  Proteins = new Meteor.Collection("proteins");
-  Domains = new Meteor.Collection("domains");
-  Datasets = new Meteor.Collection("datasets");
+  Phams =    new Mongo.Collection("phams");
+  Proteins = new Mongo.Collection("proteins");
+  Domains =  new Mongo.Collection("domains");
+  Datasets = new Mongo.Collection("datasets");
 
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
 
-  var Schemas = {};
 
-Schemas.Genome = new SimpleSchema({
-  name: {
-    type: String,
-    label: "Name",
-    max: 20
-  },
-  finder: {
-    type: String,
-    label: "Found By"
-  },
-  sequence: {
-    type: String,
-    label: "Genome Sequence",
-    min: 0
-  },
-  genomelength: {
-    type: Number,
-    label: "Sequence Length"
-  },
-  isProphage: {
-    type: Boolean,
-    label: "Prophage",
-    optional: true
-  },
-  GC: {
-    type: Number,
-    label: "GC %"
-  },
-  cluster: {
-    type: String,
-    label: "Cluster",
-    max: 2
-  },
-  subCluster: {
-    type: Number,
-    label: "Subcluster"
-  },
-  dateFound: {
-    type: Date,
-    label: "Date Found",
-    optional: true
-  },
-  selected: {
-    type: Boolean,
-    optional: true
-  }
-});
-
-  Genomes.attachSchema(Schemas.Genome);
-});
 
 Images = new FilesCollection({
   collectionName: 'Images',
@@ -82,4 +30,5 @@ Images = new FilesCollection({
       return 'Please upload image, with size equal or less than 10MB';
     }
   }
+});
 });

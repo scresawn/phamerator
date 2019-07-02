@@ -1,0 +1,8 @@
+type Genome {
+  _id: String!
+  phagename: String!
+  cluster: String!
+  subcluster: String!
+  genomelength: Int!
+  dataset: String!
+}
