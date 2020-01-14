@@ -1,6 +1,8 @@
-# phamerator
+# Phamerator overview
 
-phamerator.org meteor application for web and (eventually) mobile devices
+This source code powers the phamerator.org comparative bacteriophage genomics platform. The code is made available primarily for those who wish to help with development. If you want to use Phamerator to analyze the public Actinobacteriophage genome data set, you can stop reading these instructions and just head over to phamerator.org. Phamerator.org already hosts many data sets, and can host yours too. Hosted data sets can be public, shared with a team of users, or reserved just for you. For help with adding your own data set(s), please get in touch with us. Contact information is available at cresawnlab.org. 
+
+## For developers:
 
 Install meteor by following the instructions at https://meteor.com
 * `cd phamerator`
