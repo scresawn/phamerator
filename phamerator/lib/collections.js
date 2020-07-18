@@ -69,7 +69,7 @@ Schemas.Genome = new SimpleSchema({
 
 Images = new FilesCollection({
   collectionName: 'Images',
-  storagePath: '/data/phamerator/uploads',
+  storagePath: '../data/phamerator/uploads',
   allowClientCode: false, // Disallow remove files from Client
   debug: true,
   onBeforeUpload: function (file) {
