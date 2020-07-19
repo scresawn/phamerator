@@ -13,23 +13,29 @@ Template.domains.onRendered(function () {
     // $('.collapsible').collapsible({
     //   accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     // });
-
     document.getElementById('domain_input').addEventListener('change', function (evt) {
-      console.log(this.value);
-      console.log(evt)
-      Session.set('domainQuery', this.value)
-      currentDataset = Session.get('currentDataset')
+      let query = this.value
+      $("#preloader").show(function () {
 
-      if (this.value.trim() == "") {
-        Session.set('domainMatches', []);
-      }
-      else {
-        Meteor.call('get_all_domains_by_query', this.value, currentDataset, function (error, matches) {
-          console.log(this.value, currentDataset)
-          Session.set('domainMatches', matches);
-        })
-      }
+        console.log(query);
+        console.log(evt)
+        Session.set('domainQuery', query)
+        currentDataset = Session.get('currentDataset')
 
+        if (query == null || query.trim() == "") {
+          Session.set('domainMatches', []);
+          $("#preloader").fadeOut(300).hide()
+
+        }
+        else {
+          Meteor.call('get_all_domains_by_query', query, currentDataset, function (error, matches) {
+            console.log(query, currentDataset)
+            Session.set('domainMatches', matches);
+            $("#preloader").fadeOut(300).hide()
+
+          })
+        }
+      })
 
       // Meteor.call('get_domains_by_query', this.value, currentDataset, function (error, domains) {
       //   console.log(error, domains)
