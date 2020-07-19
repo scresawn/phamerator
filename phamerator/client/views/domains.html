@@ -2,12 +2,43 @@
 
     <div class="row">
         <div class="input-field col s6">
-            <input value="" id="domain_input" type="text" class="validate">
+            <input value={{domainQuery}} id="domain_input" type="text" class="validate">
             <label class="active" for="domain_input">Domain</label>
         </div>
     </div>
 
-    <ul class="collapsible popout" data-collapsible="accordion">
+    <div class="row">
+        <table>
+            <thead>
+                <tr>
+                    <th>Domain Name</th>
+                    <th>Domain ID</th>
+                    <th>Description</th>
+                    <th>GeneID</th>
+                    <th>Match Start</th>
+                    <th>Match End</th>
+                    <th>E Value</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each match in domainMatches}}
+                <tr>
+                    <td>{{match.domainname}}</td>
+                    <td>{{match.DomainID}}</td>
+                    <td>{{match.description}}</td>
+                    <td>{{match.geneID}}</td>
+                    <td>{{match.query_start}}</td>
+                    <td>{{match.query_end}}</td>
+                    <td>{{match.expect}}</td>
+                </tr>
+                {{/each}}
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- <ul class="collapsible popout" data-collapsible="accordion">
         {{#each domain in searchedDomains}}
         <li id={{domain.DomainID}}>
             <div class="collapsible-header"><i class="material-icons">label</i>{{domain.domainname}}
@@ -18,6 +49,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>Domain</th>
                             <th>GeneID</th>
                             <th>Match Start</th>
                             <th>Match End</th>
@@ -28,6 +60,7 @@
                     <tbody>
                         {{#each match in genes}}
                         <tr>
+                            <td>{{match.domainname}}</td>
                             <td>{{match.geneID}}</td>
                             <td>{{match.query_start}}</td>
                             <td>{{match.query_end}}</td>
@@ -40,5 +73,5 @@
             </div>
         </li>
         {{/each}}
-    </ul>
+    </ul> -->
 </template>

@@ -201,6 +201,10 @@ Meteor.methods({
     return Domains.find({ dataset: dataset, DomainID: domainID }).fetch()
   },
 
+  "get_all_domains_by_query": function (domainDescription, dataset) {
+    return Domains.find({ description: new RegExp(domainDescription), dataset: dataset }, { sort: { geneID: 1 } }).fetch()
+  },
+
   "get_domains_by_query": function (domainDescription, dataset) {
     console.log("get_domains_by_query: ", domainDescription);
     //var regex = new RegExp(domainDescription, 'g');
