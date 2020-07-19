@@ -11,26 +11,26 @@ Router.configure({
   //loadingTemplate: 'loading',
   notFoundTemplate: 'pageNotFound',
   //progressDebug : true,
-  progress : true,
-  progressSpinner : false,
+  progress: true,
+  progressSpinner: false,
   yieldTemplates: {
-    nav: {to: 'nav'},
-    footer: {to: 'footer'}
+    nav: { to: 'nav' },
+    footer: { to: 'footer' }
   }
 });
 
-Router.map(function() {
+Router.map(function () {
   this.route('home', {
     path: '/',
     loadingTemplate: 'loading',
-    waitOn: function() {
+    waitOn: function () {
       return [Meteor.subscribe('allUsers')];
     }
   });
   this.route('phages', {
     loadingTemplate: 'loading',
-    waitOn: function() {
-      if(Meteor.isClient) {
+    waitOn: function () {
+      if (Meteor.isClient) {
         dataset = Session.get('currentDataset');
       }
       return [Meteor.subscribe('genomes', dataset), Meteor.subscribe('allUsers')];
@@ -41,10 +41,22 @@ Router.map(function() {
   this.route('newDatabase');
   this.route('cresawnlab');
   this.route('domains');
+  // this.route('domains',
+  //   {
+  //     loadingTemplate: 'loading',
+  //     waitOn: function () {
+  //       if (Meteor.isClient) {
+  //         dataset = Session.get('currentDataset');
+  //       }
+  //       return [Meteor.subscribe('domains', dataset)];
+  //     },
+  //     fastRender: true
+  //   }
+  // );
   this.route('terms');
   this.route('account', {
     loadingTemplate: 'loading',
-    waitOn: function() {
+    waitOn: function () {
       return [Meteor.subscribe('files.images.all'), Meteor.subscribe('fullname')];
     }
   });

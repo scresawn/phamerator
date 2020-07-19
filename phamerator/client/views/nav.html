@@ -1,81 +1,96 @@
 <template name="nav">
-  <!-- only show this if the current user is the owner -->
-  {{#if currentUser}}
+    <!-- only show this if the current user is the owner -->
+    {{#if currentUser}}
     {{ > editDatasetModal}}
     {{ > datasetDropdown }}
-  {{/if}}
-<div class="navbar-fixed">
-  <nav class="grey darken-3">
-      <div class="nav-wrapper">
-          <div id="preloader">
-              <div class="preloader-wrapper big active">
-                  <div class="spinner-layer spinner-yellow-only">
-                      <div class="circle-clipper left">
-                          <div class="circle"></div>
-                      </div>
-                      <div class="gap-patch">
-                          <div class="circle"></div>
-                      </div>
-                      <div class="circle-clipper right">
-                          <div class="circle"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+    {{/if}}
+    <div class="navbar-fixed">
+        <nav class="grey darken-3">
+            <div class="nav-wrapper">
+                <div id="preloader">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-yellow-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-          <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-          {{#if currentUser}}
-            <ul class="left hide-on-med-and-down">
-              <!--<li><i class="material-icons" style="padding-left: 5px;">info_outline</i></li>-->
+                <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                {{#if currentUser}}
+                <ul class="left hide-on-med-and-down">
+                    <!--<li><i class="material-icons" style="padding-left: 5px;">info_outline</i></li>-->
 
-              {{#unless loggingIn}}
-                <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i class="material-icons right">arrow_drop_down</i></a></li>
-                {{#if iAmOwner}}
-                  <li><button data-target="editDataset" class="waves-effect waves-light btn modal-trigger">Collaborate</button></li>
+                    {{#unless loggingIn}}
+                    <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i
+                                class="material-icons right">arrow_drop_down</i></a></li>
+                    {{#if iAmOwner}}
+                    <li><button data-target="editDataset"
+                            class="waves-effect waves-light btn modal-trigger">Collaborate</button></li>
+                    {{/if}}
+                    {{/unless}}
+                </ul>
                 {{/if}}
-              {{/unless}}
-            </ul>
-          {{/if}}
-          <ul class="right hide-on-med-and-down">
-              <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-purple lighten-5">Home</a></li>
-              <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
-              {{#if loggedIn}}
-                  <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-                  <li style="max-height: 63px"><a href="{{pathFor 'account'}}"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic"></a></li>
-              {{/if}}
-              <li><a class="js-gitter-toggle-chat-button waves-effect waves-light btn"><i class="material-icons left white-text">chat_bubble</i>Chat</a></li>
-              <li>{{> atNavButton }}</li>
-          </ul>
-          <ul id="mobile-menu" class="side-nav">
-              <!--<img src="phamerator.png" style="width: 100%"/>-->
-              {{#if loggedIn}}
-                  <!--<li><a class="dropdown-trigger" href="{{pathFor 'newDatabase'}}" data-activates="dropdown1">Data Sets<i class="material-icons right">arrow_drop_down</i></a></li>-->
+                <ul class="right hide-on-med-and-down">
+                    <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}"
+                            class="waves-effect waves-purple lighten-5">Home</a></li>
+                    <li class="{{isActiveRoute regex='domains'}}"><a href="{{pathFor 'domains'}}"
+                            class="waves-effect waves-purple lighten-5">Domains</a></li>
+                    <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}"
+                            class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
+                    {{#if loggedIn}}
+                    <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}"
+                            class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
+                    <li style="max-height: 63px"><a href="{{pathFor 'account'}}"><img src="{{fileURL imageFile}}"
+                                alt="{{imageFile.name}}" class="thumb_profilepic"></a></li>
+                    {{/if}}
+                    <li><a class="js-gitter-toggle-chat-button waves-effect waves-light btn"><i
+                                class="material-icons left white-text">chat_bubble</i>Chat</a></li>
+                    <li>{{> atNavButton }}</li>
+                </ul>
+                <ul id="mobile-menu" class="side-nav">
+                    <!--<img src="phamerator.png" style="width: 100%"/>-->
+                    {{#if loggedIn}}
+                    <!--<li><a class="dropdown-trigger" href="{{pathFor 'newDatabase'}}" data-activates="dropdown1">Data Sets<i class="material-icons right">arrow_drop_down</i></a></li>-->
 
-                  <!--<li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>-->
-                  <li style="width=100%"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width:100%"></li>
-              {{/if}}
-              <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}" class="waves-effect waves-purple lighten-5">Home</a></li>
+                    <!--<li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>-->
+                    <li style="width=100%"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width:100%">
+                    </li>
+                    {{/if}}
+                    <li class="{{isActiveRoute regex='home'}}"><a href="{{pathFor 'home'}}"
+                            class="waves-effect waves-purple lighten-5">Home</a></li>
 
-              {{#if loggedIn}}
-                  <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}" class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
-                  <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-                      <!--<img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic" />-->
-              {{else}}
+                    {{#if loggedIn}}
+                    <li class="{{isActiveRoute regex='phages'}}"><a href="{{pathFor 'phages'}}"
+                            class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
+                    <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}"
+                            class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
+                    <!--<img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic" />-->
+                    {{else}}
 
-              {{/if}}
-              <li><a class="js-gitter-toggle-chat-button waves-effect waves-light btn"><i class="material-icons left white-text">chat_bubble</i>Chat</a></li>
-              <li>{{> atNavButton }}</li>
-          </ul>
-          <!--<a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>-->
-      </div>
-      </nav>
-</div>
-      <footer class="page-footer cyan">
-          <div class="footer-copyright cyan">
-              <div class="container">
-                  © Steven Cresawn, Ph.D. and SEA-PHAGES 2006-2018. All rights reserved.<a class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms and Policies</a>
-                  <a class="grey-text text-lighten-4 right" href="https://seaphages.org">SEA-PHAGES</a>
-              </div>
-          </div>
-      </footer>
+                    {{/if}}
+                    <li><a class="js-gitter-toggle-chat-button waves-effect waves-light btn"><i
+                                class="material-icons left white-text">chat_bubble</i>Chat</a></li>
+                    <li>{{> atNavButton }}</li>
+                </ul>
+                <!--<a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>-->
+            </div>
+        </nav>
+    </div>
+    <footer class="page-footer cyan">
+        <div class="footer-copyright cyan">
+            <div class="container">
+                © Steven Cresawn, Ph.D. and SEA-PHAGES 2006-present. All rights reserved.<a
+                    class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms and Policies</a>
+                <a class="grey-text text-lighten-4 right" href="https://seaphages.org">SEA-PHAGES</a>
+            </div>
+        </div>
+    </footer>
 </template>
