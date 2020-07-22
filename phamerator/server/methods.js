@@ -161,13 +161,20 @@ Meteor.methods({
         //console.log("x:", x);
         //console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
         if (x.cluster === "") {
-          return x.phagename;
+          x.cluster = "Singletons"
         }
         //console.log("selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster):", selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster));
 
 
         //if (selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster) === false) {
-        var thiscluster = selectedClusterMembers.find(y => y.cluster === (x.cluster + x.subcluster));
+
+        if (x.cluster === "Singletons") {
+          var thiscluster = selectedClusterMembers.find(y => y.cluster === "Singletons"); // find singletons
+        }
+        else {
+          var thiscluster = selectedClusterMembers.find(y => y.cluster === (x.cluster + x.subcluster));
+        }
+
         if (thiscluster == undefined) {
           thiscluster = {};
           thiscluster.cluster = x.cluster + x.subcluster;
