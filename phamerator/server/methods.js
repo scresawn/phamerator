@@ -136,12 +136,14 @@ Meteor.methods({
       return phams;
     }*/
     console.log("computing phams...");
+    // console.log(Phams.find({ dataset: currentDataset }).fetch())
     phamsObj = Phams.find({ dataset: currentDataset }).fetch().reduce(function (o, currentArray) {
-      n = currentArray.name, v = currentArray.size;
+      n = currentArray.PhamID, v = currentArray.size;
       o[n] = v;
       return o
     }, {});
     console.log("returning newly computed phams...");
+    // console.log(phamsObj);
     return phamsObj;
   },
 
