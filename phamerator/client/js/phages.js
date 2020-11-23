@@ -838,6 +838,7 @@ function update_phages() {
       Session.set('selectedGeneNotes', "");
       Session.set('selectedGene', "");
       Session.set('selectedProtein', "");
+      Session.set('selectedPham', d.phamName);
       Session.set("selectedGeneTitle", "");
 
       nodedata = d3.select(this).node().parentNode.parentNode.__data__;

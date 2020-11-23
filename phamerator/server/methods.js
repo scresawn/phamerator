@@ -164,6 +164,7 @@ Meteor.methods({
         //console.log("x.cluster + x.subcluster:", x.cluster + x.subcluster);
         if (x.cluster === "") {
           x.cluster = "Singletons"
+          x.subcluster = ""
         }
         //console.log("selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster):", selectedClusterMembers.hasOwnProperty(x.cluster + x.subcluster));
 

@@ -1,12 +1,14 @@
 <template name="phages">
 
     {{> mapSettingsModal}}
-      {{#if newFeature}}
-        {{> featureDiscovery}}
-      {{/if}}
+    {{#if newFeature}}
+    {{> featureDiscovery}}
+    {{/if}}
 
     <div id="geneData" class="modal">
-        <h5>{{selectedGeneTitle}}</h5>
+        <!-- <h5>{{selectedGeneTitle}}</h5><a
+            href="http://phamerator.webfactional.com/databases_Hatfull/Actino_Draft_v10/fastas/5_genes.fasta">some
+            link</a> -->
         <ul class="tabs">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
             <li class="tab col s3"><a href="#protein-seq">Protein</a></li>
@@ -21,7 +23,8 @@
                 <textarea readonly id="gene_dna_seq">{{selectedGene}}</textarea>
             </div>
             <div class="modal-footer">
-                <button id="copy-dna-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
+                <button id="copy-dna-button" class="waves-effect waves-green btn-flat btn-copy-link"
+                    data-clipboard-target="#gene_dna_seq">Copy to Clipboard</button>
                 <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
@@ -31,86 +34,87 @@
                 <textarea readonly id="gene_protein_seq">{{selectedProtein}}</textarea>
             </div>
             <div class="modal-footer">
-                <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link" data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
+                <button id="copy-protein-button" class="waves-effect waves-green btn-flat btn-copy-link"
+                    data-clipboard-target="#gene_protein_seq">Copy to Clipboard</button>
                 <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 
         <div id="domains">
-        <div class="modal-content">
-        <svg id= svgDomain></svg>
-        <ul class="collapsible" data-collapsible="expandable">
-        {{ #each domain in selectedDomains}}
-            <li id= {{domain.domainname}}>
-                <div class="collapsible-header" id={{domain.domainname}}>{{domain.domainname}}</div>
-                <div class="collapsible-body" id={{domain.domainname}}>
-                    <ul>
-                      <li>
-                      <a href={{domain.domainLink}} target="_blank"><i class="material-icons">insert_link</i></a>
-                    </li>
-                        <li>
-                            {{domain.description}}
+            <svg id=svgDomain></svg>
+            <ul class="collapsible" data-collapsible="expandable">
+                {{ #each domain in selectedDomains}}
+                <li id={{domain.domainname}}>
+                    <div class="collapsible-header" id={{domain.domainname}}>{{domain.domainname}}</div>
+                    <div class="collapsible-body" id={{domain.domainname}}>
+                        <ul>
+                            <li>
+                                <a href={{domain.domainLink}} target="_blank"><i
+                                        class="material-icons">insert_link</i></a>
+                            </li>
+                            <li>
+                                {{domain.description}}
 
-                        </li>
-                        <br/>
-                        <li><u>
-                            Protein Alignment Data:
-                        </u></li>
-                        <li>
-                            Query Start (Amino Acid Position): {{domain.query_start}}
-                        </li>
-                        <li>
-                            Query End (Amino Acid Position): {{domain.query_end}}
-                        </li>
-                        <li>
-                            E-Value: {{domain.expect}}
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-        {{/each}}
-        </ul>
-        </div>
-            <div class="modal-footer">
-                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
-        </div>
-
-        <div id="pham-clusters">
-            <div class="modal-content">
-                <ul class="collapsible" data-collapsible="expandable">
-                {{ #each c in selectedClusters}}
-                    <li>
-                        <div class="collapsible-header">{{c.cluster}}</div>
-                        <div class="collapsible-body">
-                            <ul>
-                                {{#each p in c.phages}}
-                                    <li>{{p}}</li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    </li>
+                            </li>
+                            <br />
+                            <li><u>
+                                    Protein Alignment Data:
+                                </u></li>
+                            <li>
+                                Query Start (Amino Acid Position): {{domain.query_start}}
+                            </li>
+                            <li>
+                                Query End (Amino Acid Position): {{domain.query_end}}
+                            </li>
+                            <li>
+                                E-Value: {{domain.expect}}
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 {{/each}}
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
+            </ul>
         </div>
-        <div id="notes">
-            <div class="modal-content">
-                <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
-                <p id="notes">{{selectedGeneNotes}}</p>
-            </div>
-            <div class="modal-footer">
-                <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
+        <div class="modal-footer">
+            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
-
     </div>
 
+    <div id="pham-clusters">
+        <div class="modal-content">
+            <p>These clusters each contain a phage whose genome encodes a member of pham {{selectedPham}}. Select a
+                cluster to
+                see these phages.</p>
+            <ul class="collapsible" data-collapsible="expandable">
+                {{ #each c in selectedClusters}}
+                <li>
+                    <div class="collapsible-header">{{c.cluster}}</div>
+                    <div class="collapsible-body">
+                        <ul>
+                            {{#each p in c.phages}}
+                            <li>{{p}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </li>
+
+                {{/each}}
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+    <div id="notes">
+        <div class="modal-content">
+            <!--<span id="gene_dna_seq" style="font-family: monospace; width:90%; word-wrap:break-word; display:inline-block;">{{selectedGene}}</span>-->
+            <p id="notes">{{selectedGeneNotes}}</p>
+        </div>
+        <div class="modal-footer">
+            <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
 
     <div class="row">
 
@@ -118,21 +122,21 @@
             <!--<div class="progress">
                 <div class="determinate" style="width: 0%"></div>
             </div>-->
-                <ul class="tabs yellow lighten-3">
-                    <li class="tab col s6 m6 l6"><a class="active black-text" href="#phages-list">Select Phages</a></li>
-                    <li class="tab col s6 m6 l6"><a id="viewMapTab" class="black-text" href="#genome-map">View Map</a></li>
-                </ul>
+            <ul class="tabs yellow lighten-3">
+                <li class="tab col s6 m6 l6"><a class="active black-text" href="#phages-list">Select Phages</a></li>
+                <li class="tab col s6 m6 l6"><a id="viewMapTab" class="black-text" href="#genome-map">View Map</a></li>
+            </ul>
         </div>
 
         <div id="phages-list" class="col s12">
             <!--<a id="clearSelection" class="waves-effect waves-light btn">Clear Selection</a>-->
             <ul id="cluster-list" class="collapsible" data-collapsible="expandable">
-            <!--{{#transition in="fadeIn" out="fadeOut"}}-->
+                <!--{{#transition in="fadeIn" out="fadeOut"}}-->
                 {{#each clusters}}
-                    <!--{{> cluster canRender=canRender}}-->
-                    {{> cluster}}
+                <!--{{> cluster canRender=canRender}}-->
+                {{> cluster}}
                 {{/each}}
-            <!--{{/transition}}-->
+                <!--{{/transition}}-->
 
             </ul>
             <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
@@ -141,19 +145,19 @@
                 </a>
                 <ul>
                     <li><a id="scroll_top" class="waves-effect waves-purple btn-floating orange ">
-                        <i class="material-icons left">arrow_upward</i>up
-                    </a></li>
+                            <i class="material-icons left">arrow_upward</i>up
+                        </a></li>
                     {{#if clusters_expanded}}
-                        <li><a id="collapse_all" class="waves-effect waves-yellow btn-floating light-blue darken-1">
+                    <li><a id="collapse_all" class="waves-effect waves-yellow btn-floating light-blue darken-1">
                             <i class="material-icons left">remove</i>remove
                         </a></li>
                     {{else}}
-                        <li><a id="expand_all" class="waves-effect waves-yellow btn-floating light-blue ">
+                    <li><a id="expand_all" class="waves-effect waves-yellow btn-floating light-blue ">
                             <i class="material-icons left">add</i>search
                         </a></li>
                     {{/if}}
                     {{#if genomes_are_selected}}
-                        <li><a id="clearSelection" class="waves-effect waves-yellow btn-floating purple">
+                    <li><a id="clearSelection" class="waves-effect waves-yellow btn-floating purple">
                             <i class="material-icons left">clear</i>Clear Selection
                         </a></li>
                     {{/if}}
@@ -214,29 +218,31 @@
 </template>
 
 <template name="cluster">
-            <li>
-                <div class="collapsible-header">
-                    <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}" class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
-                    <label for="cluster-{{name}}">
-                        {{name}}
-                    </label>
-                    <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
+    <li>
+        <div class="collapsible-header">
+            <input type="checkbox" id="cluster-{{name}}" data-cluster="{{cluster}}" data-subcluster="{{subcluster}}"
+                class="filled-in clusterCheckbox" checked="{{clusterIsChecked cluster subcluster}}" />
+            <label for="cluster-{{name}}">
+                {{name}}
+            </label>
+            <!--<a><i class="material-icons {{favoriteSubcluster cluster subcluster}} dont-collapse" id="favorite-{{name}}">star</i></a>-->
 
-                    <span class="{{selectedClass cluster subcluster}}" data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
-                </div>
-                <div class="collapsible-body">
-                        <ul class="clusterSelector">
-                          <!--{{#if canRender}}-->
-                            {{#each p in phageNames}}
-                              <li class="phageSelector">
-                                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}"/>
-                                    <label for="{{p}}">{{p}}</label>
-                              </li>
-                            {{/each}}
-                          <!--{{/if}}-->
-                        </ul>
-                </div>
-            </li>
+            <span class="{{selectedClass cluster subcluster}}"
+                data-badge-caption="{{dataBadgeCaption cluster subcluster}}">{{selectedCount cluster subcluster}}</span>
+        </div>
+        <div class="collapsible-body">
+            <ul class="clusterSelector">
+                <!--{{#if canRender}}-->
+                {{#each p in phageNames}}
+                <li class="phageSelector">
+                    <input type="checkbox" id="{{p}}" class="filled-in phageCheckbox" checked="{{phageIsChecked p}}" />
+                    <label for="{{p}}">{{p}}</label>
+                </li>
+                {{/each}}
+                <!--{{/if}}-->
+            </ul>
+        </div>
+    </li>
 
 
 </template>
