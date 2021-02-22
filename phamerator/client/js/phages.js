@@ -1,4 +1,4 @@
-import Clipboard from 'Clipboard';
+import Clipboard from 'clipboard';
 
 var clipboard = new Clipboard('.btn-copy-link');
 clipboard.on('success', function (e) {
