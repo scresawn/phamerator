@@ -6,9 +6,7 @@
     {{/if}}
 
     <div id="geneData" class="modal">
-        <!-- <h5>{{selectedGeneTitle}}</h5><a
-            href="http://phamerator.webfactional.com/databases_Hatfull/Actino_Draft_v10/fastas/5_genes.fasta">some
-            link</a> -->
+        <h5>{{selectedGeneTitle}}</h5>
         <ul class="tabs">
             <li class="tab col s3"><a href="#dna-seq">DNA</a></li>
             <li class="tab col s3"><a href="#protein-seq">Protein</a></li>
@@ -41,6 +39,7 @@
         </div>
 
         <div id="domains">
+            <div class="modal-content">
             <svg id=svgDomain></svg>
             <ul class="collapsible" data-collapsible="expandable">
                 {{ #each domain in selectedDomains}}
@@ -72,14 +71,14 @@
                         </ul>
                     </div>
                 </li>
-
                 {{/each}}
             </ul>
         </div>
         <div class="modal-footer">
             <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
-    </div>
+        </div>
+   
 
     <div id="pham-clusters">
         <div class="modal-content">
@@ -115,6 +114,8 @@
             <a href="phages" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
         </div>
     </div>
+</div>
+
 
     <div class="row">
 
