@@ -15,6 +15,7 @@ features = {
    "phamAbundance": {"title": "Color By Pham Abundance", "body": "In settings, switch color coding to Phamily Abundance. The darker the pham, the more members!"},
    "phamMembersByCluster": {"title": "Pham Members By Cluster", "body": "To see which other phages/clusters encode a member of this pham, select a gene on the map, then select CLUSTERS"},
    "geneNotes": {"title": "Gene Functions", "body": "Some genes have annotated functions. To see them, select a gene from the map, then select the FUNCTION tab."},
+   "tRNAs": {"title": "tRNAs", "body": "tRNA genes are now displayed on genome maps"},
    "dismiss": "(Press the thumbs up and we won't show you this message again.)"
 };
 
