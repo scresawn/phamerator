@@ -625,7 +625,7 @@ function update_phages() {
 
           alignedGenomes.remove({ query: v.query, subject: v.subject });
         });
-
+        console.log("628")
         setTimeout(update_hsps, 1500, hspData);
       }
     });
@@ -794,7 +794,7 @@ function update_phages() {
   .attr("font-size", "9")
   .style({ "text-anchor": "middle", "fill": "black" })
   .attr("x", d => (((d.Stop - d.Start) / 2) / 10))
-  .attr("y", -5)
+  .attr("y", -5);
 
   gene = newPhages.selectAll(".genes")
     .data(function (d, i) { return d.genes; })
@@ -1127,7 +1127,7 @@ function update_phages() {
     if (c && d) {
       genome_pairs.push({ query: c.phagename, subject: d.phagename });
       if (alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
-        //console.log("submitting blast for ", c.phagename, "and", d.phagename);
+        console.log("submitting blast for ", c.phagename, "and", d.phagename);
         blast(c, d);
         //alignedGenomes.insert({"query": c.phagename, "subject": d.phagename});
       }
@@ -1279,7 +1279,7 @@ blast = function (q, d) {
 
   myURL = "https://phamerator.org/blastalign";
   //myURL = "http://localhost:8080";
-  // console.log("aligning", query.phagename, subject.phagename);
+  console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({
     type: "POST",
@@ -1295,7 +1295,7 @@ blast = function (q, d) {
     error: function (jqXHR, textStatus, errorThrown) {
       blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
       alignedGenomes.remove({ "query": query.phagename, "subject": subject.phagename });
-      /////console.log("ERROR:", textStatus, errorThrown);
+      console.log("ERROR:", textStatus, errorThrown);
     }
   });
 };
@@ -1343,10 +1343,10 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
     subjectName = json.BlastOutput2.report.results.bl2seq[0].hits[0].description[0].title;
   }
   else {
-    //console.log("no valid json found");
+    console.log("no valid json found");
   }
 
-  //console.log("drawBLASTalignments for ", queryName, subjectName);
+  console.log("drawBLASTalignments for ", queryName, subjectName);
 
   parseBlastResult(queryName, subjectName, blasthsps);
 
@@ -1355,6 +1355,7 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
       //console.log("drawBLASTalignments");
       $(".restoring-your-work-toast").fadeOut();
 
+      console.log("1358")
       setTimeout(update_hsps(hspData), 0);
       Session.set("progressbarVisibility", false);
       //setTimeout(Materialize.toast("Ready!", 2000), 5000);
@@ -1605,7 +1606,8 @@ Template.phages.events({
       // }) end Tracker.autorun()
     
 
-      let new_session_genomesWithSeqHandler = Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
+      // let new_session_genomesWithSeqHandler = 
+      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
         onReady: function () {
           if (event.target.checked) {
             // console.log(phagename, 'was selected');
@@ -1621,7 +1623,11 @@ Template.phages.events({
               let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
               console.log('getting tRNAs for ', selectedPhageNames)
               let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
-                onReady: () => update_phages()
+                onReady: () => {
+                  update_phages()
+                  console.log("1626")
+                  update_hsps(hspData)
+                }
               });
 
               if (session_tRNAsHandler) {
@@ -1649,7 +1655,11 @@ Template.phages.events({
                   var dataset = Session.get('currentDataset');
                   let selectedPhageNames = selectedGenomes.find({}, {phagename: true}).fetch().map(d => d.phagename)
                   let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
-                    // onReady: () => update_tRNAs()
+                    onReady: () => {
+                      update_phages()
+                      console.log("1658")
+                      update_hsps(hspData)
+                  }
                   });
     
                   if (session_tRNAsHandler) {
@@ -1659,7 +1669,7 @@ Template.phages.events({
                   session_tRNAsHandler = new_session_tRNAsHandler;
                   Meteor.call('updateSelectedData', 'phage unchecked', dataset, phagename, false);
                   window.requestAnimationFrame(function () {
-                    //console.log("update_hsps 1136");
+                    console.log("update_hsps 1670");
                     update_hsps(hspData);
                   });
                   //update_hsps(hspData);
@@ -1669,11 +1679,11 @@ Template.phages.events({
           }
         }
       });
-      if (session_genomesWithSeqHandler) {
+      /*if (session_genomesWithSeqHandler) {
         session_genomesWithSeqHandler.stop()
       }
 
-      session_genomesWithSeqHandler = new_session_genomesWithSeqHandler;
+      session_genomesWithSeqHandler = new_session_genomesWithSeqHandler;*/
       // }) end Tracker.autorun()
     });
   },
