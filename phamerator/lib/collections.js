@@ -7,6 +7,7 @@ Meteor.startup(function () {
 
   //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
+  TRNAs = new Meteor.Collection("trnas");
   Phams = new Meteor.Collection("phams");
   Proteins = new Meteor.Collection("proteins");
   Domains = new Meteor.Collection("domains");
@@ -17,6 +18,10 @@ Meteor.startup(function () {
   var Schemas = {};
 
 Schemas.Genome = new SimpleSchema({
+  phageID: {
+    type: String,
+    label: "Phage ID"
+  },
   name: {
     type: String,
     label: "Name",

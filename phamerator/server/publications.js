@@ -24,7 +24,7 @@ Meteor.publishComposite("genomes", function (dataset) {
           return;
         }
         console.log('dataset:', dataset);
-        return Genomes.find({ dataset: dataset }, { fields: { phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1 } });
+        return Genomes.find({ dataset: dataset }, { fields: { phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1 } });
       }
     }]
   }
@@ -36,6 +36,20 @@ Meteor.publish("domains", function (dataset) {
   }
   else {
     return this.stop()
+  }
+})
+
+Meteor.publish("selected_tRNAs", function (dataset, selectedGenomes) {
+  // console.log(selectedGenomes);
+  if (dataset) {
+    var datasets = Roles.getGroupsForUser(this.userId, "view")
+    if (!datasets.includes(dataset)) { return [] }
+
+    //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
+    return TRNAs.find({ "PhageID": { $in: selectedGenomes }, dataset: dataset });
+  }
+  else {
+    return this.stop();
   }
 })
 

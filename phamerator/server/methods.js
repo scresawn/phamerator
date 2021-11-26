@@ -211,6 +211,13 @@ Meteor.methods({
     return Domains.find({ dataset: dataset, DomainID: domainID }).fetch()
   },
 
+  "get_tRNAs_by_phage": function (PhageID, dataset) {
+    console.log("get_tRNAs_by_phage: ", PhageID, dataset);
+    let tRNAs = TRNAs.find({ dataset: dataset, PhageID: PhageID }).fetch()
+    console.log("tRNAs:", tRNAs)
+    return tRNAs;
+  },
+
   "get_all_domains_by_query": function (domainDescription, dataset) {
     return Domains.find({ description: new RegExp(domainDescription), dataset: dataset }, { sort: { geneID: 1 } }).fetch()
   },

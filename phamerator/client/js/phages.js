@@ -30,6 +30,14 @@ window.addEventListener('scroll', function (e) {
   }
 });
 
+adjust_skew_all = function () {
+  //console.log("adjust_skew_all()");
+  var phages = d3.selectAll(".phages")
+  phages.each(function (d) {
+    adjust_skew(this);
+  });
+}
+
 var blastAlignmentsOutstanding = 0;
 
 function viewMapTabClicked() {
@@ -263,6 +271,7 @@ function update_hsps(hspData) {
     d3.selectAll(".hspGroup").transition().duration(1000).style("opacity", 1);
   }
   adjust_skew_all();
+  $("#preloader").fadeOut(300).hide();
 
 }
 var phageArray = [];
@@ -274,7 +283,7 @@ function update_phages() {
   pnames = selectedGenomes.find({}, { sort: { phagename: 1 } }).fetch().map(function (obj) { return obj.phagename; });
   phages = Genomes.find({ phagename: { $in: pnames } }, { sort: { cluster: 1, subcluster: 1, phagename: 1 } });
   //todo: get selected primary and secondary sort fields and ascending/descending
-
+  
   phageArray = phages.fetch();
   phageArray.forEach(p => {
     p.selector = p.phagename.replace(/\./g, '_dot_').replace(/ /g, '_space_');
@@ -357,7 +366,7 @@ function update_phages() {
   //d3.select("#genome-map").attr("height", function(d) {return (selectedGenomes.find().count() * 305) });
   svgMap.attr("height", function (d) { return (selectedGenomes.find().count() * 305) });
 
-  console.log("minX", minX, "maxX", maxX);
+  // console.log("minX", minX, "maxX", maxX);
   //mapGroup.attr("transform", function(d) {"return translate(" + -minX + ",0)"})
   var draggedGenome = d3.select(this);
   var minX = 0;
@@ -403,7 +412,7 @@ function update_phages() {
   svgMap.selectAll(".phages")
     .sort(function (a, b) {
       //console.log("sorting");
-      console.log("a:", a, "b:", b);
+      // console.log("a:", a, "b:", b);
       let aSelector = a.selector.replace(/\./g, '_dot_').replace(/ /g, '_space_')
       let bSelector = b.selector.replace(/\./g, '_dot_').replace(/ /g, '_space_')
       var ay = d3.transform(d3.select('g#phage_' + aSelector).attr("transform")).translate[1];
@@ -471,7 +480,7 @@ function update_phages() {
       // get the offset of the genome above
       queryForThisSubjectX = d3.transform(queryForThisSubjectSelection.attr("transform")).translate[0];
 
-      console.log("queryForThisSubjectX:", queryForThisSubjectX);
+      // console.log("queryForThisSubjectX:", queryForThisSubjectX);
     }
 
     // get the hspGroup whose query is this genome
@@ -529,13 +538,7 @@ function update_phages() {
     }
   }
 
-  adjust_skew_all = function () {
-    //console.log("adjust_skew_all()");
-    var phages = d3.selectAll(".phages")
-    phages.each(function (d) {
-      adjust_skew(this);
-    });
-  }
+
 
   var drag = d3.behavior.drag()
     //.origin(function(d,i) { return {x:0, y:d3.transform(d3.select(this).attr("transform")).translate[1]}; })
@@ -570,6 +573,7 @@ function update_phages() {
       }
     })
     .on("dragend", function (d) {
+      console.log("DRAG END")
       // get all genomes and then get the transformed x position of the one farthest to the left
       update_phages();
       if (d3.event.sourceEvent.shiftKey) {
@@ -608,7 +612,7 @@ function update_phages() {
           if (c && d) {
             genome_pairs.push({ query: c.phagename, subject: d.phagename });
             if (alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
-              console.log("submitting blast for ", c.phagename, "and", d.phagename);
+              // console.log("submitting blast for ", c.phagename, "and", d.phagename);
               blast(c, d);
             }
             else {
@@ -754,54 +758,53 @@ function update_phages() {
     .transition().duration(1500)
     .attr("opacity", 1);
 
+  tRNA_group_x = function (d) {
+    return (d.Start) / 10;
+  };
+  tRNA_group_y = function (d) {
+    //console.log(d);
+    if (d.Orientation == "F") {
+      if (d.Name % 2 === 0) {
+        return -70;
+      }
+      else { return -30; }
+    }
+    else if (d.Orientation == "R") {
+      if (d.Name % 2 === 0) {
+        return 30;
+      }
+      else { return 70; }
+    }
+  }
+  let tRNAGroup = newPhages.selectAll(".tRNAGroup")
+    .data(function (d, i) {
+      console.log(d)
+      return TRNAs.find({PhageID: d.phageID}).fetch()
+    }, d => d.GeneID)
+
+  tRNAGroup.enter()
+  .append("g").classed('tRNAGroup', true)
+  .attr('transform', d => `translate(${tRNA_group_x(d)}, ${tRNA_group_y(d)})`)
+
+  // .append('text')  
+  tRNAGroup.append("rect")
+
+  .attr("height", 30)
+  .attr("width", d => (d.Stop - d.Start) / 10)
+  .attr("fill", "gray")
+  .attr("fill-opacity", 0.5)
+  .style({"stroke": "black", "stroke-width": "1px"})
+  
+  tRNAGroup.append("text").text(d => d.AminoAcid)
+  .attr("font-size", "9")
+  .style({ "text-anchor": "middle", "fill": "black" })
+  .attr("x", d => (((d.Stop - d.Start) / 2) / 10))
+  .attr("y", -5)
+
   gene = newPhages.selectAll(".genes")
     .data(function (d, i) { return d.genes; })
     .enter()
-    .append("g");
-
-  /*gene.each(function (d)
-  {
-      domaingroup = this;
-  });*/
-  /*gene.each(function (d) {
-      console.log(this, "this2");
-      domaingroup = this;
-      Meteor.call("get_number_of_domains", d.geneID, domaingroup, function(error, result){
-          if (result != null) {
-             d3.selectAll(".generect").filter(function(d){
-                 console.log(d, result);
-               return d.geneID === result.geneID;
-             })
-
-
-                  .style("stroke", function(){
-                      console.log(result);
-                  console.log(d.geneID, result.domainsCount, domaingroup);
-                  return (result.domainsCount === 0) ? "red" : "black"
-              }
-              )
-          }
-      })
-      }
-  );*/
-
-  /*.on("mouseover", function(d) {
-    nodedata = this.parentNode.__data__;
-    div.transition()
-      .duration(500)
-      .style("opacity", .9)
-      .style("font-size", "12px");
-    div.html(nodedata.phagename + " gp" + d.name + "<br>" + "phamily: " + d.phamName + "<br>" + d.genefunction)
-
-    // the text of the tooltip ...
-      .style("left", (d3.event.pageX) + "px")
-      .style("top", (d3.event.pageY - 28) + "px");
-  })
-  .on("mouseout", function(d) {
-    div.transition()
-      .duration(500)
-      .style("opacity", 0);
-  });*/
+    .append("g").classed('geneGroup', true);
 
   gene_group_x = function (d) {
     return (d.start) / 10;
@@ -828,7 +831,7 @@ function update_phages() {
     .classed("generect", true)
     .on("click", function (d, i) {
 
-      console.log(d);
+      // console.log(d);
 
       // Initialize the dialog to empty strings and arrays, rather than showing old data while waiting for new
       selectedDomains = [];
@@ -865,7 +868,7 @@ function update_phages() {
       Meteor.call("get_domains_by_gene", d.geneID, dataset, function (error, selectedDomains) {
         Session.set('selectedDomains', selectedDomains);
 
-        console.log('selectedDomains:', selectedDomains);
+        // console.log('selectedDomains:', selectedDomains);
         function numOfDomains() { return selectedDomains.length; }
         var numberOfDomains = numOfDomains();
 
@@ -907,7 +910,7 @@ function update_phages() {
 
       Meteor.call("get_clusters_by_pham", Session.get('currentDataset'), d.phamName, function (error, selectedClusterMembers) {
         Session.set('selectedClusterMembers', selectedClusterMembers);
-        console.log('selectedClusterMembers:', selectedClusterMembers);
+        // console.log('selectedClusterMembers:', selectedClusterMembers);
         uniqueClusters = _.uniq(selectedClusterMembers);
         Session.set('selectedClusters', uniqueClusters);
       });
@@ -944,7 +947,7 @@ function update_phages() {
 
     .style({ "stroke-width": "1px" })
     .attr("fill", function (d) {
-      console.log("running colorchange");
+      // console.log("running colorchange");
       if (Session.get("colorByPhams") === true) {
         return d.phamColor
       }
@@ -1150,12 +1153,12 @@ function update_phages() {
 
     alignedGenomes.remove({ query: v.query, subject: v.subject });
   });
-  console.log("END update_phages()");
+  // console.log("END update_phages()");
 
 }
 
 Template.phages.onCreated(function () {
-  console.log('Template.phages.onCreated');
+  // console.log('Template.phages.onCreated');
 
   //Session.set("canRender": false);
   Session.set("clusters", []);
@@ -1183,7 +1186,7 @@ Template.phages.onCreated(function () {
     }
     else {
       maxPham = result;
-      console.log('maxpham', result)
+      // console.log('maxpham', result)
     }
   });
 
@@ -1212,8 +1215,9 @@ Template.phages.onCreated(function () {
   //Meteor.subscribe('genomes');
   /////console.log("phages template created");
   //Meteor.startup(function () {
-  console.log("currentDataset", Session.get("currentDataset"));
-  Meteor.subscribe('selectedData', Session.get("currentDataset"), function () {
+  // console.log("currentDataset", Session.get("currentDataset"));
+  
+  /*Meteor.subscribe('selectedData', Session.get("currentDataset"), function () {
     names = Meteor.user().selectedData[Session.get("currentDataset")].genomeMaps;
     if (names && names.length > 0) {
       //Materialize.toast("Restoring your work...", 99999999999999, '', function () {
@@ -1247,7 +1251,7 @@ Template.phages.onCreated(function () {
         });
       })
     }
-  });
+  });*/
 });
 
 var tooltip = d3.select("body")
@@ -1280,7 +1284,7 @@ blast = function (q, d) {
 
   myURL = "https://phamerator.org/blastalign";
   //myURL = "http://localhost:8080";
-  console.log("aligning", query.phagename, subject.phagename);
+  // console.log("aligning", query.phagename, subject.phagename);
 
   $.ajax({
     type: "POST",
@@ -1379,7 +1383,7 @@ drawBlastAlignments = function (blastAlignmentsOutstanding, json) {
 
 Template.phages.onDestroyed(function () {
   $(document).ready(function () {
-    console.log('Template.phages.onDestroyed');
+    // console.log('Template.phages.onDestroyed');
     $('#mapSettings').remove();
     $('#geneData').remove();
   });
@@ -1432,7 +1436,7 @@ Template.phages.onRendered(function () {
     ;
 
   Tracker.autorun(function () {
-    update_phages();
+    // update_phages();
     update_hsps(hspData);
 
   });
@@ -1447,7 +1451,7 @@ Template.cluster.onRendered(function () {
   $('li').find('.dont-collapse').unbind('click.collapse');
   $('li').find('.dont-collapse').on('click.collapse', function (e) {
     e.stopPropagation();
-    console.log("suppressing collapse");
+    // console.log("suppressing collapse");
     $(e.target).trigger('favorites-click');
   });
 });
@@ -1492,6 +1496,9 @@ Template.phages.helpers({
 }*/
 });
 
+let session_tRNAsHandler = false;
+let session_genomesWithSeqHandler = false;
+
 Template.phages.events({
   "change .clusterCheckbox": function (event, template) {
     /////console.log("event", event.target.checked);
@@ -1507,7 +1514,7 @@ Template.phages.events({
         clusterGenomes = Genomes.find({ cluster: "", subcluster: "" }).fetch();
       }
       clusterPhageNames = clusterGenomes.map(function (obj) { return obj.phagename });
-      Tracker.autorun(function () {
+      // Tracker.autorun(function () {
         Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
           onReady: function () {
             clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster") }).fetch();
@@ -1519,13 +1526,26 @@ Template.phages.events({
 
                 /////console.log("getting sequence for", element);
                 selectedGenomes.upsert({ phagename: element.phagename }, {
+                  phageID: element.phageID,
                   phagename: element.phagename,
                   genomelength: element.genomelength,
                   sequence: element.sequence,
                   cluster: element.cluster,
                   subcluster: element.subcluster
                 }, function () {
-                  var dataset = Session.get('currentDataset');
+                    var dataset = Session.get('currentDataset');
+
+                    let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
+                    console.log('getting tRNAs for ', selectedPhageNames)
+                    let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
+                      onReady: () => update_phages()
+                    });
+
+                    if (session_tRNAsHandler) {
+                      session_tRNAsHandler.stop()
+                  }
+        
+              session_tRNAsHandler = new_session_tRNAsHandler;
                   Meteor.call('updateSelectedData', 'cluster checked', dataset, element.phagename, true);
                 });
               });
@@ -1544,9 +1564,22 @@ Template.phages.events({
                     alignedGenomes.remove({ subject: element.phagename }, function () {
                       //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                       var dataset = Session.get('currentDataset');
+
+                      let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
+                      console.log('getting tRNAs for ', selectedPhageNames)
+                      let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
+                        // onReady: () => update_tRNAs()
+                      });
+
+                      if (session_tRNAsHandler) {
+                        session_tRNAsHandler.stop()
+                      }
+                
+                      session_tRNAsHandler = new_session_tRNAsHandler;
+
                       Meteor.call('updateSelectedData', 'cluster unchecked', dataset, element.phagename, false);
                       window.requestAnimationFrame(function () {
-                        console.log("update_hsps 1088");
+                        // console.log("update_hsps 1088");
                         update_hsps(hspData);
                       });
                       //update_hsps(hspData);
@@ -1558,22 +1591,29 @@ Template.phages.events({
           }
         });
       });
-    });
+    // });
   },
   "change .phageCheckbox": function (event, template) {
     $("#preloader").show(function () {
       // get a list of all phagenames on the client
       //phagename = event.target.id.split("-")[0];
       phagename = event.target.id;
-      //console.log(event);
+      console.log(event);
       //Session.set("selections", selections++);
 
       // if user just selected a phage, it doesn't yet exist on the client but should
       //Tracker.autorun(function () {
-      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
+
+      // let query = event.target.checked ? [phagename] : []
+
+
+      // }) end Tracker.autorun()
+    
+
+      let new_session_genomesWithSeqHandler = Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
         onReady: function () {
           if (event.target.checked) {
-            console.log(phagename, 'was selected');
+            // console.log(phagename, 'was selected');
             p = Genomes.findOne({ phagename: phagename });
             selectedGenomes.upsert({ phagename: p.phagename }, {
               phagename: p.phagename,
@@ -1583,13 +1623,24 @@ Template.phages.events({
               subcluster: p.subcluster
             }, function () {
               var dataset = Session.get('currentDataset');
+              let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
+              console.log('getting tRNAs for ', selectedPhageNames)
+              let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
+                onReady: () => update_phages()
+              });
+
+              if (session_tRNAsHandler) {
+                session_tRNAsHandler.stop()
+              }
+        
+              session_tRNAsHandler = new_session_tRNAsHandler;
               Meteor.call('updateSelectedData', 'phage checked', dataset, phagename, true);
             });
           }
           // if user just unselected a phage, it exists on the client but shouldn't
           else {
             //Session.set("progressbarVisibility", false);
-            console.log(phagename, 'was unselected');
+            // console.log(phagename, 'was unselected');
             //console.log("before:", hspData);
             hspData = hspData.filter(function (e, i, a) {
               //console.log("e:", e, !((e.queryName === phagename) || (e.subjectName === phagename)));
@@ -1601,6 +1652,16 @@ Template.phages.events({
                 alignedGenomes.remove({ subject: phagename }, function () {
                   //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                   var dataset = Session.get('currentDataset');
+                  let selectedPhageNames = selectedGenomes.find({}, {phagename: true}).fetch().map(d => d.phagename)
+                  let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
+                    // onReady: () => update_tRNAs()
+                  });
+    
+                  if (session_tRNAsHandler) {
+                    session_tRNAsHandler.stop()
+                  }
+            
+                  session_tRNAsHandler = new_session_tRNAsHandler;
                   Meteor.call('updateSelectedData', 'phage unchecked', dataset, phagename, false);
                   window.requestAnimationFrame(function () {
                     //console.log("update_hsps 1136");
@@ -1613,12 +1674,17 @@ Template.phages.events({
           }
         }
       });
+      if (session_genomesWithSeqHandler) {
+        session_genomesWithSeqHandler.stop()
+      }
+
+      session_genomesWithSeqHandler = new_session_genomesWithSeqHandler;
       // }) end Tracker.autorun()
     });
   },
 
   "favorites-click": function (event, template) {
-    console.log(event.target.id, "clicked");
+    // console.log(event.target.id, "clicked");
     var fav = d3.select("#" + event.target.id);
     if (!fav.classed("favorite")) {
       Meteor.call('updateSubclusterFavorites', event.target.id, true);
@@ -1733,6 +1799,8 @@ Template.phages.events({
   "click #clearSelection": function (event, template) {
     /////console.log("clearSelection clicked");
     $('.fixed-action-btn').closeFAB();
+    session_tRNAsHandler.stop()
+
     d3.select("#clearSelection")
       .transition()
       .duration(250)
