@@ -1,13 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { FilesCollection } from 'meteor/ostrio:files';
 
+TRNAs = new Meteor.Collection("trnas");
+
+
 Meteor.startup(function () {
 
   console.log("grounding genomes collection");
 
   //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
-  TRNAs = new Meteor.Collection("trnas");
   Phams = new Meteor.Collection("phams");
   Proteins = new Meteor.Collection("proteins");
   Domains = new Meteor.Collection("domains");

@@ -679,7 +679,7 @@ function update_phages() {
     }
     )
     .enter()
-    .append("g");
+    .append("g")
   group.append("rect")
     .style({ "fill": "black" })
     .attr({
@@ -771,18 +771,28 @@ function update_phages() {
       else { return 70; }
     }
   }
-  let tRNAGroup = newPhages.selectAll(".tRNAGroup")
-    .data(function (d, i) {
-      console.log(d)
+  
+  console.log(`There are ${TRNAs.find().count()} tRNAs 774`)
+
+  let tRNAGroup = phages.selectAll(".tRNAGroup")
+    .data(function (d) {
+      console.log(d.phageID)
+      console.log(`There are ${TRNAs.find({PhageID: d.phageID}).count()} tRNAs`)
+      console.log(`There are ${TRNAs.find().count()} tRNAs`)
+
       return TRNAs.find({PhageID: d.phageID}).fetch()
     }, d => d.GeneID)
+    .enter()
+  .append("g").classed('tRNAGroup', true);
 
-  tRNAGroup.enter()
-  .append("g").classed('tRNAGroup', true)
-  .attr('transform', d => `translate(${tRNA_group_x(d)}, ${tRNA_group_y(d)})`)
+  console.log(`There are ${TRNAs.find().count()} tRNAs 787`)
+
+  
+  tRNAGroup.attr('transform', d => `translate(${tRNA_group_x(d)}, ${tRNA_group_y(d)})`)
 
   // .append('text')  
-  tRNAGroup.append("rect")
+  tRNAGroup
+  .append("rect")
 
   .attr("height", 30)
   .attr("width", d => (d.Stop - d.Start) / 10)
@@ -1432,7 +1442,7 @@ Template.phages.onRendered(function () {
     ;
 
   Tracker.autorun(function () {
-    // update_phages();
+    update_phages();
     update_hsps(hspData);
 
   });
