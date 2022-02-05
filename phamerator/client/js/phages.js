@@ -31,7 +31,7 @@ window.addEventListener('scroll', function (e) {
 });
 
 adjust_skew_all = function () {
-  //console.log("adjust_skew_all()");
+  console.log("adjust_skew_all()");
   var phages = d3.selectAll(".phages")
   phages.each(function (d) {
     adjust_skew(this);
@@ -446,7 +446,7 @@ function update_phages() {
     });
 
   adjust_skew = function (genome) {
-
+    console.log(genome);
     if (typeof d3.transform(d3.select(genome).attr("transform")).translate[0] == undefined) {
       d3.select(genome).attr("transform", "translate(0," + d3.transform(d3.select(genome).attr("transform")).translate[1] + ")")
     }
@@ -464,8 +464,9 @@ function update_phages() {
     // get the hspGroup whose subject is this genome
     hspGroupSubject = d3.selectAll(".hspGroup").filter(function (d) {
       // get only those .hspGroup that have the dragged subject
-      return (genome.id.indexOf("phage_" + d.subjectName.replace(/\./g, '_dot_').replace(/ /g, '_space_')) == 0)
+      return genome.id == "phage_" + d.subjectName.replace(/\./g, '_dot_').replace(/ /g, '_space_')
     });
+    // console.log("hspGroupSubject: ", hspGroupSubject);
     if (hspGroupSubject.size() > 0) {
       hspSubjectPaths = hspGroupSubject.selectAll("path");
 
@@ -481,8 +482,10 @@ function update_phages() {
     // get the hspGroup whose query is this genome
     hspGroupQuery = d3.selectAll(".hspGroup").filter(function (d) {
       // get only those .hspGroup that have the dragged query
-      return (genome.id.indexOf("phage_" + d.queryName.replace(/\./g, '_dot_').replace(/ /g, '_space_')) == 0)
+
+      return genome.id == "phage_" + d.queryName.replace(/\./g, '_dot_').replace(/ /g, '_space_')
     });
+    // console.log("hspGroupQuery: ", hspGroupQuery)
     if (hspGroupQuery.size() > 0) {
       hspQueryPaths = hspGroupQuery.selectAll("path");
 
@@ -569,6 +572,7 @@ function update_phages() {
     })
     .on("dragend", function (d) {
       console.log("DRAG END")
+      dragging=null;
       // get all genomes and then get the transformed x position of the one farthest to the left
       update_phages();
       if (d3.event.sourceEvent.shiftKey) {
