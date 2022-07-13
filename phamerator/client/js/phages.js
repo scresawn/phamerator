@@ -278,7 +278,7 @@ function update_phages() {
   pnames = selectedGenomes.find({}, { sort: { phagename: 1 } }).fetch().map(function (obj) { return obj.phagename; });
   phages = Genomes.find({ phagename: { $in: pnames } }, { sort: { cluster: 1, subcluster: 1, phagename: 1 } });
   //todo: get selected primary and secondary sort fields and ascending/descending
-  
+
   phageArray = phages.fetch();
   phageArray.forEach(p => {
     p.selector = p.phagename.replace(/\./g, '_dot_').replace(/ /g, '_space_');
@@ -572,7 +572,7 @@ function update_phages() {
     })
     .on("dragend", function (d) {
       console.log("DRAG END")
-      dragging=null;
+      dragging = null;
       // get all genomes and then get the transformed x position of the one farthest to the left
       update_phages();
       if (d3.event.sourceEvent.shiftKey) {
@@ -758,7 +758,7 @@ function update_phages() {
     .attr("opacity", 1);
 
   tRNA_group_x = function (d) {
-    return (d.Start) / 10;
+    return d3.min([d.Start, d.Stop]) / 10;
   };
   tRNA_group_y = function (d) {
     //console.log(d);
@@ -775,40 +775,40 @@ function update_phages() {
       else { return 70; }
     }
   }
-  
+
   console.log(`There are ${TRNAs.find().count()} tRNAs 774`)
 
   let tRNAGroup = phages.selectAll(".tRNAGroup")
     .data(function (d) {
       console.log(d.phageID)
-      console.log(`There are ${TRNAs.find({PhageID: d.phageID}).count()} tRNAs`)
+      console.log(`There are ${TRNAs.find({ PhageID: d.phageID }).count()} tRNAs`)
       console.log(`There are ${TRNAs.find().count()} tRNAs`)
 
-      return TRNAs.find({PhageID: d.phageID}).fetch()
+      return TRNAs.find({ PhageID: d.phageID }).fetch()
     }, d => d.GeneID)
     .enter()
-  .append("g").classed('tRNAGroup', true);
+    .append("g").classed('tRNAGroup', true);
 
   console.log(`There are ${TRNAs.find().count()} tRNAs 787`)
 
-  
+
   tRNAGroup.attr('transform', d => `translate(${tRNA_group_x(d)}, ${tRNA_group_y(d)})`)
 
   // .append('text')  
   tRNAGroup
-  .append("rect")
+    .append("rect")
 
-  .attr("height", 30)
-  .attr("width", d => (d.Stop - d.Start) / 10)
-  .attr("fill", "gray")
-  .attr("fill-opacity", 0.5)
-  .style({"stroke": "black", "stroke-width": "1px"})
-  
+    .attr("height", 30)
+    .attr("width", d => Math.abs(d.Stop - d.Start) / 10)
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5)
+    .style({ "stroke": "black", "stroke-width": "1px" })
+
   tRNAGroup.append("text").text(d => d.AminoAcid)
-  .attr("font-size", "9")
-  .style({ "text-anchor": "middle", "fill": "black" })
-  .attr("x", d => (((d.Stop - d.Start) / 2) / 10))
-  .attr("y", -5);
+    .attr("font-size", "9")
+    .style({ "text-anchor": "middle", "fill": "black" })
+    .attr("x", d => ((Math.abs(d.Stop - d.Start) / 2) / 10))
+    .attr("y", -5);
 
   gene = newPhages.selectAll(".genes")
     .data(function (d, i) { return d.genes; })
@@ -816,7 +816,7 @@ function update_phages() {
     .append("g").classed('geneGroup', true);
 
   gene_group_x = function (d) {
-    return (d.start) / 10;
+    return d3.min([d.start, d.stop]) / 10;
   };
   gene_group_y = function (d) {
     //console.log(d);
@@ -979,7 +979,7 @@ function update_phages() {
     //.attr("rx", 2)
     .transition()
     .duration(1600)
-    .attr("width", function (d) { return (d.stop - d.start) / 10; });
+    .attr("width", function (d) { return Math.abs(d.stop - d.start) / 10; });
 
 
   /*domain = gene.selectAll(".domains")
@@ -1021,7 +1021,7 @@ function update_phages() {
 
   gene.append("text") // gene name
     .classed("geneNameLabel", true)
-    .attr("x", function (d) { return ((d.stop - d.start) / 2) / 10; })
+    .attr("x", function (d) { return (Math.abs(d.stop - d.start) / 2) / 10; })
     .attr("y", function (d) {
       if (d.direction == "forward") {
         if (d.name % 2 === 0) { // forward and even
@@ -1047,7 +1047,7 @@ function update_phages() {
 
   gene.append("text") // gene function
     .classed("functionLabel", true)
-    .attr("x", function (d) { return ((d.stop - d.start) / 2) / 10; })
+    .attr("x", function (d) { return (Math.abs(d.stop - d.start) / 2) / 10; })
     .attr("y", function (d) {
       if (d.direction == "forward") {
         if (d.stop - d.start < 500) {
@@ -1078,7 +1078,7 @@ function update_phages() {
     .style({ "fill": "black" })
     //.attr("font-family", "Roboto-Regular")
     .attr("font-size", "9")
-    .attr("x", function (d) { return ((d.stop - d.start) / 2) / 10; })
+    .attr("x", function (d) { return (Math.abs(d.stop - d.start) / 2) / 10; })
     .attr("y", function (d) {
       if (d.direction == "forward") {
         if (d.name % 2 === 0) { // forward and even
@@ -1094,10 +1094,10 @@ function update_phages() {
       }
     })
     .attr("text-anchor", function (d) {
-      if ((d.stop - d.start) < 500 && d.direction === "forward") {
+      if (Math.abs(d.stop - d.start) < 500 && d.direction === "forward") {
         return "start";
       }
-      else if ((d.stop - d.start) < 500 && d.direction === "reverse") {
+      else if (Math.abs(d.stop - d.start) < 500 && d.direction === "reverse") {
         return "end";
       }
       else {
@@ -1105,11 +1105,11 @@ function update_phages() {
       }
     })
     .attr("transform", function (d) {
-      if (d.stop - d.start < 500 && d.direction === "forward") {
-        return "rotate(-90," + (5 + (Math.abs(d.stop - d.start)) / 2 / 10) + ",-10)";
+      if (Math.abs(d.stop - d.start) < 500 && d.direction === "forward") {
+        return "rotate(-90," + (3 + (Math.abs(d.stop - d.start)) / 2 / 10) + ",-10)";
       }
-      else if (d.stop - d.start < 500 && d.direction === "reverse") {
-        return "rotate(-90," + (d.stop - d.start) / 2 / 10 + ",50)";
+      else if (Math.abs(d.stop - d.start) < 500 && d.direction === "reverse") {
+        return "rotate(-90," + (2.75 + Math.abs(d.stop - d.start) / 2 / 10) + ",50)";
       }
       else {
         return "rotate(0)";
@@ -1225,7 +1225,7 @@ Template.phages.onCreated(function () {
   /////console.log("phages template created");
   //Meteor.startup(function () {
   // console.log("currentDataset", Session.get("currentDataset"));
-  
+
   /*Meteor.subscribe('selectedData', Session.get("currentDataset"), function () {
     names = Meteor.user().selectedData[Session.get("currentDataset")].genomeMaps;
     if (names && names.length > 0) {
@@ -1525,82 +1525,82 @@ Template.phages.events({
       }
       clusterPhageNames = clusterGenomes.map(function (obj) { return obj.phagename });
       // Tracker.autorun(function () {
-        Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
-          onReady: function () {
-            clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster") }).fetch();
-            //console.log(clusterGenomes);
+      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
+        onReady: function () {
+          clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster") }).fetch();
+          //console.log(clusterGenomes);
 
-            if (event.target.checked) {
-              clusterGenomes.forEach(function (element, index, array) {
-                //blastAlignmentsOutstanding = blastAlignmentsOutstanding + 1;
+          if (event.target.checked) {
+            clusterGenomes.forEach(function (element, index, array) {
+              //blastAlignmentsOutstanding = blastAlignmentsOutstanding + 1;
 
-                /////console.log("getting sequence for", element);
-                selectedGenomes.upsert({ phagename: element.phagename }, {
-                  phageID: element.phageID,
-                  phagename: element.phagename,
-                  genomelength: element.genomelength,
-                  sequence: element.sequence,
-                  cluster: element.cluster,
-                  subcluster: element.subcluster
-                }, function () {
+              /////console.log("getting sequence for", element);
+              selectedGenomes.upsert({ phagename: element.phagename }, {
+                phageID: element.phageID,
+                phagename: element.phagename,
+                genomelength: element.genomelength,
+                sequence: element.sequence,
+                cluster: element.cluster,
+                subcluster: element.subcluster
+              }, function () {
+                var dataset = Session.get('currentDataset');
+
+                let selectedPhageNames = selectedGenomes.find({}, { phagename: 1 }).fetch().map(d => d.phagename)
+                console.log('getting tRNAs for ', selectedPhageNames)
+                let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
+                  onReady: () => update_phages()
+                });
+
+                if (session_tRNAsHandler) {
+                  session_tRNAsHandler.stop()
+                }
+
+                session_tRNAsHandler = new_session_tRNAsHandler;
+                Meteor.call('updateSelectedData', 'cluster checked', dataset, element.phagename, true);
+              });
+            });
+          }
+          else {
+            //Session.set("progressbarVisibility", false);
+
+            clusterGenomes.forEach(function (element, index, array) {
+
+              /////console.log('removing', element.phagename);
+              hspData = hspData.filter(function (e, i, a) {
+                return !((e.queryName === element.phagename) || (e.subjectName === element.phagename));
+              });
+              selectedGenomes.remove({ phagename: element.phagename }, function () {
+                alignedGenomes.remove({ query: element.phagename }, function () {
+                  alignedGenomes.remove({ subject: element.phagename }, function () {
+                    //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                     var dataset = Session.get('currentDataset');
 
-                    let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
+                    let selectedPhageNames = selectedGenomes.find({}, { phagename: 1 }).fetch().map(d => d.phagename)
                     console.log('getting tRNAs for ', selectedPhageNames)
                     let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
-                      onReady: () => update_phages()
+                      // onReady: () => update_tRNAs()
                     });
 
                     if (session_tRNAsHandler) {
                       session_tRNAsHandler.stop()
-                  }
-        
-              session_tRNAsHandler = new_session_tRNAsHandler;
-                  Meteor.call('updateSelectedData', 'cluster checked', dataset, element.phagename, true);
-                });
-              });
-            }
-            else {
-              //Session.set("progressbarVisibility", false);
+                    }
 
-              clusterGenomes.forEach(function (element, index, array) {
+                    session_tRNAsHandler = new_session_tRNAsHandler;
 
-                /////console.log('removing', element.phagename);
-                hspData = hspData.filter(function (e, i, a) {
-                  return !((e.queryName === element.phagename) || (e.subjectName === element.phagename));
-                });
-                selectedGenomes.remove({ phagename: element.phagename }, function () {
-                  alignedGenomes.remove({ query: element.phagename }, function () {
-                    alignedGenomes.remove({ subject: element.phagename }, function () {
-                      //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-                      var dataset = Session.get('currentDataset');
-
-                      let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
-                      console.log('getting tRNAs for ', selectedPhageNames)
-                      let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
-                        // onReady: () => update_tRNAs()
-                      });
-
-                      if (session_tRNAsHandler) {
-                        session_tRNAsHandler.stop()
-                      }
-                
-                      session_tRNAsHandler = new_session_tRNAsHandler;
-
-                      Meteor.call('updateSelectedData', 'cluster unchecked', dataset, element.phagename, false);
-                      window.requestAnimationFrame(function () {
-                        // console.log("update_hsps 1088");
-                        update_hsps(hspData);
-                      });
-                      //update_hsps(hspData);
+                    Meteor.call('updateSelectedData', 'cluster unchecked', dataset, element.phagename, false);
+                    window.requestAnimationFrame(function () {
+                      // console.log("update_hsps 1088");
+                      update_hsps(hspData);
                     });
+                    //update_hsps(hspData);
                   });
                 });
               });
-            }
+            });
           }
-        });
+        }
       });
+    });
     // });
   },
   "change .phageCheckbox": function (event, template) {
@@ -1618,7 +1618,7 @@ Template.phages.events({
 
 
       // }) end Tracker.autorun()
-    
+
 
       // let new_session_genomesWithSeqHandler = 
       Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
@@ -1634,7 +1634,7 @@ Template.phages.events({
               subcluster: p.subcluster
             }, function () {
               var dataset = Session.get('currentDataset');
-              let selectedPhageNames = selectedGenomes.find({}, {phagename: 1}).fetch().map(d => d.phagename)
+              let selectedPhageNames = selectedGenomes.find({}, { phagename: 1 }).fetch().map(d => d.phagename)
               console.log('getting tRNAs for ', selectedPhageNames)
               let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
                 onReady: () => {
@@ -1647,7 +1647,7 @@ Template.phages.events({
               if (session_tRNAsHandler) {
                 session_tRNAsHandler.stop()
               }
-        
+
               session_tRNAsHandler = new_session_tRNAsHandler;
               Meteor.call('updateSelectedData', 'phage checked', dataset, phagename, true);
             });
@@ -1667,19 +1667,19 @@ Template.phages.events({
                 alignedGenomes.remove({ subject: phagename }, function () {
                   //blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
                   var dataset = Session.get('currentDataset');
-                  let selectedPhageNames = selectedGenomes.find({}, {phagename: true}).fetch().map(d => d.phagename)
+                  let selectedPhageNames = selectedGenomes.find({}, { phagename: true }).fetch().map(d => d.phagename)
                   let new_session_tRNAsHandler = Meteor.subscribe("selected_tRNAs", dataset, selectedPhageNames, {
                     onReady: () => {
                       update_phages()
                       console.log("1658")
                       update_hsps(hspData)
-                  }
+                    }
                   });
-    
+
                   if (session_tRNAsHandler) {
                     session_tRNAsHandler.stop()
                   }
-            
+
                   session_tRNAsHandler = new_session_tRNAsHandler;
                   Meteor.call('updateSelectedData', 'phage unchecked', dataset, phagename, false);
                   window.requestAnimationFrame(function () {
