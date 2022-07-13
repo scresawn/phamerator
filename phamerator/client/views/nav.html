@@ -2,6 +2,7 @@
     <!-- only show this if the current user is the owner -->
     {{#if currentUser}}
     {{ > editDatasetModal}}
+    {{ > infoDatasetModal}}
     {{ > datasetDropdown }}
     {{/if}}
     <div class="navbar-fixed">
@@ -31,6 +32,15 @@
                     {{#unless loggingIn}}
                     <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i
                                 class="material-icons right">arrow_drop_down</i></a></li>
+
+
+                    <!--
+                        Data set info button...
+                         <li>
+                        <a class="purple waves-effect waves-light btn btn-small btn-floating modal-trigger"
+                            href="#infoDataset"><i class="material-icons">info</i></a>
+                    </li> -->
+
                     {{#if iAmOwner}}
                     <li><button data-target="editDataset"
                             class="waves-effect waves-light btn modal-trigger">Collaborate</button></li>

@@ -65,6 +65,16 @@ Template.datasetDropdown.helpers({
           $(  'input#autocomplete-input.autocomplete')[0].value = "";
         }
       });
+      $('#infoDataset').modal({
+        ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+          $('#infoDataset .modal-content').animate({ scrollTop: 0 }, "fast")
+          console.log(modal, trigger);
+        },
+        complete: function() {
+          console.log('infoDataset modal closed');
+          // $(  'input#autocomplete-input.autocomplete')[0].value = "";
+        }
+      });
     })
     if (Datasets.find().fetch().length === 0) {
       Session.set("preferredDataset", "No data sets available")
