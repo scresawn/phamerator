@@ -1511,14 +1511,15 @@ let session_genomesWithSeqHandler = false;
 
 Template.phages.events({
   "change .clusterCheckbox": function (event, template) {
-    /////console.log("event", event.target.checked);
-    //console.log(selectedGenomes.find().count());
+    console.log("event", event.target.checked);
+    console.log(selectedGenomes.find().count());
     if (event.target.checked) { Materialize.toast('drawing genome map...', 1000) }
     console.log("cluster checkbox checked: ", event.target.id);
+    const sc = event.target.getAttribute("data-subcluster") === "" ? event.target.getAttribute("data-subcluster") : +event.target.getAttribute("data-subcluster")
 
     $("#preloader").show(function () {
       if (event.target.id !== "Singletons") {
-        clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster") }).fetch();
+        clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: sc }).fetch();
       }
       else {
         clusterGenomes = Genomes.find({ cluster: "", subcluster: "" }).fetch();
@@ -1527,8 +1528,14 @@ Template.phages.events({
       // Tracker.autorun(function () {
       Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
         onReady: function () {
-          clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: event.target.getAttribute("data-subcluster") }).fetch();
-          //console.log(clusterGenomes);
+          clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: sc })
+            .fetch()
+            .map(g => {
+              g.subcluster = g.subcluster.toString()
+              return g;
+            });
+
+          console.log(clusterGenomes);
 
           if (event.target.checked) {
             clusterGenomes.forEach(function (element, index, array) {
@@ -1541,7 +1548,7 @@ Template.phages.events({
                 genomelength: element.genomelength,
                 sequence: element.sequence,
                 cluster: element.cluster,
-                subcluster: element.subcluster
+                subcluster: sc === "" ? element.subcluster : +element.subcluster
               }, function () {
                 var dataset = Session.get('currentDataset');
 
