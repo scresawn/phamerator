@@ -935,8 +935,8 @@ function update_phages() {
         Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start - 1, d.stop));
       }
       else {
-        complementSeq = g.slice(d.start - 1, d.stop).split('').reverse().map(complement).join('');
-        Session.set('selectedGene', ">" + nodedata.phagename + " gp" + d.name + "\n" + complementSeq);
+        complementSeq = g.slice(d.stop - 1, d.start).split('').reverse().map(complement).join('');
+        Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + complementSeq);
       }
 
       var onModalClose = function () {
