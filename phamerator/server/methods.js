@@ -24,6 +24,10 @@ Meteor.methods({
   "getDatasetsIOwn": function () {
     return Roles.getGroupsForUser(Meteor.userId(), "owner")
   },
+  "getDatasetMetadata": function (dataset) {
+    console.log("getDatasetMetadata called with ", dataset)
+    return Datasets.findOne({name: dataset})
+  },
   "updatePreferredDataset": function (dataset) {
     groups = Roles.getGroupsForUser(Meteor.userId(), "view")
     if (groups.includes(dataset)) {

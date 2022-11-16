@@ -133,6 +133,10 @@ Template.nav.helpers({
       return Session.get("datasetsOwn").includes(Session.get("currentDataset"));
     }
     else { return false }
+  },
+  metadata: function () {
+    // check to see if currentDataset has a metadata field and return it
+    Session.get('metadata')
   }
 });
 
@@ -150,6 +154,16 @@ Template.nav.onRendered (function () {
   //  edge: 'left' // Choose the horizontal origin
   // closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
   //});
+
+  Meteor.call("getDatasetMetadata", Session.get("currentDataset"), (error, result) => {
+    if (error) {
+      console.log('error')
+      return;
+    }
+    else {
+      Session.set("metadata", result);
+    }
+  })
 
   // get only the datasets for which this user has owner and/or view permission
   Meteor.call("getDatasetsIView", (error, result) => {

@@ -32,14 +32,15 @@
                     {{#unless loggingIn}}
                     <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i
                                 class="material-icons right">arrow_drop_down</i></a></li>
-
-
-                    <!--
-                        Data set info button...
-                         <li>
-                        <a class="purple waves-effect waves-light btn btn-small btn-floating modal-trigger"
-                            href="#infoDataset"><i class="material-icons">info</i></a>
-                    </li> -->
+                    
+                    {{#if metadata}}
+                        <li>
+                            <a class="pink waves-effect waves-light btn btn-small btn-floating modal-trigger"
+                                href="#infoDataset"><i class="material-icons">info</i></a>{{metadata.name}}
+                        </li> 
+                    {{else}}
+                        <li>No metadata available</li>
+                    {{/if}}
 
                     {{#if iAmOwner}}
                     <li><button data-target="editDataset"
