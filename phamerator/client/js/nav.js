@@ -10,6 +10,7 @@ switch_dataset = function (dataset) {
   Session.set("currentDataset", dataset);
   console.log("active dataset switched to:", dataset);
   Session.set("currentDataset", dataset);
+
   var preferredDataset = "Choose a Data Set";
   Meteor.call("updatePreferredDataset", dataset, function (error, result) {
     if (Meteor.user().preferredDataset) {
@@ -23,15 +24,16 @@ switch_dataset = function (dataset) {
     autoCompleteUsers = getAutocompleteUsers()
 
     //console.log("rerunning autocomplete");
-  $('input.autocomplete').autocomplete({
+    $('input.autocomplete').autocomplete({
       //data: Session.get('usersThatCanViewAutocomplete'),
       data: autoCompleteUsers,
       limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
-      onAutocomplete: function(val) {
+      onAutocomplete: function (val) {
         var regExp = /\(([^)]+)\)/;
         var email = regExp.exec(val)[1];
-        var id = Meteor.users.findOne({"emails.0.address": email})._id
+        var id = Meteor.users.findOne({ "emails.0.address": email })._id
         var currentDataset = Session.get('currentDataset');
+
         Meteor.call("addUserToRole", id, 'view', currentDataset, (error, result) => {
           //Roles.addUsersToRoles(id, ['view'], Session.get("currentDataset"))
           console.log("adding ", val, "to", currentDataset, "with id", id);
@@ -44,66 +46,66 @@ switch_dataset = function (dataset) {
   })
 }
 
-  Meteor.startup(function() {
-    // Here we can be sure the plugin has been initialized
-    //if (Meteor.isCordova) { alert("start saving your pennies")}
-    Session.set("datasetsOwn", []);
-    Session.set("datasetsView", []);
+Meteor.startup(function () {
+  // Here we can be sure the plugin has been initialized
+  //if (Meteor.isCordova) { alert("start saving your pennies")}
+  Session.set("datasetsOwn", []);
+  Session.set("datasetsView", []);
 
-    Meteor.subscribe('fullname');
-    /*Meteor.subscribe('phameratorVersion', function () {
-      Session.set("phameratorVersionNumber", PhameratorVersion.findOne().version)
-    });*/
-    Meteor.subscribe('featureDiscovery', function () {
-      if (Meteor.user()) {
-        console.log("Meteor.user().includeInDirectory", Meteor.user().includeInDirectory)
-        if (Meteor.user().profile.includeInDirectory == null) {
-          Materialize.toast('Please review your<a href="account">account settings</a>', 5000);
-        }
-        if (Meteor.user().featureDiscovery == null) {
-          Session.set("geneTranslation", true);
-        }
-        else if (Meteor.user().featureDiscovery.geneTranslation == null) {
-          Session.set("geneTranslation", true);
-        }
-        else {
-          geneTranslation = Meteor.user().featureDiscovery.geneTranslation;
-          Session.set("geneTranslation", geneTranslation);
-        }
+  Meteor.subscribe('fullname');
+  /*Meteor.subscribe('phameratorVersion', function () {
+    Session.set("phameratorVersionNumber", PhameratorVersion.findOne().version)
+  });*/
+  Meteor.subscribe('featureDiscovery', function () {
+    if (Meteor.user()) {
+      console.log("Meteor.user().includeInDirectory", Meteor.user().includeInDirectory)
+      if (Meteor.user().profile.includeInDirectory == null) {
+        Materialize.toast('Please review your<a href="account">account settings</a>', 5000);
       }
-      console.log("geneTranslation:", Session.get('geneTranslation'));
-    });
-
-
-    if (Meteor.isCordova) {
-      if (navigator.connection.type !== 'wifi') {
-        $('#connectionWarning').openModal();
+      if (Meteor.user().featureDiscovery == null) {
+        Session.set("geneTranslation", true);
+      }
+      else if (Meteor.user().featureDiscovery.geneTranslation == null) {
+        Session.set("geneTranslation", true);
+      }
+      else {
+        geneTranslation = Meteor.user().featureDiscovery.geneTranslation;
+        Session.set("geneTranslation", geneTranslation);
       }
     }
-    else {
-      //var MobileDetect = require('mobile-detect'),
-      import MobileDetect from 'mobile-detect';
-      var md = new MobileDetect(window.navigator.userAgent);
-      //console.log( md.os() );
-      if (md.mobile() != null) {
-        $('#mobileWarning').modal();
-      }
-    }
-
-    document.addEventListener("online", onOnline, false);
-
-    function onOnline() {
-      // Handle the online event
-      if (Meteor.isCordova) {
-        if (navigator.connection.type !== 'wifi') {
-          $('#connectionWarning').modal();
-        }
-      }
-    }
+    console.log("geneTranslation:", Session.get('geneTranslation'));
   });
 
+
+  if (Meteor.isCordova) {
+    if (navigator.connection.type !== 'wifi') {
+      $('#connectionWarning').openModal();
+    }
+  }
+  else {
+    //var MobileDetect = require('mobile-detect'),
+    import MobileDetect from 'mobile-detect';
+    var md = new MobileDetect(window.navigator.userAgent);
+    //console.log( md.os() );
+    if (md.mobile() != null) {
+      $('#mobileWarning').modal();
+    }
+  }
+
+  document.addEventListener("online", onOnline, false);
+
+  function onOnline() {
+    // Handle the online event
+    if (Meteor.isCordova) {
+      if (navigator.connection.type !== 'wifi') {
+        $('#connectionWarning').modal();
+      }
+    }
+  }
+});
+
 Template.nav.helpers({
-  displayname: function() {
+  displayname: function () {
     if (!Meteor.user()) {
       return null;
     }
@@ -116,8 +118,9 @@ Template.nav.helpers({
     return Meteor.user() != null;
   },
   imageFile: function () {
-    user = Images.collection.findOne({_id: Meteor.user()})
-    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
+    user = Images.collection.findOne({ _id: Meteor.user() })
+    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) {
+      profile = user.profile;
       profilePic = user.profile.profilePic;
     }
     else profilePic = "";
@@ -136,14 +139,18 @@ Template.nav.helpers({
   },
   metadata: function () {
     // check to see if currentDataset has a metadata field and return it
-    Session.get('metadata')
+    return Datasets.findOne({ name: Session.get("currentDataset") });
+  },
+  now: function () {
+    let d = new Date()
+    return d.getFullYear()
   }
 });
 
-Template.nav.onCreated (function () {
+Template.nav.onCreated(function () {
 })
 
-Template.nav.onRendered (function () {
+Template.nav.onRendered(function () {
   // reload the nav template when a new user signs in
   // cleanup data upon new user logging in
 
@@ -155,15 +162,7 @@ Template.nav.onRendered (function () {
   // closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
   //});
 
-  Meteor.call("getDatasetMetadata", Session.get("currentDataset"), (error, result) => {
-    if (error) {
-      console.log('error')
-      return;
-    }
-    else {
-      Session.set("metadata", result);
-    }
-  })
+
 
   // get only the datasets for which this user has owner and/or view permission
   Meteor.call("getDatasetsIView", (error, result) => {
@@ -195,7 +194,7 @@ Template.nav.onRendered (function () {
     Session.set("preferredDataset", preferredDataset)
   })*/
 
-//Tracker.flush()
+  //Tracker.flush()
 
   // Side Navigation fix
   /*$('.side-nav li a').on('click', function(e) {

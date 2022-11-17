@@ -32,14 +32,12 @@
                     {{#unless loggingIn}}
                     <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i
                                 class="material-icons right">arrow_drop_down</i></a></li>
-                    
-                    {{#if metadata}}
-                        <li>
-                            <a class="pink waves-effect waves-light btn btn-small btn-floating modal-trigger"
-                                href="#infoDataset"><i class="material-icons">info</i></a>{{metadata.name}}
-                        </li> 
-                    {{else}}
-                        <li>No metadata available</li>
+
+                    {{#if metadata.metadata}}
+                    <li>
+                        <a class="waves-effect waves-light modal-trigger" href="#infoDataset"><i
+                                class="material-icons">info_outline</i></a>
+                    </li>
                     {{/if}}
 
                     {{#if iAmOwner}}
@@ -98,7 +96,7 @@
     <footer class="page-footer cyan">
         <div class="footer-copyright cyan">
             <div class="container">
-                © Steven Cresawn, Ph.D. and SEA-PHAGES 2006-present. All rights reserved.<a
+                © Steven Cresawn, Ph.D. and SEA-PHAGES 2016-{{now}}. All rights reserved.<a
                     class="grey-text text-lighten-4" href="{{pathFor 'terms'}}">Terms and Policies</a>
                 <a class="grey-text text-lighten-4 right" href="https://seaphages.org">SEA-PHAGES</a>
             </div>
