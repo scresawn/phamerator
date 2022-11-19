@@ -37,41 +37,4 @@
             </tbody>
         </table>
     </div>
-
-    <!-- <ul class="collapsible popout" data-collapsible="accordion">
-        {{#each domain in searchedDomains}}
-        <li id={{domain.DomainID}}>
-            <div class="collapsible-header"><i class="material-icons">label</i>{{domain.domainname}}
-                ({{domain.description}})</div>
-            <div class="collapsible-body">
-                <p>{{domain.description}}</p>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Domain</th>
-                            <th>GeneID</th>
-                            <th>Match Start</th>
-                            <th>Match End</th>
-                            <th>E Value</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {{#each match in genes}}
-                        <tr>
-                            <td>{{match.domainname}}</td>
-                            <td>{{match.geneID}}</td>
-                            <td>{{match.query_start}}</td>
-                            <td>{{match.query_end}}</td>
-                            <td>{{match.expect}}</td>
-                        </tr>
-                        {{/each}}
-
-                    </tbody>
-                </table>
-            </div>
-        </li>
-        {{/each}}
-    </ul> -->
 </template>
