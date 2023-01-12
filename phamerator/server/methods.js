@@ -273,8 +273,19 @@ Meteor.methods({
     })
     //console.log (domains);
     return domains;
-
   },
+
+  "get_tm_domains_by_gene": function (geneID, dataset) {
+    //console.log("get_domains_by_gene: ", geneID);
+    tmdomains = TMDomains.find({ geneID: geneID, dataset: dataset }).fetch();
+    // TMDomains.forEach(function (d) {
+    //   d.domainLink = "https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=" + d.DomainID;
+    //   //console.log(d);
+    // })
+    console.log(tmdomains);
+    return tmdomains;
+  },
+
   "getlargestphamsize": function () {
     return Phams.findOne({}, { sort: { size: -1 } }).size;
   },

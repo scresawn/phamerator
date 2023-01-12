@@ -326,6 +326,11 @@ function update_phages() {
         //console.log(i);
         return (d.domainCount === 0) ? "white" : "orange"
       }
+      else if (Session.get("colorByTMDomains") === true) {
+        //console.log(i);
+        // console.log("tmDomainCount:", d.tmDomainCount)
+        return (d.tmDomainCount === 0) ? "white" : "dodgerblue"
+      }
     })
     .attr("opacity", function (d) {
       return "1";
@@ -845,6 +850,8 @@ function update_phages() {
       // Initialize the dialog to empty strings and arrays, rather than showing old data while waiting for new
       selectedDomains = [];
       Session.set("selectedDomains", selectedDomains);
+      selectedTMDomains = [];
+      Session.set("selectedTMDomains", selectedTMDomains);
       selectedClusterMembers = [];
       Session.set('selectedClusterMembers', selectedClusterMembers);
       Session.set('selectedGeneNotes', "");
@@ -895,7 +902,7 @@ function update_phages() {
           .attr("stroke", "black")
           .attr("transform", function (d, i) { return "translate(" + (((d.query_start - 1) / phamAALength) * phamWidth) + "," + (10 + (i * ((phamHeight - 20) / numberOfDomains))) + ")"; })
           .on("mouseover", function (d) {
-            d3.select(this).style({ "stroke": "black", "stroke-width": "4" });
+            d3.select(this).style({ "stroke": "black", "stroke-width": "2" });
             d3.select("#" + d.domainname + ".collapsible-header").style({ "font-weight": "bold" })
           })
           .on("mouseout", function (d) {
@@ -916,6 +923,66 @@ function update_phages() {
             }
           });
       });
+
+      // TM Domains
+
+      svgTMDomain
+        .append("g")
+        .attr("class", "domainVis")
+        .append("rect") // 'gene' rect
+        .attr("height", phamHeight)
+        .attr("width", phamWidth)
+        .attr("fill", d.phamColor)
+        .attr("stroke", "black")
+        .attr("stroke-width", 5)
+        //.attr("transform", "translate(5,5)")
+        ;
+      Meteor.call("get_tm_domains_by_gene", d.geneID, dataset, function (error, selectedTMDomains) {
+        Session.set('selectedTMDomains', selectedTMDomains);
+
+        console.log('selectedTMDomains:', selectedTMDomains);
+        function numOfTMDomains() { return selectedTMDomains.length; }
+        var numberOfTMDomains = numOfTMDomains();
+
+        svgTMDomain
+          .append("g")
+          .attr("class", "domainVis")
+          .selectAll(".TMdomainRects")
+          .data(selectedTMDomains)
+          .enter()
+          .append("rect") // 'domain' rect
+          .attr("height", (phamHeight - 20) / (numberOfTMDomains))
+          //Need to make responsive to screen width
+          .attr("width", function (d) { return (Math.abs(d.query_end - d.query_start) / phamAALength) * phamWidth; })
+          .attr("fill", "#ffbd88")
+          .attr("stroke", "black")
+          .attr("transform", function (d, i) { return "translate(" + (((d.query_start - 1) / phamAALength) * phamWidth) + "," + (10 + (i * ((phamHeight - 20) / numberOfTMDomains))) + ")"; })
+          .on("mouseover", function (d) {
+            d3.select(this).style({ "stroke": "black", "stroke-width": "2" });
+            console.log('selecting "#tm-domain-"' + d._id._str)
+            console.log(d)
+            d3.select("#tm-domain-" + d._id._str + ".collapsible-header").style({ "font-weight": "bold" })
+          })
+          .on("mouseout", function (d) {
+            d3.select(this).style({ "stroke": "black", "stroke-width": "1" });
+            d3.select("div#tm-domain-" + d._id._str + ".collapsible-header").style({ "font-weight": "normal" })
+          })
+          .on("click", function (d) {
+            d3.select("li#tm-domain-" + d._id._str).classed("active", !d3.select("li#tm-domain-" + d._id._str).classed("active"));
+            if (d3.select("div#tm-domain-" + d._id._str).attr("class") === "active collapsible-header") {
+              d3.select("div#tm-domain-" + d._id._str).classed("active collapsible-header", false);
+              d3.select("div#tm-domain-" + d._id._str).classed("collapsible-header", true);
+              d3.select("div#tm-domain-" + d._id._str + ".collapsible-body").style({ "display": "none" })
+            }
+            else {
+              d3.select("div#tm-domain-" + d._id._str).classed("collapsible-header", false);
+              d3.select("div#tm-domain-" + d._id._str).classed("active collapsible-header", true);
+              d3.select("div#tm-domain-" + d._id._str + ".collapsible-body").style({ "display": "block" })
+            }
+          });
+      });
+
+      // End TM Domains
 
       Meteor.call("get_clusters_by_pham", Session.get('currentDataset'), d.phamName, function (error, selectedClusterMembers) {
         Session.set('selectedClusterMembers', selectedClusterMembers);
@@ -974,13 +1041,15 @@ function update_phages() {
       else if (Session.get("colorByConservedDomains") === true) {
         return (d.domainCount === 0) ? "white" : "orange"
       }
+      else if (Session.get("colorByTMDomains") === true) {
+        return (d.tmDomainCount === 0) ? "white" : "dodgerblue"
+      }
     })
     .attr("width", 0)
     //.attr("rx", 2)
     .transition()
     .duration(1600)
     .attr("width", function (d) { return Math.abs(d.stop - d.start) / 10; });
-
 
   /*domain = gene.selectAll(".domains")
    .data(function(d, i) { return d.domains;})
@@ -1177,6 +1246,7 @@ Template.phages.onCreated(function () {
   Session.set("showhspGroups", true);
   Session.set("colorByPhamAbundance", false);
   Session.set("colorByConservedDomains", false)
+  Session.set("colorByTMDomains", false)
   Session.set("colorByPhams", true)
   Session.set("currentDataset", Meteor.user().preferredDataset);
 
@@ -1210,7 +1280,7 @@ Template.phages.onCreated(function () {
   });
 
   Meteor.call('getphams', Session.get("currentDataset"), function (error, result) {
-    console.log('getting phams:', error, result)
+    console.log(`getting phams for ${Session.get("currentDataset")}:`, error, result)
     if (typeof error !== 'undefined') {
       alert('error getting phams:', error)
       console.log('error getting phams:', error);
@@ -1440,10 +1510,13 @@ Template.phages.onRendered(function () {
   svgDomain.attr("display", "block")
     .attr("margin", "auto")
     .attr("viewBox", "0 0 650 100")
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    //.attr("height", "66%")
-    //.attr("width", "100%")
-    ;
+    .attr("preserveAspectRatio", "xMinYMin meet");
+
+  svgTMDomain = d3.select("#svgTMDomain");
+  svgTMDomain.attr("display", "block")
+    .attr("margin", "auto")
+    .attr("viewBox", "0 0 650 100")
+    .attr("preserveAspectRatio", "xMinYMin meet");
 
   Tracker.autorun(function () {
     update_phages();
@@ -1478,7 +1551,15 @@ Template.phages.helpers({
   },
   domainQuery: function () { return "https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=" },
   selectedDomains: function () { return Session.get('selectedDomains') },
-
+  selectedTMDomains: function () {
+    // return Session.get("selectedTMDomains");
+    return Session.get('selectedTMDomains')?.map(d => {
+      d.id = "tm-domain-" + d._id._str
+      d.DomainID = +d.DomainID
+      return d
+    })
+      .sort((a, b) => a.DomainID - b.DomainID)
+  },
   newFeature: function () {
     if (Meteor.user().featureDiscovery.length > 0) {
       Session.set('newFeature', true);
@@ -1495,6 +1576,10 @@ Template.phages.helpers({
   selectedGeneNotes: function () { return Session.get('selectedGeneNotes'); },
   selectedProtein: function () { return Session.get('selectedProtein'); },
   selectedClusters: function () { return Session.get('selectedClusters'); },
+  schemaVersionMin11: function () {
+    let dataset = Datasets.findOne({ name: Session.get('currentDataset') })
+    return dataset["schema version"] >= 11;
+  },
   genomes_are_selected: function () {
     return selectedGenomes.find({}).fetch().length > 0;
   },
@@ -1766,6 +1851,7 @@ Template.phages.events({
     //console.log(event.target.checked);
     setTimeout(function () {
       Session.set("colorByConservedDomains", false);
+      Session.set("colorByTMDomains", false);
       Session.set("colorByPhams", false);
       Session.set("colorByPhamAbundance", true);
     }, 200);
@@ -1777,6 +1863,18 @@ Template.phages.events({
       //Session.set("showgccolor", event.target.checked)
       Session.set("colorByPhamAbundance", false);
       Session.set("colorByConservedDomains", true);
+      Session.set("colorByTMDomains", false);
+      Session.set("colorByPhams", false);
+    }, 200);
+  },
+  "change #TMDomainRadioButton": function (event, template) {
+    event.preventDefault();
+    //console.log(event.target.checked);
+    setTimeout(function () {
+      //Session.set("showgccolor", event.target.checked)
+      Session.set("colorByPhamAbundance", false);
+      Session.set("colorByConservedDomains", false);
+      Session.set("colorByTMDomains", true);
       Session.set("colorByPhams", false);
     }, 200);
   },
@@ -1787,6 +1885,7 @@ Template.phages.events({
       //Session.set("showphamcolor", event.target.checked)
       Session.set("colorByPhamAbundance", false);
       Session.set("colorByConservedDomains", false);
+      Session.set("colorByTMDomains", false);
       Session.set("colorByPhams", true);
     }, 200);
   },
@@ -1939,6 +2038,10 @@ Template.cluster.helpers({
 });
 
 Template.mapSettingsModal.helpers({
+  schemaVersionMin11: function () {
+    let dataset = Datasets.findOne({ name: Session.get('currentDataset') })
+    return dataset["schema version"] >= 11;
+  },
   'blastSwitchState': function () {
     return Session.get("showhspGroups");
   },
@@ -1953,6 +2056,9 @@ Template.mapSettingsModal.helpers({
   },
   'conservedDomainState': function () {
     return Session.get("colorByConservedDomains");
+  },
+  'TMDomainState': function () {
+    return Session.get("colorbByTMDomains")
   },
   'phamColorState': function () {
     return Session.get("colorByPhams");

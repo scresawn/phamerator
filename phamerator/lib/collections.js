@@ -6,13 +6,14 @@ TRNAs = new Meteor.Collection("trnas");
 
 Meteor.startup(function () {
 
-  console.log("grounding genomes collection");
+  // console.log("grounding genomes collection");
 
   //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
   Phams = new Meteor.Collection("phams");
   Proteins = new Meteor.Collection("proteins");
   Domains = new Meteor.Collection("domains");
+  TMDomains = new Meteor.Collection("tmdomains");
   Datasets = new Meteor.Collection("datasets");
 
   if (Meteor.isCordova && navigator.connection.type == 'WIFI') { Ground.Collection(Genomes); }
