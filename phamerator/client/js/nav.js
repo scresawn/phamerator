@@ -44,6 +44,25 @@ switch_dataset = function (dataset) {
       minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
   })
+
+  genomesWithSeqHandlers.map(handler => handler.stop())
+  genomesWithSeqHandlers = [];
+
+  //all the subscriptions that have been subscribed.
+  var subs = Meteor.default_connection._subscriptions;
+  var subSummary = {};
+
+  // organize them by name so that you can see multiple occurrences
+  Object.keys(subs).forEach(function (key) {
+    var sub = subs[key];
+    // you could filter out subs by the 'active' property if you need to
+    if (subSummary[sub.name] && subSummary[sub.name].length > 0) {
+      subSummary[sub.name].push(sub);
+    } else {
+      subSummary[sub.name] = [sub];
+    }
+  });
+  console.log(subSummary);
 }
 
 Meteor.startup(function () {

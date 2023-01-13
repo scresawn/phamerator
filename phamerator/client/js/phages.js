@@ -7,6 +7,8 @@ clipboard.on('success', function (e) {
   e.clearSelection();
 });
 
+genomesWithSeqHandlers = [];
+
 let last_known_scroll_position = 0;
 let ticking = false;
 
@@ -689,7 +691,7 @@ function update_phages() {
     )
     .enter()
     .append("g")
-  group.append("rect")
+  group.append("rect") // 1 kb ticks
     .style({ "fill": "black" })
     .attr({
       x: function (d) {
@@ -728,7 +730,7 @@ function update_phages() {
     })
     .enter()
     .append("g");
-  group2.append("rect")
+  group2.append("rect") // 500 bp ticks
     .style({ "fill": "black" })
     .attr({
       x: function (d) {
@@ -751,7 +753,7 @@ function update_phages() {
     })
     .enter()
     .append("g");
-  group3.append("rect")
+  group3.append("rect") // 100 bp ticks
     .style({ "fill": "black" })
     .attr({
       x: function (d) {
@@ -954,7 +956,7 @@ function update_phages() {
           .attr("height", (phamHeight - 20) / (numberOfTMDomains))
           //Need to make responsive to screen width
           .attr("width", function (d) { return (Math.abs(d.query_end - d.query_start) / phamAALength) * phamWidth; })
-          .attr("fill", "#ffbd88")
+          .attr("fill", "dodgerblue")
           .attr("stroke", "black")
           .attr("transform", function (d, i) { return "translate(" + (((d.query_start - 1) / phamAALength) * phamWidth) + "," + (10 + (i * ((phamHeight - 20) / numberOfTMDomains))) + ")"; })
           .on("mouseover", function (d) {
@@ -996,6 +998,7 @@ function update_phages() {
         }
       });
 
+      // FIXME: add "dataset" to the query here?
       var g = selectedGenomes.findOne({ phagename: nodedata.phagename }, { fields: { sequence: 1 } }).sequence;
       Session.set('selectedGeneNotes', d.genefunction);
       if (d.direction === "forward") {
@@ -1592,7 +1595,7 @@ Template.phages.helpers({
 });
 
 let session_tRNAsHandler = false;
-let session_genomesWithSeqHandler = false;
+// let session_genomesWithSeqHandler = false;
 
 Template.phages.events({
   "change .clusterCheckbox": function (event, template) {
@@ -1611,7 +1614,7 @@ Template.phages.events({
       }
       clusterPhageNames = clusterGenomes.map(function (obj) { return obj.phagename });
       // Tracker.autorun(function () {
-      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
+      let handler = Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), clusterPhageNames, {
         onReady: function () {
           clusterGenomes = Genomes.find({ cluster: event.target.getAttribute("data-cluster"), subcluster: sc })
             .fetch()
@@ -1692,6 +1695,7 @@ Template.phages.events({
           }
         }
       });
+      genomesWithSeqHandlers.push(handler);
     });
     // });
   },
@@ -1713,7 +1717,7 @@ Template.phages.events({
 
 
       // let new_session_genomesWithSeqHandler = 
-      Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
+      let handler = Meteor.subscribe("genomesWithSeq", Session.get("currentDataset"), [phagename], {
         onReady: function () {
           if (event.target.checked) {
             // console.log(phagename, 'was selected');
@@ -1785,6 +1789,7 @@ Template.phages.events({
           }
         }
       });
+      genomesWithSeqHandlers.push(handler);
       /*if (session_genomesWithSeqHandler) {
         session_genomesWithSeqHandler.stop()
       }
