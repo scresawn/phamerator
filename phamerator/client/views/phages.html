@@ -86,15 +86,15 @@
     {{#if schemaVersionMin11}}
     <div id="transmembrane-domains">
       <div class="modal-content">
-        <p>These domains were detected using<a href="https://biolib.com/DTU/DeepTMHMM/" target="_blank">DeepTMHMM</a>
-          and<a href="https://harrier.nagahama-i-bio.ac.jp/sosui/mobile/" target="_blank">SOSUI</a>.
+        <p>These domains were detected using<a href="https://biolib.com/DTU/DeepTMHMM/" target="_blank">DeepTMHMM</a>.
+          Click the blue rectangles in the diagram or the <em>domain match</em> labels below to learn more.
         </p>
         <svg id="svgTMDomain"></svg>
         <ul class="collapsible" data-collapsible="expandable">
           {{ #each domain in selectedTMDomains}}
           <li id={{domain.id}}>
             <div class="collapsible-header" id={{domain.id}}>
-              {{domain.DomainID}}</div>
+              domain match</div>
             <div class="collapsible-body" id={{domain.id}}>
               <ul>
                 <!-- <li>
