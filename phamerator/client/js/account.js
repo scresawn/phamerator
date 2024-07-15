@@ -1,39 +1,14 @@
-/**
- * Created by steve on 3/30/16.
- */
-
 Template.account.onRendered(function () {
   $("html, body").animate({ scrollTop: 0 }, "slow");
 
-  //Meteor.subscribe('files.images.all');
-  //Meteor.subscribe('fullname');
-  //this.Images = new FilesCollection({collectionName: 'Images'});
-
-  /*var slider = document.getElementById('range-input');
-  noUiSlider.create(slider, {
-    start: [20, 80],
-    connect: true,
-    step: 1,
-    range: {
-      'min': 0,
-      'max': 100
-    },
-    format: wNumb({
-      decimals: 0
-    })
-  });*/
   Materialize.fadeInImage('#profilepic');
-
-  /*setTimeout(function () {
-    Materialize.fadeInImage('#profilepic')
-  }, 1500);*/
 });
 
 Template.account.helpers({
-  email: function() {
+  email: function () {
     return Meteor.user() ? Meteor.user().emails[0].address : null;
   },
-  username: function() {
+  username: function () {
     return Meteor.user() ? Meteor.user().username : null;
   },
   name: function () {
@@ -46,14 +21,10 @@ Template.account.helpers({
 
 Template.account.events({
   "change #directoryinfo-yes": function () {
-    console.log("opt in :)")
-    Meteor.users.update({_id: Meteor.user()._id},{$set: {'profile.includeInDirectory': true}});;
-    //getAutocompleteUsers()
+    Meteor.users.update({ _id: Meteor.user()._id }, { $set: { 'profile.includeInDirectory': true } });;
   },
   "change #directoryinfo-no": function () {
-    console.log("opt out :(")
-    Meteor.users.update({_id: Meteor.user()._id},{$set: {'profile.includeInDirectory': false}});;
-    //getAutocompleteUsers()
+    Meteor.users.update({ _id: Meteor.user()._id }, { $set: { 'profile.includeInDirectory': false } });;
   }
 })
 
@@ -86,8 +57,7 @@ Template.uploadForm.events({
         if (error) {
           alert('Error during upload: ' + error);
         } else {
-          console.log(Meteor.user().name, 'uploaded picture', fileObj._id)
-          Meteor.users.update({_id: Meteor.user()._id}, {$set: {"profile.profilePic": fileObj._id}});
+          Meteor.users.update({ _id: Meteor.user()._id }, { $set: { "profile.profilePic": fileObj._id } });
         }
         template.currentUpload.set(false);
       });
@@ -97,23 +67,15 @@ Template.uploadForm.events({
 });
 
 Template.file.helpers({
-  /*imageFile: function () {
-    return Images.collection.find().fetch()
-    //return Images.collection.findOne()
-  },*/
+
   imageFile: function () {
     user = Meteor.user();
-    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
+    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) {
+      profile = user.profile;
       profilePic = user.profile.profilePic;
     }
-    return Images.collection.findOne({userId: user._id, _id: profilePic})
+    return Images.collection.findOne({ userId: user._id, _id: profilePic })
 
-    /*user = Meteor.user();
-    if (user && user.hasOwnProperty('profile') && user.profile.hasOwnProperty('profilePic')) { profile = user.profile;
-      profilePic = user.profile.profilePic;
-    }
-    else profilePic = "";
-    return profilePic;*/
   },
   videoFile: function () {
     return Videos.collection.findOne({});

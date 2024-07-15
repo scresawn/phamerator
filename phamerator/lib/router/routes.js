@@ -8,9 +8,7 @@ if (Meteor.isClient) {
 
 Router.configure({
   layoutTemplate: 'masterLayout',
-  //loadingTemplate: 'loading',
   notFoundTemplate: 'pageNotFound',
-  //progressDebug : true,
   progress: true,
   progressSpinner: false,
   yieldTemplates: {
@@ -41,18 +39,7 @@ Router.map(function () {
   this.route('newDatabase');
   this.route('cresawnlab');
   this.route('domains');
-  // this.route('domains',
-  //   {
-  //     loadingTemplate: 'loading',
-  //     waitOn: function () {
-  //       if (Meteor.isClient) {
-  //         dataset = Session.get('currentDataset');
-  //       }
-  //       return [Meteor.subscribe('domains', dataset)];
-  //     },
-  //     fastRender: true
-  //   }
-  // );
+
   this.route('terms');
   this.route('account', {
     loadingTemplate: 'loading',

@@ -2,16 +2,9 @@
 // publish just genome names and clusters
 
 Meteor.publish("allUsers", function () {
-  //return Meteor.users.find({}, {fields: {name: 1, emails: 1, roles: 1, username:1, profile:1}});
   return Meteor.users.find({ 'profile.includeInDirectory': true }, { fields: { name: 1, emails: 1, roles: 1, username: 1, profile: 1 } });
 })
 
-/*Meteor.publish("genomes", function (dataset) {
-  var datasets = Roles.getGroupsForUser(this.userId, "view")
-  if (!datasets.includes(dataset)) { return [] }
-  console.log("getting genomes in ", dataset);
-  return Genomes.find({dataset: dataset}, {fields: {phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1}});
-});*/
 
 Meteor.publishComposite("genomes", function (dataset) {
   return {
@@ -23,7 +16,6 @@ Meteor.publishComposite("genomes", function (dataset) {
         if (!Roles.getGroupsForUser(this.userId, "view").includes(dataset)) {
           return;
         }
-        console.log('dataset:', dataset);
         return Genomes.find({ dataset: dataset }, { fields: { phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1 } });
       }
     }]
@@ -40,12 +32,10 @@ Meteor.publish("domains", function (dataset) {
 })
 
 Meteor.publish("selected_tRNAs", function (dataset, selectedGenomes) {
-  // console.log(selectedGenomes);
   if (dataset) {
     var datasets = Roles.getGroupsForUser(this.userId, "view")
     if (!datasets.includes(dataset)) { return [] }
 
-    //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
     return TRNAs.find({ "PhageID": { $in: selectedGenomes }, dataset: dataset });
   }
   else {
@@ -54,12 +44,10 @@ Meteor.publish("selected_tRNAs", function (dataset, selectedGenomes) {
 })
 
 Meteor.publish("genomesWithSeq", function (dataset, selectedGenomes) {
-  //console.log(selectedGenomes);
   if (dataset) {
     var datasets = Roles.getGroupsForUser(this.userId, "view")
     if (!datasets.includes(dataset)) { return [] }
 
-    //return Genomes.find({$and:[{"phagename": {$in: selectedGenomes}},{dataset: dataset}]});
     return Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset });
   }
   else {
@@ -68,16 +56,8 @@ Meteor.publish("genomesWithSeq", function (dataset, selectedGenomes) {
 });
 
 Meteor.publish("proteinSeq", function (phagename) {
-  //console.log(selectedProtein, " selected");
   return Proteins.find({ "phagename": phagename });
 });
-
-/*Meteor.publish("datasets", function () {
-  //var datasetsView = Roles.getGroupsForUser(this.userId, "view");
-  //console.log("datasets publication:", this.userId, datasetsView)
-  //return Datasets.find({"name": {$in: Session.get("datasetsView")}});
-  return Datasets.find({"name": {$in: Roles.getGroupsForUser(this.userId, "view")}});
-});*/
 
 Meteor.publishComposite("datasets", {
   find: function () {
@@ -120,11 +100,9 @@ Meteor.publish('phameratorVersion', function () {
 
 Meteor.users.find({ "status.online": true }).observe({
   added: function (id) {
-    // id just came online
-    console.log(new Date().toLocaleString(), "[ONLINE]:  ", id.username, "(" + id.name + ")", id.emails[0]);
+    // console.log(new Date().toLocaleString(), "[ONLINE]:  ", id.username, "(" + id.name + ")", id.emails[0]);
   },
   removed: function (id) {
-    // id just went offline
-    console.log(new Date().toLocaleString(), "[OFFLINE]: ", id.username, "(" + id.name + ")", id.emails[0]);
+    // console.log(new Date().toLocaleString(), "[OFFLINE]: ", id.username, "(" + id.name + ")", id.emails[0]);
   }
 });

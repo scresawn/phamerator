@@ -1,9 +1,8 @@
-waitForEl = function(selector, callback) {
+waitForEl = function (selector, callback) {
   if (jQuery(selector).length) {
     callback();
   } else {
-    setTimeout(function() {
-      console.log("waiting...");
+    setTimeout(function () {
       waitForEl(selector, callback);
     }, 100);
   }

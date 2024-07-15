@@ -1,9 +1,7 @@
 <template name="datasetDropdown">
   <ul id="dropdown1" class="dropdown-content">
     {{#each dataset in datasets}}
-      <li><a href="#!" id="{{dataset.name}}">{{dataset.name}}&nbsp;(version {{dataset.version}})</a></li>
+    <li><a href="#!" id="{{dataset.name}}">{{dataset.name}}&nbsp;(version {{dataset.version}})</a></li>
     {{/each}}
-    <!--<li class="divider"></li>
-    <li><a href="{{pathFor 'newDatabase'}}">Add a database...</a></li>-->
   </ul>
 </template>

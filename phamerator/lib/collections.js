@@ -6,9 +6,6 @@ TRNAs = new Meteor.Collection("trnas");
 
 Meteor.startup(function () {
 
-  // console.log("grounding genomes collection");
-
-  //Genomes = new Ground.Collection("genomes");
   Genomes = new Meteor.Collection("genomes");
   Phams = new Meteor.Collection("phams");
   Proteins = new Meteor.Collection("proteins");
@@ -81,7 +78,6 @@ Images = new FilesCollection({
   allowClientCode: false, // Disallow remove files from Client
   debug: true,
   onBeforeUpload: function (file) {
-    //console.log(file.size <= 10485760 && /png|jpg|jpeg/i.test(file.ext));
     // Allow upload files under 10MB, and only in png/jpg/jpeg formats
     return true;
     if (file.size <= 10485760 && /png|jpg|jpeg/i.test(file.extension)) {

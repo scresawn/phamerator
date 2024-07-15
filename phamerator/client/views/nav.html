@@ -1,5 +1,4 @@
 <template name="nav">
-  <!-- only show this if the current user is the owner -->
   {{#if currentUser}}
   {{ > editDatasetModal}}
   {{ > infoDatasetModal}}
@@ -27,7 +26,6 @@
         <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
         {{#if currentUser}}
         <ul class="left hide-on-med-and-down">
-          <!--<li><i class="material-icons" style="padding-left: 5px;">info_outline</i></li>-->
 
           {{#unless loggingIn}}
           <li><a class="dropdown-trigger" href="#!" data-activates="dropdown1">{{preferredDataset}}<i
@@ -66,11 +64,8 @@
           <li>{{> atNavButton }}</li>
         </ul>
         <ul id="mobile-menu" class="side-nav">
-          <!--<img src="phamerator.png" style="width: 100%"/>-->
           {{#if loggedIn}}
-          <!--<li><a class="dropdown-trigger" href="{{pathFor 'newDatabase'}}" data-activates="dropdown1">Data Sets<i class="material-icons right">arrow_drop_down</i></a></li>-->
 
-          <!--<li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}" class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>-->
           <li style="width=100%"><img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" style="width:100%">
           </li>
           {{/if}}
@@ -82,7 +77,6 @@
               class="waves-effect waves-purple lighten-5">Genome Maps</a></li>
           <li class="{{isActiveRoute regex='account'}}"><a href="{{pathFor 'account'}}"
               class="waves-effect waves-purple lighten-5">{{displayname}}</a></li>
-          <!--<img src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="thumb_profilepic" />-->
           {{else}}
 
           {{/if}}
@@ -90,7 +84,6 @@
                 class="material-icons left white-text">chat_bubble</i>Chat</a></li>
           <li>{{> atNavButton }}</li>
         </ul>
-        <!--<a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>-->
       </div>
     </nav>
   </div>

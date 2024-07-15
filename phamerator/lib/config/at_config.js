@@ -6,7 +6,7 @@ AccountsTemplates.addField({
   type: 'text',
   required: true,
   displayName: "Full Name",
-  func: function(value){return value === '';},
+  func: function (value) { return value === ''; },
   errStr: 'Please enter your full name'
 });
 
@@ -14,12 +14,10 @@ AccountsTemplates.addField({
   _id: 'username',
   type: 'text',
   required: true,
-  func: function(value){
+  func: function (value) {
     if (Meteor.isClient) {
-      console.log("Validating username...");
       var self = this;
-      Meteor.call("userExists", value, function(err, userExists){
-        console.log("err:", err);
+      Meteor.call("userExists", value, function (err, userExists) {
         if (!userExists)
           self.setSuccess();
         else
@@ -37,7 +35,6 @@ AccountsTemplates.addField({
   displayName: "College/University-provided email address",
   re: /.+@(.+){2,}\.(.+){2,}/, // anything that looks like an email
   //re: /.+@(.+)\.(edu|org)/, // this forces .edu or .org email addresses
-  //re: /.+@(.+\.edu|hhmi.org|.*ufrj.br|.*mcgill.ca)/, // any .edu, hhmi.org, or ufrj.br address
   //re: /.+@(.+){2,}\.edu/, // this forces use of .edu email address
   errStr: 'Please use the email provided by your college/university',
 });
@@ -47,7 +44,6 @@ AccountsTemplates.addField({
   type: 'password',
   required: true,
   minLength: 8,
-  //re: /(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
   re: /^(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*$/,
   errStr: 'Must contain at least 1 digit, 1 symbol, 1 lowercase, and 1 uppercase character'
 });
@@ -74,8 +70,4 @@ AccountsTemplates.configure({
   positiveValidation: true,
   negativeFeedback: false,
   positiveFeedback: true,
-
-  // Privacy Policy and Terms of Use
-  //privacyUrl: 'privacy',
-  //termsUrl: 'terms-of-use',
 });

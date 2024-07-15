@@ -1,79 +1,74 @@
 <template name="account">
-    {{#if currentUser}}
-        <div class="row">
-            <div class="col s12 m8 l6 offset-m2 offset-l3">
-                <div class="card-panel white">
-                    {{>file}}
-                    <span>
-                        <h4>{{name}}</h4>
-                        <p>{{username}} ({{email}})</p>
-                        <form action="#">
-                          <p>To make it easier for other
-                            Phamerator users to share their genomic data with you,
-                            Phamerator maintains a directory of users' names
-                            and email addresses. Please indicate whether you would
-                            like to be listed in the directory. You may change this
-                            setting at any time.
-                          </p>
+  {{#if currentUser}}
+  <div class="row">
+    <div class="col s12 m8 l6 offset-m2 offset-l3">
+      <div class="card-panel white">
+        {{>file}}
+        <span>
+          <h4>{{name}}</h4>
+          <p>{{username}} ({{email}})</p>
+          <form action="#">
+            <p>To make it easier for other
+              Phamerator users to share their genomic data with you,
+              Phamerator maintains a directory of users' names
+              and email addresses. Please indicate whether you would
+              like to be listed in the directory. You may change this
+              setting at any time.
+            </p>
 
-                          {{#if includeInDirectory}}
-                            <p>
-                              <input name="directoryinfo" type="radio" id="directoryinfo-yes" checked/>
-                              <label for="directoryinfo-yes">Include my name and email address</label>
-                            </p>
-                            <p>
-                              <input name="directoryinfo" type="radio" id="directoryinfo-no" />
-                              <label for="directoryinfo-no">Hide my name and email address</label>
-                            </p>
-                          {{else}}
-                            <p>
-                              <input name="directoryinfo" type="radio" id="directoryinfo-yes" />
-                              <label for="directoryinfo-yes">Include my name and email address</label>
-                            </p>
-                            <p>
-                              <input name="directoryinfo" type="radio" id="directoryinfo-no" checked/>
-                              <label for="directoryinfo-no">Hide my name and email address</label>
-                            </p>
-                          {{/if}}
-                        </form>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            {{>uploadForm}}
-        </div>
-    {{/if}}
+            {{#if includeInDirectory}}
+            <p>
+              <input name="directoryinfo" type="radio" id="directoryinfo-yes" checked />
+              <label for="directoryinfo-yes">Include my name and email address</label>
+            </p>
+            <p>
+              <input name="directoryinfo" type="radio" id="directoryinfo-no" />
+              <label for="directoryinfo-no">Hide my name and email address</label>
+            </p>
+            {{else}}
+            <p>
+              <input name="directoryinfo" type="radio" id="directoryinfo-yes" />
+              <label for="directoryinfo-yes">Include my name and email address</label>
+            </p>
+            <p>
+              <input name="directoryinfo" type="radio" id="directoryinfo-no" checked />
+              <label for="directoryinfo-no">Hide my name and email address</label>
+            </p>
+            {{/if}}
+          </form>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    {{>uploadForm}}
+  </div>
+  {{/if}}
 
-    <!--<div id="range-input"></div>-->
 </template>
 
 <template name="uploadForm">
-    {{#if currentUpload}}
-        {{#with currentUpload}}
-            <!--Uploading <b>file.name</b>:-->
-            <!--<span id="progress">progress%</span>-->
-        {{/with}}
-    {{else}}
-            <div class="col s12 m8 l6 offset-m2 offset-l3">
-                <form action="#">
-                <div class="file-field input-field">
-                    <div class="btn">
-                        <span>upload a picture</span>
-                        <input id="fileInput" type="file">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
-                    </div>
-                </div>
-                </form>
-            </div>
-            <!--<span>File</span>
-            <input id="fileInput" type="file" />-->
+  {{#if currentUpload}}
+  {{#with currentUpload}}
+  {{/with}}
+  {{else}}
+  <div class="col s12 m8 l6 offset-m2 offset-l3">
+    <form action="#">
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>upload a picture</span>
+          <input id="fileInput" type="file">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div>
+    </form>
+  </div>
 
-    {{/if}}
+  {{/if}}
 </template>
 
 <template name='file'>
-    <img id="profilepic" src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="responsive-img">
+  <img id="profilepic" src="{{fileURL imageFile}}" alt="{{imageFile.name}}" class="responsive-img">
 </template>
