@@ -43,6 +43,7 @@ footer > .content {
 
 h1, h2 {
   font-family: Raleway-Regular;
+  font-size: 3rem;
 }
 
 button, a, h3, h5 {
@@ -64,7 +65,9 @@ h6 {
 }
 
 p {
-    font-family: Raleway-Light;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.4rem;
+    line-height: 1.8;
 }
 
 label {

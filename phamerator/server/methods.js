@@ -210,6 +210,12 @@ Meteor.methods({
     return { "geneID": geneID, "domainsCount": domainsCount };
   },
 
+  "get_number_of_genomes": function () {
+    const genomeCount = Genomes.find({ dataset: "Actino_Draft" }).count();
+    console.log("get_number_of_genomes", genomeCount);
+    return genomeCount;
+  },
+
   "getclusters": function (currentDataset) {
 
     if (!Roles.getGroupsForUser(Meteor.userId(), "view").includes(currentDataset)) {

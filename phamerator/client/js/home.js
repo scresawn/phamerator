@@ -1,4 +1,15 @@
 Template.home.onCreated(function () {
+  this.genomeCount = new ReactiveVar(null);
+
+  Meteor.call('get_number_of_genomes', (error, result) => {
+    if (error) {
+      console.error('Error fetching genome count:', error);
+      // Optionally, set an error state in the ReactiveVar:
+      // this.genomeCount.set('Error'); 
+    } else {
+      this.genomeCount.set(result);
+    }
+  });
 });
 
 Template.home.onRendered(function () {
@@ -36,5 +47,8 @@ Template.home.onRendered(function () {
 Template.home.helpers({
   updatedTerms: function () {
     return Session.get('updatedTerms');
+  },
+  genomeCount() {
+    return Template.instance().genomeCount.get().toLocaleString();
   }
 });
