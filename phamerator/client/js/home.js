@@ -49,6 +49,7 @@ Template.home.helpers({
     return Session.get('updatedTerms');
   },
   genomeCount() {
-    return Template.instance().genomeCount.get().toLocaleString();
+    let genomeCount = Template.instance().genomeCount.get();
+    return genomeCount ? genomeCount.toLocaleString() : "";
   }
 });
