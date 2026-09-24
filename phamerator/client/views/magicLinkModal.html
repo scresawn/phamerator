@@ -14,10 +14,17 @@
               <label for="verify_code" class="form-label"><i class="material-icons align-middle me-1">lock</i>6-Digit Code</label>
               <input class="form-control text-center fw-bold fs-4" id="verify_code" type="text" maxlength="6" style="letter-spacing: 8px;" required>
             </div>
-            <div class="text-center">
-              <button class="btn btn-purple text-white w-100" type="submit">
-                Verify Code
-                <i class="material-icons align-middle ms-1">check</i>
+            <div class="text-center mb-3">
+              <button class="btn btn-purple text-white w-100" type="submit" disabled="{{isSending}}">
+                {{#if isSending}}Verifying...{{else}}Verify Code <i class="material-icons align-middle ms-1">check</i>{{/if}}
+              </button>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <button class="btn btn-link text-decoration-none btn-sm p-0 text-muted" id="btn-change-email" type="button">
+                ← Use different email
+              </button>
+              <button class="btn btn-link text-decoration-none btn-sm p-0 text-muted" id="btn-resend-code" type="button" disabled="{{#if codeCooldown}}disabled{{/if}}">
+                {{#if codeCooldown}}Resend code ({{codeCooldown}}s){{else}}Resend code{{/if}}
               </button>
             </div>
           </form>
@@ -29,13 +36,11 @@
               <input class="form-control" id="magic_email" type="email" required>
             </div>
             <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-purple text-white" type="submit">
-                Email Login Code
-                <i class="material-icons align-middle ms-1">vpn_key</i>
+              <button class="btn btn-purple text-white" type="submit" disabled="{{#if codeCooldown}}disabled{{/if}}">
+                {{#if codeCooldown}}Email Login Code ({{codeCooldown}}s){{else}}Email Login Code <i class="material-icons align-middle ms-1">vpn_key</i>{{/if}}
               </button>
-              <button class="btn btn-outline-purple" id="btn-magic-link" type="button">
-                Send Magic Link
-                <i class="material-icons align-middle ms-1">send</i>
+              <button class="btn btn-outline-purple" id="btn-magic-link" type="button" disabled="{{#if magicCooldown}}disabled{{/if}}">
+                {{#if magicCooldown}}Magic Link ({{magicCooldown}}s){{else}}Send Magic Link <i class="material-icons align-middle ms-1">send</i>{{/if}}
               </button>
             </div>
           </form>
