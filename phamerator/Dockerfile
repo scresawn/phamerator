@@ -2,25 +2,24 @@
 FROM node:20-bookworm AS builder
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 make g++ git curl bash && \
+    apt-get install -y --no-install-recommends python3 make g++ git curl bash ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Meteor
-RUN curl https://install.meteor.com/ | sh
-
-# Copy the meteor installation from root to the node user and fix ownership
-RUN cp -r /root/.meteor /home/node/.meteor && \
-    chown -R node:node /home/node/.meteor
-
-WORKDIR /app
-COPY . .
-RUN chown -R node:node /app
-
-# Switch to the non-root node user
+# Switch to the non-root node user for building
 USER node
+ENV HOME=/home/node
+ENV PATH="/home/node/.meteor:$PATH"
+ENV METEOR_HEADLESS=1
+ENV CI=1
 
-# Build the application
-RUN npm install --omit=dev --no-audit --no-fund
+# Install Meteor directly in /home/node/.meteor
+RUN curl -fsSL https://install.meteor.com/ | sh
+
+WORKDIR /home/node/app
+COPY --chown=node:node . .
+
+# Install dependencies and build bundle
+RUN npm install --no-audit --no-fund
 RUN meteor build --directory /home/node/build --server-only
 
 # Stage 2: Create the production image
