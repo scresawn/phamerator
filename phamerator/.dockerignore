@@ -1,10 +1,11 @@
-.git/
-.meteor/local/
-node_modules/
+.git
+.meteor/local
+.meteor/local/**
+node_modules
 .DS_Store
 .env*
 *.log
-.vscode/
-.idea/
-build/
+.vscode
+.idea
+build
 
