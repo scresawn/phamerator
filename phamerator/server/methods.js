@@ -27,10 +27,8 @@ Meteor.methods({
   "generateApiKey": async function () {
     if (!this.userId) throw new Meteor.Error('401', 'Not logged in');
 
-    // Create a base-36 string that contains 30 chars in a-z,0-9
-    const apiKey = [...Array(30)]
-      .map((e) => ((Math.random() * 36) | 0).toString(36))
-      .join('');
+    // Generate a cryptographically secure 32-character API key
+    const apiKey = crypto.randomBytes(24).toString('base64url');
 
     // Hash the key for secure storage
     const hashedKey = crypto.createHash('sha256').update(apiKey).digest('hex');

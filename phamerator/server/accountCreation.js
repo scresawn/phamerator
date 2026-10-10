@@ -5,6 +5,13 @@ import { Meteor } from 'meteor/meteor';
 import { SHA256 } from 'meteor/sha';
 import { Email } from 'meteor/email';
 import { check } from 'meteor/check';
+import crypto from 'crypto';
+
+Meteor.users.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; }
+});
 
 Accounts.config({
   tokenSequenceLength: 32, // More secure for links
@@ -43,9 +50,31 @@ Accounts.registerLoginHandler('loginCode', async (options) => {
     throw new Meteor.Error(403, "Login code has expired");
   }
 
+  if (loginCode.attempts >= 5) {
+    await Meteor.users.updateAsync(
+      { _id: user._id },
+      { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
+    );
+    throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
+  }
+
   const hashedInput = SHA256(code);
   if (hashedInput !== loginCode.hashedCode) {
-    throw new Meteor.Error(403, "Invalid login code");
+    const newAttempts = (loginCode.attempts || 0) + 1;
+    if (newAttempts >= 5) {
+      await Meteor.users.updateAsync(
+        { _id: user._id },
+        { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
+      );
+      throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
+    } else {
+      await Meteor.users.updateAsync(
+        { _id: user._id },
+        { $set: { "services.loginCodes.phamerator_v2_5.attempts": newAttempts } }
+      );
+      const remaining = 5 - newAttempts;
+      throw new Meteor.Error(403, `Invalid login code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
+    }
   }
 
   // Clear code after successful verification so it can't be reused
@@ -63,14 +92,20 @@ Meteor.methods({
   async sendLoginCode(email) {
     check(email, String);
 
+    const normalizedEmail = email.toLowerCase().trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      throw new Meteor.Error("invalid-email", "Please provide a valid email address.");
+    }
+
     let user = await Meteor.users.findOneAsync({
-      "emails.address": { $regex: new RegExp("^" + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "$", "i") }
+      "emails.address": { $regex: new RegExp("^" + normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "$", "i") }
     });
 
     if (!user) {
       // Create user if they don't exist
       const userId = await Accounts.insertUserDoc({}, {
-        emails: [{ address: email, verified: false }]
+        emails: [{ address: normalizedEmail, verified: false }]
       });
       user = await Meteor.users.findOneAsync(userId);
     }
@@ -84,8 +119,8 @@ Meteor.methods({
       }
     }
 
-    // Generate random 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate cryptographically secure 6-digit code
+    const code = crypto.randomInt(100000, 1000000).toString();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Save hashed code and expiration on the user object
@@ -95,7 +130,8 @@ Meteor.methods({
         $set: {
           "services.loginCodes.phamerator_v2_5": {
             hashedCode: SHA256(code),
-            expiresAt: expiresAt
+            expiresAt: expiresAt,
+            attempts: 0
           }
         }
       }

@@ -77,7 +77,7 @@ Meteor.publish("genomesWithSeq", async function (dataset, selectedGenomes) {
 });
 
 Meteor.publish("proteinSeq", function (phagename) {
-  if (!phagename) return this.ready();
+  if (!this.userId || !phagename) return this.ready();
   return Proteins.find({ "phagename": phagename });
 });
 
@@ -138,15 +138,4 @@ Meteor.publish('apiKeys', function () {
   return Meteor.users.find({ _id: this.userId }, { fields: { "apiKeys.name": 1, "apiKeys.lastUsed": 1 } });
 });
 
-Meteor.publish('phameratorVersion', function () {
-  return PhameratorVersion.find({}, { fields: { version: 1 } });
-});
 
-Meteor.users.find({ "status.online": true }).observe({
-  added: function (id) {
-    // console.log(new Date().toLocaleString(), "[ONLINE]:  ", id.username, "(" + id.name + ")", id.emails[0]);
-  },
-  removed: function (id) {
-    // console.log(new Date().toLocaleString(), "[OFFLINE]: ", id.username, "(" + id.name + ")", id.emails[0]);
-  }
-});
