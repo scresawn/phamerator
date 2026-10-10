@@ -2,10 +2,22 @@ import { Random } from 'meteor/random';
 import { Roles } from 'meteor/alanning:roles';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SHA256 } from 'meteor/sha';
 import { Email } from 'meteor/email';
 import { check } from 'meteor/check';
 import crypto from 'crypto';
+
+const PendingLogins = new Mongo.Collection('pending_logins');
+
+Meteor.startup(async () => {
+  try {
+    await PendingLogins.rawCollection().createIndex({ email: 1 }, { unique: true });
+    await PendingLogins.rawCollection().createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  } catch (err) {
+    // Indexes already exist or handled
+  }
+});
 
 Meteor.users.deny({
   insert() { return true; },
@@ -26,66 +38,108 @@ Accounts.registerLoginHandler('loginCode', async (options) => {
     email: String
   });
 
-  const email = options.email;
+  const email = options.email.toLowerCase().trim();
   const code = options.loginCode.trim();
 
-  const user = await Meteor.users.findOneAsync({
+  let user = await Meteor.users.findOneAsync({
     "emails.address": { $regex: new RegExp("^" + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "$", "i") }
   });
 
-  if (!user) {
-    throw new Meteor.Error(403, "User not found");
-  }
+  if (user) {
+    const loginCode = user.services?.loginCodes?.phamerator_v2_5;
+    if (!loginCode || !loginCode.hashedCode || !loginCode.expiresAt) {
+      throw new Meteor.Error(403, "No login code requested");
+    }
 
-  const loginCode = user.services?.loginCodes?.phamerator_v2_5;
-  if (!loginCode || !loginCode.hashedCode || !loginCode.expiresAt) {
-    throw new Meteor.Error(403, "No login code requested");
-  }
+    if (new Date() > loginCode.expiresAt) {
+      await Meteor.users.updateAsync(
+        { _id: user._id },
+        { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
+      );
+      throw new Meteor.Error(403, "Login code has expired");
+    }
 
-  if (new Date() > loginCode.expiresAt) {
-    await Meteor.users.updateAsync(
-      { _id: user._id },
-      { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
-    );
-    throw new Meteor.Error(403, "Login code has expired");
-  }
-
-  if (loginCode.attempts >= 5) {
-    await Meteor.users.updateAsync(
-      { _id: user._id },
-      { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
-    );
-    throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
-  }
-
-  const hashedInput = SHA256(code);
-  if (hashedInput !== loginCode.hashedCode) {
-    const newAttempts = (loginCode.attempts || 0) + 1;
-    if (newAttempts >= 5) {
+    if (loginCode.attempts >= 5) {
       await Meteor.users.updateAsync(
         { _id: user._id },
         { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
       );
       throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
-    } else {
-      await Meteor.users.updateAsync(
-        { _id: user._id },
-        { $set: { "services.loginCodes.phamerator_v2_5.attempts": newAttempts } }
-      );
-      const remaining = 5 - newAttempts;
-      throw new Meteor.Error(403, `Invalid login code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
     }
+
+    const hashedInput = SHA256(code);
+    if (hashedInput !== loginCode.hashedCode) {
+      const newAttempts = (loginCode.attempts || 0) + 1;
+      if (newAttempts >= 5) {
+        await Meteor.users.updateAsync(
+          { _id: user._id },
+          { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
+        );
+        throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
+      } else {
+        await Meteor.users.updateAsync(
+          { _id: user._id },
+          { $set: { "services.loginCodes.phamerator_v2_5.attempts": newAttempts } }
+        );
+        const remaining = 5 - newAttempts;
+        throw new Meteor.Error(403, `Invalid login code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
+      }
+    }
+
+    // Clear code after successful verification so it can't be reused
+    await Meteor.users.updateAsync(
+      { _id: user._id },
+      { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
+    );
+
+    return {
+      userId: user._id
+    };
+  } else {
+    // New user verification from PendingLogins
+    const pending = await PendingLogins.findOneAsync({ email: email });
+    if (!pending || !pending.hashedCode || !pending.expiresAt) {
+      throw new Meteor.Error(403, "No login code requested or code has expired");
+    }
+
+    if (new Date() > pending.expiresAt) {
+      await PendingLogins.removeAsync({ _id: pending._id });
+      throw new Meteor.Error(403, "Login code has expired");
+    }
+
+    if (pending.attempts >= 5) {
+      await PendingLogins.removeAsync({ _id: pending._id });
+      throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
+    }
+
+    const hashedInput = SHA256(code);
+    if (hashedInput !== pending.hashedCode) {
+      const newAttempts = (pending.attempts || 0) + 1;
+      if (newAttempts >= 5) {
+        await PendingLogins.removeAsync({ _id: pending._id });
+        throw new Meteor.Error(403, "Too many failed attempts. Code has been invalidated. Please request a new code.");
+      } else {
+        await PendingLogins.updateAsync(
+          { _id: pending._id },
+          { $set: { attempts: newAttempts } }
+        );
+        const remaining = 5 - newAttempts;
+        throw new Meteor.Error(403, `Invalid login code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
+      }
+    }
+
+    // Code verified! Remove pending login record
+    await PendingLogins.removeAsync({ _id: pending._id });
+
+    // ONLY NOW create the verified user account record
+    const userId = await Accounts.insertUserDoc({}, {
+      emails: [{ address: email, verified: true }]
+    });
+
+    return {
+      userId: userId
+    };
   }
-
-  // Clear code after successful verification so it can't be reused
-  await Meteor.users.updateAsync(
-    { _id: user._id },
-    { $unset: { "services.loginCodes.phamerator_v2_5": "" } }
-  );
-
-  return {
-    userId: user._id
-  };
 });
 
 Meteor.methods({
@@ -98,55 +152,76 @@ Meteor.methods({
       throw new Meteor.Error("invalid-email", "Please provide a valid email address.");
     }
 
-    let user = await Meteor.users.findOneAsync({
+    const user = await Meteor.users.findOneAsync({
       "emails.address": { $regex: new RegExp("^" + normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "$", "i") }
     });
 
-    if (!user) {
-      // Create user if they don't exist
-      const userId = await Accounts.insertUserDoc({}, {
-        emails: [{ address: normalizedEmail, verified: false }]
-      });
-      user = await Meteor.users.findOneAsync(userId);
-    }
+    const now = Date.now();
+    const expiresAt = new Date(now + 10 * 60 * 1000); // 10 minutes
 
-    const existingCode = user.services?.loginCodes?.phamerator_v2_5;
-    if (existingCode?.expiresAt && new Date() < existingCode.expiresAt) {
-      const timeRemainingMs = existingCode.expiresAt.getTime() - Date.now();
-      const codeAgeSeconds = (10 * 60 * 1000 - timeRemainingMs) / 1000;
-      if (codeAgeSeconds < 60) {
-        throw new Meteor.Error("too-many-requests", "Please wait a minute before requesting another code.");
+    // Rate-limiting check (60-second cooldown)
+    if (user) {
+      const existingCode = user.services?.loginCodes?.phamerator_v2_5;
+      if (existingCode?.expiresAt && new Date() < existingCode.expiresAt) {
+        const timeRemainingMs = existingCode.expiresAt.getTime() - now;
+        const codeAgeSeconds = (10 * 60 * 1000 - timeRemainingMs) / 1000;
+        if (codeAgeSeconds < 60) {
+          throw new Meteor.Error("too-many-requests", "Please wait a minute before requesting another code.");
+        }
+      }
+    } else {
+      const pending = await PendingLogins.findOneAsync({ email: normalizedEmail });
+      if (pending?.expiresAt && new Date() < pending.expiresAt) {
+        const timeRemainingMs = pending.expiresAt.getTime() - now;
+        const codeAgeSeconds = (10 * 60 * 1000 - timeRemainingMs) / 1000;
+        if (codeAgeSeconds < 60) {
+          throw new Meteor.Error("too-many-requests", "Please wait a minute before requesting another code.");
+        }
       }
     }
 
     // Generate cryptographically secure 6-digit code
     const code = crypto.randomInt(100000, 1000000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const hashedCode = SHA256(code);
 
-    // Save hashed code and expiration on the user object
-    await Meteor.users.updateAsync(
-      { _id: user._id },
-      {
-        $set: {
-          "services.loginCodes.phamerator_v2_5": {
-            hashedCode: SHA256(code),
-            expiresAt: expiresAt,
-            attempts: 0
+    if (user) {
+      await Meteor.users.updateAsync(
+        { _id: user._id },
+        {
+          $set: {
+            "services.loginCodes.phamerator_v2_5": {
+              hashedCode: hashedCode,
+              expiresAt: expiresAt,
+              attempts: 0
+            }
           }
         }
-      }
-    );
+      );
+    } else {
+      // Do NOT create user record! Save into PendingLogins collection
+      await PendingLogins.upsertAsync(
+        { email: normalizedEmail },
+        {
+          $set: {
+            hashedCode: hashedCode,
+            expiresAt: expiresAt,
+            attempts: 0,
+            createdAt: new Date()
+          }
+        }
+      );
+    }
 
     const isDev = Meteor.isDevelopment || process.env.NODE_ENV !== "production" || !process.env.MAIL_URL || process.env.MAIL_URL === "dummy";
     if (isDev) {
       console.log("\n=======================================================");
-      console.log(`🔐 [AUTH DEV] Login Code for ${email}:`);
+      console.log(`🔐 [AUTH DEV] Login Code for ${normalizedEmail}:`);
       console.log(`👉 ${code}`);
       console.log("=======================================================\n");
     } else {
       // Send the email
       await Email.sendAsync({
-        to: email,
+        to: normalizedEmail,
         from: 'Phamerator <no-reply@phamerator.org>',
         subject: 'Your Phamerator Login Code',
         text: `Hello!\n\nYour Phamerator login code is: ${code}\n\nThis code will expire in 10 minutes.\n\nIf you did not request this code, you can safely ignore this email.\n\nThe Phamerator Team`

@@ -87,11 +87,6 @@ clipboard.on('success', function (e) {
 });
 
 Template.phages.onCreated(function () {
-  var self = this;
-  self.autorun(function () {
-    var dataset = Session.get('currentDataset');
-    self.subscribe('allUsers');
-  });
 });
 
 genomesWithSeqHandlers = [];
@@ -666,7 +661,7 @@ function update_phages() {
           var c = phagesdata[i - 1];
           if (c && d) {
             genome_pairs.push({ query: c.phagename, subject: d.phagename });
-            if (c.sequence && d.sequence && alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
+            if (c.genomelength && d.genomelength && alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
               blast(c, d);
             }
           }
@@ -1053,21 +1048,20 @@ function update_phages() {
         }
       });
 
-      var genomeRecord = Genomes.findOne({ phagename: nodedata.phagename }, { fields: { sequence: 1 } });
-      const g = genomeRecord ? genomeRecord.sequence : "";
-      
+      const geneHeader = ">" + nodedata.phagename + " gene " + d.name + "\n";
       Session.set('selectedGeneNotes', d.genefunction);
-      if (g) {
-        if (d.direction === "forward") {
-          Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + g.slice(d.start - 1, d.stop));
+      Session.set('selectedGene', geneHeader + "[Loading sequence...]");
+
+      Meteor.call('getGeneSequence', Session.get('currentDataset'), nodedata.phagename, d.start, d.stop, d.direction, function (error, seq) {
+        const currentGene = Session.get('selectedGene');
+        if (currentGene && currentGene.startsWith(geneHeader)) {
+          if (!error && seq) {
+            Session.set('selectedGene', geneHeader + seq);
+          } else {
+            Session.set('selectedGene', geneHeader + "[Sequence unavailable]");
+          }
         }
-        else {
-          complementSeq = g.slice(d.stop - 1, d.start).split('').reverse().map(complement).join('');
-          Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n" + complementSeq);
-        }
-      } else {
-        Session.set('selectedGene', ">" + nodedata.phagename + " gene " + d.name + "\n[Sequence loading...]");
-      }
+      });
 
       var onModalClose = function () {
         svgMap.selectAll(".geneGroup").transition().style("opacity", 1);
@@ -1226,7 +1220,7 @@ function update_phages() {
     var c = phagesdata[i - 1];
     if (c && d) {
       genome_pairs.push({ query: c.phagename, subject: d.phagename });
-      if (c.sequence && d.sequence && alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
+      if (c.genomelength && d.genomelength && alignedGenomes.find({ query: c.phagename, subject: d.phagename }).count() === 0) {
         blast(c, d);
       }
       else {
@@ -1352,33 +1346,21 @@ blast = function (q, d) {
     return;
   }
 
-  // Always use the production proxy path, as Caddy handles /blastalign on all environments
-  myURL = "/blastalign";
-
   console.log("Attempting BLAST alignment between " + query.phagename + " and " + subject.phagename);
 
-  $.ajax({
-    type: "POST",
-    method: "POST",
-    url: myURL,
-    data: JSON.stringify({ query: query.phageID, subject: subject.phageID, dataset: Session.get('currentDataset') }),
-    contentType: 'application/json',
-    dataType: 'json',
-    jsonp: false,
-    success: function (data) {
-      blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
-      drawBlastAlignments(blastAlignmentsOutstanding, data, query, subject);
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      console.error("BLAST failure for " + query.phagename + " vs " + subject.phagename + ":", textStatus, errorThrown, jqXHR.responseText);
-      blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
+  Meteor.call('getBlastAlignments', query.phageID, subject.phageID, Session.get('currentDataset'), function (error, data) {
+    blastAlignmentsOutstanding = blastAlignmentsOutstanding - 1;
+    if (error) {
+      console.error("BLAST failure for " + query.phagename + " vs " + subject.phagename + ":", error);
       // Do not remove from alignedGenomes to prevent infinite reactive loop
       if (blastAlignmentsOutstanding === 0) {
         window.requestAnimationFrame(function () {
           $(".restoring-your-work-toast").fadeOut();
           setTimeout(function() { update_hsps(hspData); }, 0);
-          });
+        });
       }
+    } else {
+      drawBlastAlignments(blastAlignmentsOutstanding, data, query, subject);
     }
   });
 };

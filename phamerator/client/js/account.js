@@ -38,10 +38,10 @@ Template.account.helpers({
 
 Template.account.events({
   "change #directoryinfo-yes": function () {
-    Meteor.users.update({ _id: Meteor.user()._id }, { $set: { 'profile.includeInDirectory': true } });;
+    Meteor.call("setIncludeInDirectory", true);
   },
   "change #directoryinfo-no": function () {
-    Meteor.users.update({ _id: Meteor.user()._id }, { $set: { 'profile.includeInDirectory': false } });;
+    Meteor.call("setIncludeInDirectory", false);
   },
   "click #generate-api-key": function (e, instance) {
     e.preventDefault();

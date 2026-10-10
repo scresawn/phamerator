@@ -12,23 +12,25 @@ getUsersThatCanView = function () {
   return Session.get("usersThatCanView") || [];
 }
 
-getAutocompleteUsers = function () {
-  const users = Meteor.users.find({ 'profile.includeInDirectory': true }).fetch();
-  const autoCompleteUsers = {};
-  users.forEach(user => {
-    if (!user.emails || user.emails.length === 0) return; // Skip users without emails
-    
-    const email = user.emails[0].address;
-    const name = user.name || (user.profile && user.profile.name) || user.username || "Unknown";
-    
-    const key = name + " (" + email + ")";
-    autoCompleteUsers[key] = null;
+loadDirectoryUsers = function () {
+  const activeDataset = Session.get("currentDataset");
+  if (!activeDataset) {
+    Session.set("directoryUsersList", []);
+    return;
+  }
+  Meteor.call("getDirectoryUsersForDataset", activeDataset, function (error, users) {
+    if (!error && users) {
+      Session.set("directoryUsersList", users);
+    } else {
+      Session.set("directoryUsersList", []);
+    }
   });
-  return autoCompleteUsers;
-}
+};
 
 Template.editDatasetModal.onRendered(function () {
   getUsersThatCanView();
+  loadDirectoryUsers();
+
   const el = document.getElementById('autocomplete-input');
   if (el) {
     el.addEventListener('input', function(e) {
@@ -38,7 +40,8 @@ Template.editDatasetModal.onRendered(function () {
       if (!match) return;
       
       const email = match[1];
-      const user = Meteor.users.findOne({ "emails.0.address": email });
+      const dirUsers = Session.get("directoryUsersList") || [];
+      const user = dirUsers.find(u => u.email === email);
       if (!user) return;
       
       const id = user._id;
@@ -62,15 +65,8 @@ Template.editDatasetModal.onDestroyed(function () {
 
 Template.editDatasetModal.helpers({
   autocompleteUsersList: function () {
-    const users = Meteor.users.find({ 'profile.includeInDirectory': true }).fetch();
-    const list = [];
-    users.forEach(user => {
-      if (!user.emails || user.emails.length === 0) return;
-      const email = user.emails[0].address;
-      const name = user.name || (user.profile && user.profile.name) || user.username || "Unknown";
-      list.push(name + " (" + email + ")");
-    });
-    return list;
+    const users = Session.get("directoryUsersList") || [];
+    return users.map(u => `${u.name} (${u.email})`);
   },
   usersThatCanView: function () {
 

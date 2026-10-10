@@ -9,10 +9,7 @@ import { Proteins } from "../imports/api/collections";
 // set up Genomes collection
 // publish just genome names and clusters
 
-Meteor.publish("allUsers", function () {
-  if (!this.userId) return this.ready();
-  return Meteor.users.find({ 'profile.includeInDirectory': true }, { fields: { name: 1, emails: 1, roles: 1, username: 1, profile: 1 } });
-});
+
 
 
 
@@ -51,7 +48,7 @@ Meteor.publish("genomesWithSeq", async function (dataset, selectedGenomes) {
 
     const d = await Datasets.findOneAsync({ name: dataset, public: true });
     if (d) {
-      const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, sequence: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
+      const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
       const genomes = await genomeCursor.fetchAsync();
       const genomeIds = genomes.map(g => g._id);
       return [
@@ -63,7 +60,7 @@ Meteor.publish("genomesWithSeq", async function (dataset, selectedGenomes) {
     var datasets = await Roles.getScopesForUserAsync(this.userId, "view")
     if (!datasets.includes(dataset)) { return [] }
 
-    const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, sequence: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
+    const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
     const genomes = await genomeCursor.fetchAsync();
     const genomeIds = genomes.map(g => g._id);
     return [

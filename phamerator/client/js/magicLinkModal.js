@@ -117,10 +117,14 @@ Template.magicLinkModal.events({
     template.state.set('isSending', true);
     M.toast({ html: 'Sending magic link...' });
     
-    Accounts.requestLoginTokenForUser({ selector: email, userData: { email: email } }, (err) => {
+    Accounts.requestLoginTokenForUser({ selector: email }, (err) => {
       template.state.set('isSending', false);
       if (err) {
-        M.toast({ html: `Error: ${err.reason || 'Could not send link.'}`, classes: 'red' });
+        if (err.reason === 'User not found' || err.error === 403) {
+          M.toast({ html: 'No account found with this email. Please click "Email Login Code" to sign in or create an account.', classes: 'red', displayLength: 6000 });
+        } else {
+          M.toast({ html: `Error: ${err.reason || 'Could not send link.'}`, classes: 'red' });
+        }
       } else {
         template.state.set('magicCooldown', 60);
         M.toast({ html: 'Check your email for the login link!', classes: 'green', displayLength: 6000 });

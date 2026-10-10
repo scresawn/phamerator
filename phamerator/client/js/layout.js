@@ -41,7 +41,6 @@ Meteor.startup(() => {
     if (userId) {
       // User is logged in, start global subscriptions
       // (Tracker.autorun will automatically stop these if this block is no longer reached, e.g., when userId becomes null)
-      Meteor.subscribe('allUsers');
       Meteor.subscribe('fullname');
       const user = Meteor.user();
       if (user && user.profile && user.profile.includeInDirectory == null) {

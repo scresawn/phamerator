@@ -1,7 +1,0 @@
-localhost:80 {
-  proxy / {
-    policy ip_hash
-    websocket
-    transparent
-    upstream localhost:9000-9035
-  }

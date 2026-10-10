@@ -19,8 +19,10 @@ async function canViewDataset(userId, dataset) {
   const d = await Datasets.findOneAsync({ name: dataset, public: true });
   if (d) return true;
   if (!userId) return false;
-  const scopes = await Roles.getScopesForUserAsync(userId, "view");
-  return scopes.includes(dataset);
+  const viewScopes = await Roles.getScopesForUserAsync(userId, "view");
+  if (viewScopes.includes(dataset)) return true;
+  const ownerScopes = await Roles.getScopesForUserAsync(userId, "owner");
+  return ownerScopes.includes(dataset);
 }
 
 Meteor.methods({
@@ -91,6 +93,91 @@ Meteor.methods({
 
     var cursor = await Roles.getUsersInRoleAsync(role, group);
     return await cursor.fetchAsync();
+  },
+  "getDirectoryUsersForDataset": async function (group) {
+    check(group, String);
+    if (!this.userId) throw new Meteor.Error('401', 'Not logged in');
+    const isOwner = await Roles.userIsInRoleAsync(this.userId, 'owner', group);
+    if (!isOwner) throw new Meteor.Error('403', 'Not authorized: You must be an owner of this dataset.');
+
+    const users = await Meteor.users.find(
+      { 'profile.includeInDirectory': true },
+      { fields: { name: 1, 'emails.address': 1, username: 1, 'profile.name': 1 } }
+    ).fetchAsync();
+
+    return users.map(u => ({
+      _id: u._id,
+      name: u.name || u.profile?.name || u.username || 'Unknown',
+      email: u.emails?.[0]?.address || ''
+    })).filter(u => !!u.email);
+  },
+  "setIncludeInDirectory": async function (include) {
+    check(include, Boolean);
+    if (!this.userId) throw new Meteor.Error('401', 'Not logged in');
+    await Meteor.users.updateAsync(
+      { _id: this.userId },
+      { $set: { 'profile.includeInDirectory': include } }
+    );
+    return true;
+  },
+  "getBlastAlignments": async function (queryPhageID, subjectPhageID, dataset) {
+    check(queryPhageID, String);
+    check(subjectPhageID, String);
+    check(dataset, String);
+
+    const authorized = await canViewDataset(this.userId, dataset);
+    if (!authorized) {
+      throw new Meteor.Error('403', `Not authorized to view dataset '${dataset}'`);
+    }
+
+    const blastHost = process.env.BLAST_URL || 'http://blast-wrapper:8080';
+    const blastUrl = blastHost.startsWith('http://') || blastHost.startsWith('https://')
+      ? blastHost
+      : `http://${blastHost}:8080`;
+
+    const response = await fetch(blastUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: queryPhageID,
+        subject: subjectPhageID,
+        dataset: dataset
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Meteor.Error('500', `BLAST computation error: ${errorText}`);
+    }
+
+    return await response.json();
+  },
+  "getGeneSequence": async function (dataset, phagename, start, stop, direction) {
+    check(dataset, String);
+    check(phagename, String);
+    check(start, Number);
+    check(stop, Number);
+    check(direction, String);
+
+    const authorized = await canViewDataset(this.userId, dataset);
+    if (!authorized) {
+      throw new Meteor.Error('403', `Not authorized to view dataset '${dataset}'`);
+    }
+
+    const genome = await Genomes.findOneAsync(
+      { phagename: phagename, dataset: dataset },
+      { fields: { sequence: 1 } }
+    );
+    if (!genome || !genome.sequence) return "";
+
+    const seq = genome.sequence;
+    if (direction === "forward") {
+      return seq.slice(start - 1, stop);
+    } else {
+      const complementMap = { 'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'a': 't', 't': 'a', 'c': 'g', 'g': 'c' };
+      const slice = seq.slice(stop - 1, start);
+      return slice.split('').reverse().map(b => complementMap[b] || b).join('');
+    }
   },
   "getDatasetsIView": async function () {
     const userId = this.userId || Meteor.userId();
