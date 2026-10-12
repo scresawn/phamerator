@@ -5,6 +5,7 @@ import { Domains } from "../imports/api/collections";
 import { TRNAs } from "../imports/api/collections";
 import { Genes } from "../imports/api/collections";
 import { Proteins } from "../imports/api/collections";
+import { canViewDataset } from "./methods.js";
 
 // set up Genomes collection
 // publish just genome names and clusters
@@ -26,41 +27,24 @@ import { Proteins } from "../imports/api/collections";
 Meteor.publish("selected_tRNAs", async function (dataset, selectedGenomes) {
   if (dataset) {
     if (!this.userId) return;
-
-    const d = await Datasets.findOneAsync({ name: dataset, public: true });
-    if (d) {
-      return TRNAs.find({ "PhageID": { $in: selectedGenomes }, dataset: dataset });
-    }
-
-    var datasets = await Roles.getScopesForUserAsync(this.userId, "view")
-    if (!datasets.includes(dataset)) { return [] }
+    if (!await canViewDataset(this.userId, dataset)) return [];
 
     return TRNAs.find({ "PhageID": { $in: selectedGenomes }, dataset: dataset });
   }
   else {
     return this.stop();
   }
-})
+});
 
 Meteor.publish("genomesWithSeq", async function (dataset, selectedGenomes) {
   if (dataset) {
     if (!this.userId) return [];
+    if (!await canViewDataset(this.userId, dataset)) return [];
 
-    const d = await Datasets.findOneAsync({ name: dataset, public: true });
-    if (d) {
-      const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
-      const genomes = await genomeCursor.fetchAsync();
-      const genomeIds = genomes.map(g => g._id);
-      return [
-        genomeCursor,
-        Genes.find({ genome: { $in: genomeIds } })
-      ];
-    }
-
-    var datasets = await Roles.getScopesForUserAsync(this.userId, "view")
-    if (!datasets.includes(dataset)) { return [] }
-
-    const genomeCursor = Genomes.find({ "phagename": { $in: selectedGenomes }, dataset: dataset }, { fields: { genes: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } });
+    const genomeCursor = Genomes.find(
+      { "phagename": { $in: selectedGenomes }, dataset: dataset },
+      { fields: { genes: 1, phageID: 1, phagename: 1, genomelength: 1, cluster: 1, subcluster: 1, dataset: 1, clusterSubcluster: 1 } }
+    );
     const genomes = await genomeCursor.fetchAsync();
     const genomeIds = genomes.map(g => g._id);
     return [

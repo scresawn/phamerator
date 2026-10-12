@@ -12,13 +12,33 @@ import crypto from 'crypto';
 
 /**
  * Check if the user is authorized to view data for a specific dataset
- * (either marked public: true or user has 'view' scope in alanning:roles).
+ * (either marked public: true, user is the dataset owner, or user has 'view'/'owner' scope in alanning:roles).
  */
-async function canViewDataset(userId, dataset) {
+export async function canViewDataset(userId, dataset) {
   if (!dataset) return false;
   const d = await Datasets.findOneAsync({ name: dataset, public: true });
   if (d) return true;
   if (!userId) return false;
+
+  // Check if user is the dataset owner
+  const user = await Meteor.users.findOneAsync({ _id: userId });
+  if (user) {
+    const ownerConditions = [];
+    if (user.username) ownerConditions.push({ owner: user.username });
+    if (user.emails && Array.isArray(user.emails)) {
+      user.emails.forEach(e => {
+        if (e && e.address) ownerConditions.push({ owner: e.address });
+      });
+    }
+    if (ownerConditions.length > 0) {
+      const isOwner = await Datasets.findOneAsync({
+        name: dataset,
+        $or: ownerConditions
+      });
+      if (isOwner) return true;
+    }
+  }
+
   const viewScopes = await Roles.getScopesForUserAsync(userId, "view");
   if (viewScopes.includes(dataset)) return true;
   const ownerScopes = await Roles.getScopesForUserAsync(userId, "owner");
