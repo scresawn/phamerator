@@ -15,7 +15,7 @@ ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"
 
 # Install Meteor directly in /home/node/.meteor and pre-warm the exact Meteor 3.5.2 release
 RUN curl -fsSL https://install.meteor.com/ | sh && \
-    meteor --release 3.5.2 --version
+    meteor --release 3.5.3 --version
 
 WORKDIR /home/node/app
 
