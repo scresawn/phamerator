@@ -1,5 +1,5 @@
 # Stage 1: Build the Meteor app
-FROM node:20-bookworm AS builder
+FROM node:24-bookworm AS builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends python3 make g++ git curl bash ca-certificates && \
@@ -13,7 +13,7 @@ ENV METEOR_HEADLESS=1
 ENV CI=1
 ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"
 
-# Install Meteor directly in /home/node/.meteor and pre-warm the exact Meteor 3.5.2 release
+# Install Meteor directly in /home/node/.meteor and pre-warm the exact Meteor 3.5.3 release
 RUN curl -fsSL https://install.meteor.com/ | sh && \
     meteor --release 3.5.3 --version
 
@@ -30,7 +30,7 @@ COPY --chown=node:node . .
 RUN meteor build --directory /home/node/build --server-only
 
 # Stage 2: Create the production image
-FROM node:20-bookworm
+FROM node:24-bookworm
 
 WORKDIR /app
 
