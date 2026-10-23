@@ -17,7 +17,7 @@ permissions:
 jobs:
   build-and-publish:
     name: Build, Scan & Publish
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Checkout repository
@@ -56,9 +56,15 @@ jobs:
           context: phamerator
           file: phamerator/Dockerfile
           load: true
+          platforms: linux/arm64
           tags: phamerator:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Set up Trivy
+        uses: aquasecurity/setup-trivy@v0.2.0
+        with:
+          version: latest
 
       # Step 2: Run Trivy container security scanner
       - name: Run Trivy security vulnerability scanner
@@ -71,6 +77,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          skip-setup-trivy: true
 
       # Step 3: Publish scan report to Actions Summary & console
       - name: Publish security scan report to GitHub Actions summary
@@ -84,7 +91,7 @@ jobs:
               echo ""
               echo "Target: \`phamerator (v2.5)\`"
               echo ""
-              echo "<details><summary><b>Click to expand High & Critical vulnerability details</b></summary>"
+              echo "<details open><summary><b>High & Critical vulnerability details</b></summary>"
               echo ""
               echo '```text'
               cat trivy-results.txt
@@ -104,6 +111,7 @@ jobs:
           context: phamerator
           file: phamerator/Dockerfile
           push: true
+          platforms: linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
