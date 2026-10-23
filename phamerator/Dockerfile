@@ -34,17 +34,19 @@ FROM node:24-bookworm
 
 WORKDIR /app
 
-# Switch to the non-root "node" user
-USER node
-
 # Copy the built app bundle from builder stage
 COPY --chown=node:node --from=builder /home/node/build/bundle ./
 
-# Install server-specific dependencies (executes npm-rebuild.js)
+# Install server-specific dependencies (executes npm-rebuild.js) and strip unneeded build tooling
 WORKDIR /app/programs/server
-RUN npm install --omit=dev --no-audit --no-fund
+RUN npm install --omit=dev --no-audit --no-fund \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx /opt/yarn* /usr/local/bin/yarn* /usr/local/lib/node_modules/corepack \
+    && chown -R node:node /app
 
 WORKDIR /app
+
+# Switch to the non-root "node" user
+USER node
 
 EXPOSE 9000
 

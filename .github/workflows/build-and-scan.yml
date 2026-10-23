@@ -1,0 +1,109 @@
+name: Build, Scan, and Publish Container
+
+on:
+  push:
+    branches: [ v2.5, master, main ]
+  pull_request:
+    branches: [ v2.5, master, main ]
+  schedule:
+    # Run every Monday at 04:00 UTC (weekly rebuild to ingest upstream security patches)
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-publish:
+    name: Build, Scan & Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Convert repository name to lowercase
+        run: |
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (ghcr.io)
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ env.REPO_LC }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=sha,format=short,prefix=sha-
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+
+      # Step 1: Build image and load into runner's Docker daemon for Trivy scanning
+      - name: Build local container image for vulnerability scan
+        uses: docker/build-push-action@v6
+        with:
+          context: phamerator
+          file: phamerator/Dockerfile
+          load: true
+          tags: phamerator:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Step 2: Run Trivy container security scanner
+      - name: Run Trivy security vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'phamerator:test'
+          format: 'table'
+          output: 'trivy-results.txt'
+          exit-code: '0' # Set to '1' if you want pipeline failure upon detected High/Critical CVEs
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # Step 3: Publish scan report to Actions Summary & console
+      - name: Publish security scan report to GitHub Actions summary
+        run: |
+          if [ -s trivy-results.txt ]; then
+            echo "::group::Trivy Security Report"
+            cat trivy-results.txt
+            echo "::endgroup::"
+            {
+              echo "### 🛡️ Trivy Container Security Scan Report"
+              echo ""
+              echo "Target: \`phamerator (v2.5)\`"
+              echo ""
+              echo "<details><summary><b>Click to expand High & Critical vulnerability details</b></summary>"
+              echo ""
+              echo '```text'
+              cat trivy-results.txt
+              echo '```'
+              echo "</details>"
+            } >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### 🛡️ Trivy Container Security Scan Report" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **Clean scan:** No unfixed HIGH or CRITICAL vulnerabilities detected in container." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # Step 4: Push verified image to GHCR (skipped on pull requests)
+      - name: Push verified container image to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: phamerator
+          file: phamerator/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
