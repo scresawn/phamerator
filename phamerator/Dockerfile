@@ -29,18 +29,24 @@ COPY --chown=node:node . .
 # 3. Build the production bundle
 RUN meteor build --directory /home/node/build --server-only
 
-# Stage 2: Create the production image
-FROM node:24-bookworm
+# Stage 2: Create the production runtime image
+FROM node:24-bookworm-slim
 
 WORKDIR /app
 
 # Copy the built app bundle from builder stage
 COPY --chown=node:node --from=builder /home/node/build/bundle ./
 
-# Install server-specific dependencies (executes npm-rebuild.js) and strip unneeded build tooling
+# Install temporary build tools, compile server modules, then purge all build tools, caches, and package managers
 WORKDIR /app/programs/server
-RUN npm install --omit=dev --no-audit --no-fund \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ \
+    && npm install --omit=dev --no-audit --no-fund \
+    && apt-get purge -y python3 make g++ \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx /opt/yarn* /usr/local/bin/yarn* /usr/local/lib/node_modules/corepack \
+    && rm -rf node_modules/node-gyp node_modules/cacache /root/.npm /root/.cache \
     && chown -R node:node /app
 
 WORKDIR /app
